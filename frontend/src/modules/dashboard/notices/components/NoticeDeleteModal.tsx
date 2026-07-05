@@ -1,0 +1,43 @@
+"use client"
+
+import { Button } from "@/src/components/ui/button"
+import { Modal } from "@/src/components/ui/modal"
+import { AlertCircle } from "lucide-react"
+import React from "react"
+
+interface NoticeDeleteModalProps {
+    isOpen: boolean
+    onClose: () => void
+    onConfirm: () => void
+    loading?: boolean
+}
+
+export const NoticeDeleteModal: React.FC<NoticeDeleteModalProps> = ({ isOpen, onClose, onConfirm, loading }) => {
+    return (
+        <Modal isOpen={isOpen} onClose={onClose} title="Delete Notice" size="sm">
+            <div className="flex flex-col items-center gap-6 py-6">
+                <AlertCircle className="w-16 h-16 text-red-500" />
+                <p className="text-center text-gray-800 text-lg font-medium">Are you sure you want to delete this notice?</p>
+                <div className="flex gap-4 w-full px-4">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={onClose}
+                        className="flex-1 h-11 border-gray-300"
+                        disabled={loading}
+                    >
+                        No
+                    </Button>
+                    <Button
+                        type="button"
+                        className="flex-1 h-11 bg-red-500 hover:bg-red-600 text-white"
+                        onClick={onConfirm}
+                        disabled={loading}
+                    >
+                        {loading ? "Deleting..." : "Yes"}
+                    </Button>
+                </div>
+            </div>
+        </Modal>
+    )
+}
