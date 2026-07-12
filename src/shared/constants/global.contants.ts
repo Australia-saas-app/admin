@@ -1,4 +1,4 @@
-import { SERVICE_NAME } from "@/src/types/global.type";
+import { SERVICE_NAME } from "@/src/shared/types/global.type";
 import { NavItem } from "../types/auth.types";
 export const NAV_ITEMS: NavItem[] = [
   { path: "/", label: "Home", key: "isHomeActive" },

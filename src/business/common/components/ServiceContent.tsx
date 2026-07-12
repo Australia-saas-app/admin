@@ -3,10 +3,10 @@ import {
   DialogBox,
   DialogClose,
   DialogContent,
-} from "../../../components/dialogbox/DialogBox";
+} from "@/src/shared/ui/dialogbox/DialogBox";
 import { X } from "lucide-react";
 import { SERVICE_NAME, ServiceState } from "./types";         
-import { cn } from "../../../lib/utils";
+import { cn } from "@/src/infra/lib/utils";
 
 
 const ServiceContent = ({selectedForm}: {selectedForm: ServiceState["selectedServiceForm"]}) => {

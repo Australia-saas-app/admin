@@ -1,4 +1,4 @@
-import { loginUser, registerUser, requestPasswordReset, confirmPasswordReset, logout as apiLogout } from "@/src/server/AuthService"
+import { loginUser, registerUser, requestPasswordReset, confirmPasswordReset, logout as apiLogout } from "@/src/infra/api/AuthService"
 import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { FieldValues } from "react-hook-form"
