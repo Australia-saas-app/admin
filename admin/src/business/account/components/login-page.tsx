@@ -11,9 +11,10 @@ import { FormActions } from "@/src/shared/ui/form/FormActions"
 import { Form } from "@/src/shared/ui/form/form"
 import { useAppDispatch, useAppSelector } from "@/src/core/store/hooks"
 import { loginUser, clearError } from "@/src/core/store/slices/authSlice"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import FormCheckbox from "@/src/shared/ui/form/form-checkbox"
+import { AlertOctagon } from "lucide-react"
 
 
 const loginSchema = z.object({
@@ -36,6 +37,12 @@ export function LoginPage({ onForgotPassword, onSuccess }: LoginPageProps) {
   const dispatch = useAppDispatch()
   const { loading, error, isAuthenticated, token } = useAppSelector((state) => state.auth)
   const router = useRouter()
+  
+  const [statusModal, setStatusModal] = useState<{ isOpen: boolean; status: string; description: string }>({
+    isOpen: false,
+    status: "",
+    description: ""
+  })
 
   const form = useForm<LoginFormValues>({
     // Cast resolver to the expected Resolver type to avoid type incompatibilities
@@ -49,7 +56,19 @@ export function LoginPage({ onForgotPassword, onSuccess }: LoginPageProps) {
 
   useEffect(() => {
     if (error) {
-      toast.error(error)
+      const upperError = error.toUpperCase()
+      if (['PENDING', 'SUSPEND', 'DORMANT', 'CLOSED', 'BLOCK'].includes(upperError)) {
+        let description = "Your account is not active."
+        if (upperError === 'PENDING') description = "Your account is currently under review by another Super Admin."
+        else if (upperError === 'SUSPEND') description = "Your account has been temporarily suspended."
+        else if (upperError === 'DORMANT') description = "Your account is inactive due to long periods of no activity."
+        else if (upperError === 'CLOSED') description = "Your account has been closed."
+        else if (upperError === 'BLOCK') description = "Your account has been permanently blocked. Contact support."
+        
+        setStatusModal({ isOpen: true, status: upperError, description })
+      } else {
+        toast.error(error)
+      }
       dispatch(clearError())
     }
   }, [error, dispatch])
@@ -139,6 +158,30 @@ export function LoginPage({ onForgotPassword, onSuccess }: LoginPageProps) {
           </div>
         </div>
       </div>
+
+      {/* Status Block Modal */}
+      {statusModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-6 text-center border border-slate-200 dark:border-slate-800">
+            <div className="w-16 h-16 mx-auto mb-4 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center">
+              <AlertOctagon className="w-8 h-8" />
+            </div>
+            
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Account {statusModal.status}</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+              {statusModal.description}
+            </p>
+            
+            <button 
+              onClick={() => setStatusModal({ ...statusModal, isOpen: false })}
+              className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 text-white font-bold shadow-sm transition-colors"
+            >
+              OK, I Understand
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }
