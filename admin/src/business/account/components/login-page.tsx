@@ -41,8 +41,8 @@ export function LoginPage({ onForgotPassword, onSuccess }: LoginPageProps) {
     // Cast resolver to the expected Resolver type to avoid type incompatibilities
     resolver: zodResolver(loginSchema) as unknown as Resolver<LoginFormValues, any>,
     defaultValues: {
-      email: "admin@system.com",
-      password: "admin123",
+      email: "",
+      password: "",
       rememberMe: false,
     },
   })
@@ -93,7 +93,7 @@ export function LoginPage({ onForgotPassword, onSuccess }: LoginPageProps) {
                     <FormTextInput
                       control={form.control}
                       name="email"
-                      placeholder="abc@gmail.com"
+                      placeholder="admin@systemdb.com"
                       className="placeholder:opacity-60 placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium"
                     />
                   </div>
