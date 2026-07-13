@@ -1,9 +1,12 @@
 #!/bin/bash
+set -e # Exit immediately if a command exits with a non-zero status.
+
 echo "🚀 Starting Deployment Process..."
 
-# 1. Pull latest code from GitHub
+# 1. Force pull latest code from GitHub (overwriting any local changes)
 echo "📥 Pulling latest code from GitHub..."
-git pull origin main
+git fetch --all
+git reset --hard origin/main
 
 # 2. Build containers without cache to ensure all changes apply
 echo "🔨 Building Docker containers..."
