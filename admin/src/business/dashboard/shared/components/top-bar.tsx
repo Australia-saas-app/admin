@@ -53,7 +53,7 @@ export function TopBar({ onMenuClick }: TopBarProps) {
 
   return (
     <>
-      <header className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 px-8 py-3 flex items-center justify-between sticky top-0 z-[100] w-full shadow-sm transition-all rounded-tl-[32px]">
+      <header className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 px-8 py-3 flex items-center justify-between sticky top-0 z-[100] w-full shadow-sm transition-all">
         
         {/* Left: Search Bar */}
         <div className="flex-1 flex items-center">

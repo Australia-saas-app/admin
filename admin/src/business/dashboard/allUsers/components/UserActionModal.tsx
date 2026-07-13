@@ -36,9 +36,9 @@ export function UserActionModal({ user, isOpen, onClose, onStatusUpdate, onDelet
   if (!isOpen || !user) return null;
 
   const handleUpdate = async () => {
-    setIsUpdating(true);
+    setUpdatingAction('UPDATE');
     await onStatusUpdate(user.userId, selectedStatus);
-    setIsUpdating(false);
+    setUpdatingAction('');
     onClose();
   };
 

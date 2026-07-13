@@ -178,6 +178,7 @@ const AllUserTable: React.FC = () => {
             
             // Update local state
             setItems(prev => prev.map(u => u.userId === userId ? { ...u, status: newStatus } : u));
+            setSelectedUser(prev => prev?.userId === userId ? { ...prev, status: newStatus } : prev);
             toast.success("User status updated successfully");
         } catch (e: any) {
             toast.error(e.message || "Failed to update status");
