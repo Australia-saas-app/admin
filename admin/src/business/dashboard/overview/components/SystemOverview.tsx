@@ -1,7 +1,9 @@
 "use client"
 
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Inter } from "next/font/google"
+import { useAppSelector } from "@/src/core/store/hooks"
+import { Loader2 } from "lucide-react"
 
 const inter = Inter({
   weight: ["500", "600", "700"],
@@ -39,35 +41,70 @@ const StatCard: React.FC<StatCardProps> = ({ title, items }) => (
 )
 
 const SystemOverview: React.FC = () => {
+  const { token } = useAppSelector((state) => state.auth)
+  const [stats, setStats] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch('/api/users/stats', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+        const data = await res.json()
+        if (data.success) setStats(data.data)
+      } catch (err) {
+        console.error("Failed to fetch stats", err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    if (token) fetchStats()
+  }, [token])
+
+  const formatNumber = (numStr: string | number) => {
+    const num = parseInt(String(numStr), 10);
+    if (isNaN(num)) return "0";
+    if (num < 1000) return num.toString();
+    if (num < 1000000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+  }
+
+  const getValue = (role: string, status: string) => {
+    if (!stats || !stats[role]) return "0";
+    const val = stats[role][status] || 0;
+    return formatNumber(val);
+  }
+
   const defaultVal = "12,450K"
 
   const userStatus = [
-    { label: "Total User", value: defaultVal },
-    { label: "Total Active User", value: defaultVal },
-    { label: "Total Suspend User", value: defaultVal },
-    { label: "Total Block User", value: defaultVal },
-    { label: "Total Dormant User", value: defaultVal },
-    { label: "Total Closed User", value: defaultVal },
+    { label: "Total User", value: getValue("user", "total") },
+    { label: "Total Active User", value: getValue("user", "ACTIVE") },
+    { label: "Total Suspend User", value: getValue("user", "SUSPEND") },
+    { label: "Total Block User", value: getValue("user", "BLOCK") },
+    { label: "Total Dormant User", value: getValue("user", "DORMANT") },
+    { label: "Total Closed User", value: getValue("user", "CLOSED") },
   ]
 
   const affiliateStatus = [
-    { label: "Total Affiliate", value: defaultVal },
-    { label: "Total Active Affiliate", value: defaultVal },
-    { label: "Total Suspend Affiliate", value: defaultVal },
-    { label: "Total Block Affiliate", value: defaultVal },
-    { label: "Total Dormant Affiliate", value: defaultVal },
-    { label: "Total Closed Affiliate", value: defaultVal },
+    { label: "Total Affiliate", value: getValue("affiliate", "total") },
+    { label: "Total Active Affiliate", value: getValue("affiliate", "ACTIVE") },
+    { label: "Total Suspend Affiliate", value: getValue("affiliate", "SUSPEND") },
+    { label: "Total Block Affiliate", value: getValue("affiliate", "BLOCK") },
+    { label: "Total Dormant Affiliate", value: getValue("affiliate", "DORMANT") },
+    { label: "Total Closed Affiliate", value: getValue("affiliate", "CLOSED") },
   ]
 
   const businessStatus = [
-    { label: "Total Business", value: defaultVal },
-    { label: "Total Pending Business", value: defaultVal },
-    { label: "Total Inactive Business", value: defaultVal },
-    { label: "Total Active Business", value: defaultVal },
-    { label: "Total Suspend Business", value: defaultVal },
-    { label: "Total Block Business", value: defaultVal },
-    { label: "Total Dormant Business", value: defaultVal },
-    { label: "Total Closed Business", value: defaultVal },
+    { label: "Total Business", value: getValue("business", "total") },
+    { label: "Total Pending Business", value: getValue("business", "PENDING") },
+    { label: "Total Inactive Business", value: getValue("business", "INACTIVE") },
+    { label: "Total Active Business", value: getValue("business", "ACTIVE") },
+    { label: "Total Suspend Business", value: getValue("business", "SUSPEND") },
+    { label: "Total Block Business", value: getValue("business", "BLOCK") },
+    { label: "Total Dormant Business", value: getValue("business", "DORMANT") },
+    { label: "Total Closed Business", value: getValue("business", "CLOSED") },
   ]
 
   const adminStatus = [
@@ -102,17 +139,24 @@ const SystemOverview: React.FC = () => {
 
   return (
     <div className="px-4 sm:px-6 pt-2 pb-6 w-full max-w-[1600px] mx-auto min-h-[70vh]">
-      <div className="w-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-          <StatCard title="User Status" items={userStatus} />
-          <StatCard title="Affiliate Status" items={affiliateStatus} />
-          <StatCard title="Business Status" items={businessStatus} />
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center min-h-[50vh] w-full">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-600 mb-4" />
+          <p className="text-gray-500 font-medium">Loading status overview...</p>
+        </div>
+      ) : (
+        <div className="w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <StatCard title="User Status" items={userStatus} />
+            <StatCard title="Affiliate Status" items={affiliateStatus} />
+            <StatCard title="Business Status" items={businessStatus} />
           <StatCard title="Admin Status" items={adminStatus} />
           
-          <StatCard title="Technology Status" items={technologyStatus} />
-          <StatCard title="Technology Service" items={technologyService} />
+            <StatCard title="Technology Status" items={technologyStatus} />
+            <StatCard title="Technology Service" items={technologyService} />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

@@ -30,6 +30,12 @@ export class AppController {
     }
   }
 
+  @Get('users/stats')
+  async getUserStats() {
+    const stats = await this.appService.getStats();
+    return { success: true, data: stats };
+  }
+
   @Get('users')
   async getUsers(@Query('role') role: string) {
     const users = await this.appService.getAllUsersByRole(role);

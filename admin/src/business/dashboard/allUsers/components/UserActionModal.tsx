@@ -165,7 +165,7 @@ export function UserActionModal({ user, isOpen, onClose, onStatusUpdate, onDelet
                 onChange={(e) => setSelectedStatus(e.target.value)}
                 className="w-full h-10 px-3 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm font-medium text-slate-700 outline-none"
               >
-                {statuses.map(s => (
+                {statuses.filter(s => s !== 'PENDING').map(s => (
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>

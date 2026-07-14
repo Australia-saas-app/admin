@@ -65,6 +65,38 @@ export class AppService implements OnModuleInit {
     });
   }
 
+  async getStats(): Promise<any> {
+    const qb = this.userRepository.createQueryBuilder('user');
+    qb.select('user.role', 'role')
+      .addSelect('user.status', 'status')
+      .addSelect('COUNT(user.id)', 'count')
+      .where('user.role != :superadmin', { superadmin: 'super-admin' })
+      .groupBy('user.role')
+      .addGroupBy('user.status');
+    
+    const rawData = await qb.getRawMany();
+    
+    // Structure the data to be easily consumed by the frontend
+    const stats: Record<string, Record<string, number>> = {
+      user: { total: 0 },
+      affiliate: { total: 0 },
+      business: { total: 0 }
+    };
+
+    for (const row of rawData) {
+      const role = row.role;
+      const status = row.status.toUpperCase();
+      const count = parseInt(row.count, 10);
+
+      if (!stats[role]) stats[role] = { total: 0 };
+      
+      stats[role][status] = count;
+      stats[role].total += count;
+    }
+
+    return stats;
+  }
+
   async loginUser(data: any): Promise<{ user: User, token: string }> {
     const isEmail = data.contact.includes('@');
     const user = await this.userRepository.findOne({
