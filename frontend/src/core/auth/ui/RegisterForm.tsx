@@ -194,29 +194,28 @@ export function RegisterForm({ onToggleForm, onSuccess }: RegisterFormProps) {
         <div className="bg-slate-50 rounded-xl p-5 border border-slate-100 mb-6">
           {recoveryKey ? (
             <>
-              <div className="flex items-center gap-3">
+              <div className="relative flex items-center">
                 <input 
                   type="text" 
                   readOnly 
                   value={recoveryKey} 
-                  className="flex-1 bg-white border border-slate-200 text-slate-700 text-sm font-medium rounded-lg h-11 px-4 outline-none cursor-copy"
+                  className="w-full bg-white border border-slate-200 text-slate-700 text-sm font-medium rounded-lg h-11 pl-4 pr-12 outline-none cursor-copy"
                   onClick={() => {
                     navigator.clipboard.writeText(recoveryKey);
                     toast.success("Recovery key copied to clipboard!");
                   }}
                 />
-                <Button 
+                <button 
                   type="button" 
-                  variant="outline"
+                  title="Copy"
                   onClick={() => {
                     navigator.clipboard.writeText(recoveryKey);
                     toast.success("Recovery key copied to clipboard!");
                   }}
-                  className="h-11 px-4 shrink-0 border-slate-200 hover:bg-slate-100 gap-2 font-semibold"
+                  className="absolute right-3 text-slate-400 hover:text-blue-600 transition-colors"
                 >
-                  <Copy className="w-4 h-4" />
-                  Copy
-                </Button>
+                  <Copy className="w-5 h-5" />
+                </button>
               </div>
               <p className="text-xs text-amber-600 font-medium mt-3 text-center flex items-center justify-center gap-1.5">
                 <EyeOff className="w-3.5 h-3.5" />
@@ -241,7 +240,7 @@ export function RegisterForm({ onToggleForm, onSuccess }: RegisterFormProps) {
           disabled={isLoading}
           className="w-full h-12 text-base font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/20"
         >
-          {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Submit & Create Account"}
+          {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Submit"}
         </Button>
       </div>
     );

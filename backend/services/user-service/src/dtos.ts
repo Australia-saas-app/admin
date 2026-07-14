@@ -54,16 +54,34 @@ export class ChangePasswordDto {
   newPassword: string;
 }
 
-export class VerifyEmailDto {
-  @IsEmail({}, { message: 'Invalid email format' })
-  @IsNotEmpty({ message: 'Email is required' })
-  email: string;
+export class VerifyContactDto {
+  @IsNotEmpty({ message: 'Contact is required' })
+  @IsString()
+  contact: string;
+
+  @IsNotEmpty({ message: 'Role is required' })
+  @IsString()
+  role: string;
+}
+
+export class VerifyRecoveryKeyDto {
+  @IsNotEmpty({ message: 'Recovery Key is required' })
+  @IsString()
+  recoveryKey: string;
+
+  @IsNotEmpty({ message: 'Role is required' })
+  @IsString()
+  role: string;
 }
 
 export class ForgotPasswordResetDto {
-  @IsEmail({}, { message: 'Invalid email format' })
-  @IsNotEmpty({ message: 'Email is required' })
-  email: string;
+  @IsNotEmpty({ message: 'Identifier (contact or key) is required' })
+  @IsString()
+  identifier: string; // can be email, phone, or recoveryKey
+
+  @IsNotEmpty({ message: 'Role is required' })
+  @IsString()
+  role: string;
 
   @IsNotEmpty({ message: 'New password is required' })
   @IsString()

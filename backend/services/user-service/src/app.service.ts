@@ -147,13 +147,31 @@ export class AppService implements OnModuleInit {
     await this.userRepository.save(user);
     return true;
   }
-  async verifyEmail(email: string): Promise<boolean> {
-    const user = await this.userRepository.findOne({ where: { email } });
+  async verifyContact(contact: string, role: string): Promise<boolean> {
+    const isEmail = contact.includes('@');
+    const user = await this.userRepository.findOne({ 
+      where: isEmail ? { email: contact, role } : { phone: contact, role } 
+    });
     return !!user;
   }
 
+  async verifyRecoveryKey(recoveryKey: string, role: string): Promise<{ fullName: string, email: string } | null> {
+    const user = await this.userRepository.findOne({ where: { recoveryKey, role } });
+    if (!user) return null;
+    return { fullName: user.fullName, email: user.email };
+  }
+
   async forgotPasswordReset(data: any): Promise<boolean> {
-    const user = await this.userRepository.findOne({ where: { email: data.email } });
+    const isEmail = data.identifier.includes('@');
+    // identifier could be email, phone, or recoveryKey
+    let user = await this.userRepository.findOne({ 
+      where: [
+        { email: data.identifier, role: data.role },
+        { phone: data.identifier, role: data.role },
+        { recoveryKey: data.identifier, role: data.role }
+      ]
+    });
+    
     if (!user) throw new Error('User not found');
 
     // Validation regex: minimum 8 chars, 1 uppercase, 1 number, 1 special character

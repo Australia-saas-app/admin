@@ -21,7 +21,9 @@ interface AuthState {
   logout: () => void;
   register: (data: RegistrationData) => Promise<void>;
   verifyOTP: (code: string) => Promise<boolean>;
-  forgotPassword: (contact: string) => Promise<void>;
+  verifyContact: (contact: string, role: string) => Promise<boolean>;
+  verifyRecoveryKey: (key: string, role: string) => Promise<{ fullName: string, email: string }>;
+  forgotPasswordReset: (data: any) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -82,9 +84,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return false;
   };
 
-  const forgotPassword = async (contact: string) => {
-    await delay(800);
-    // Sends OTP to contact
+  const verifyContact = async (contact: string, role: string) => {
+    const response = await fetch('/api/auth/verify-contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contact, role })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Verification failed');
+    return true;
+  };
+
+  const verifyRecoveryKey = async (recoveryKey: string, role: string) => {
+    const response = await fetch('/api/auth/verify-recovery-key', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ recoveryKey, role })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Invalid recovery key');
+    return data.data; // { fullName, email }
+  };
+
+  const forgotPasswordReset = async (data: any) => {
+    const response = await fetch('/api/auth/forgot-password-reset', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const resData = await response.json();
+    if (!response.ok) throw new Error(resData.message || 'Failed to reset password');
+    return true;
   };
 
   const logout = () => {
@@ -94,7 +124,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, register, verifyOTP, forgotPassword }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, register, verifyOTP, verifyContact, verifyRecoveryKey, forgotPasswordReset }}>
       {children}
     </AuthContext.Provider>
   );

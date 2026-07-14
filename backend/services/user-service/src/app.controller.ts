@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get, Query, Patch, Param, Delete, HttpException, HttpStatus, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthGuard } from './auth.guard';
-import { RegisterDto, LoginDto, ChangePasswordDto, VerifyEmailDto, ForgotPasswordResetDto } from './dtos';
+import { RegisterDto, LoginDto, ChangePasswordDto, VerifyContactDto, VerifyRecoveryKeyDto, ForgotPasswordResetDto } from './dtos';
 
 @Controller()
 export class AppController {
@@ -30,15 +30,30 @@ export class AppController {
     }
   }
 
-  @Post('auth/verify-email')
+  @Post('auth/verify-contact')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async verifyEmail(@Body() body: VerifyEmailDto) {
+  async verifyContact(@Body() body: VerifyContactDto) {
     try {
-      const exists = await this.appService.verifyEmail(body.email);
+      const exists = await this.appService.verifyContact(body.contact, body.role);
       if (!exists) {
-        throw new HttpException('Email not exists', HttpStatus.NOT_FOUND);
+        throw new HttpException('Contact not found for this role', HttpStatus.NOT_FOUND);
       }
       return { success: true };
+    } catch (e: any) {
+      if (e instanceof HttpException) throw e;
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Post('auth/verify-recovery-key')
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async verifyRecoveryKey(@Body() body: VerifyRecoveryKeyDto) {
+    try {
+      const userDetails = await this.appService.verifyRecoveryKey(body.recoveryKey, body.role);
+      if (!userDetails) {
+        throw new HttpException('Invalid recovery key for this role', HttpStatus.NOT_FOUND);
+      }
+      return { success: true, data: userDetails };
     } catch (e: any) {
       if (e instanceof HttpException) throw e;
       throw new HttpException(e.message, HttpStatus.BAD_REQUEST);

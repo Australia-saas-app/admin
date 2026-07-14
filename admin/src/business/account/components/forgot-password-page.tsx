@@ -191,7 +191,9 @@ export function ForgotPasswordPage({ onBackToLogin, onNext, onSuccess }: ForgotP
               </div>
               
               <div className="flex items-center justify-between text-sm">
-                <span className="font-medium text-slate-600">Expire in: <span className="text-red-600 font-bold">{formatTime(timeLeft)}</span></span>
+                <span className="font-medium text-slate-600">
+                  {timeLeft > 0 ? `Expires in ${formatTime(timeLeft)}` : "Expired"}
+                </span>
                 <button 
                   type="button"
                   disabled={timeLeft > 0}
@@ -234,6 +236,13 @@ export function ForgotPasswordPage({ onBackToLogin, onNext, onSuccess }: ForgotP
                     {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
+              </div>
+              <div className="text-[10px] font-medium text-slate-500 flex flex-wrap gap-x-2.5 gap-y-1">
+                <span className={passwordForm.watch("newPassword")?.length >= 8 ? "text-emerald-600" : ""}>• 8+ chars</span>
+                <span className={/[A-Z]/.test(passwordForm.watch("newPassword") || "") ? "text-emerald-600" : ""}>• 1 uppercase</span>
+                <span className={/[a-z]/.test(passwordForm.watch("newPassword") || "") ? "text-emerald-600" : ""}>• 1 lowercase</span>
+                <span className={/\d/.test(passwordForm.watch("newPassword") || "") ? "text-emerald-600" : ""}>• 1 number</span>
+                <span className={/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(passwordForm.watch("newPassword") || "") ? "text-emerald-600" : ""}>• 1 special</span>
               </div>
 
               <div className="relative">
