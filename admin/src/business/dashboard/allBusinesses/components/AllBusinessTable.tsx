@@ -330,9 +330,10 @@ const AllBusinessTable: React.FC = () => {
                   <TableColumn align="center">
                     <button
                       onClick={() => handleView(b)}
-                      className="inline-flex items-center justify-center px-4 py-1 text-xs font-bold rounded-sm bg-yellow-400 text-yellow-900 hover:bg-yellow-500 transition-colors"
+                      className="inline-flex items-center justify-center p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-full transition-colors"
+                      title="View Business"
                     >
-                      VIEW
+                      <Eye size={18} strokeWidth={2.5} />
                     </button>
                   </TableColumn>
                 </TableRow>

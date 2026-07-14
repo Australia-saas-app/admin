@@ -27,7 +27,7 @@ const roles: { key: RoleType; label: string; icon: React.ReactNode }[] = [
 
 export function LoginForm({ onToggleForm, onForgotPassword }: LoginFormProps) {
   const router = useRouter();
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" }
   });
@@ -111,7 +111,12 @@ export function LoginForm({ onToggleForm, onForgotPassword }: LoginFormProps) {
             <button
               key={key}
               type="button"
-              onClick={() => setSelectedRole(key)}
+              onClick={() => {
+                if (selectedRole !== key) {
+                  setSelectedRole(key);
+                  reset();
+                }
+              }}
               className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-sm font-semibold transition-all duration-150 ${
                 selectedRole === key
                   ? "bg-blue-600 text-white shadow-sm"

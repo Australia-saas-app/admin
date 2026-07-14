@@ -13,12 +13,17 @@ export function AuthFlipContainer() {
   const [frontView, setFrontView] = useState<AuthView>("login");
   const [backView, setBackView] = useState<AuthView>("register");
 
+  const [loginKey, setLoginKey] = useState<number>(Date.now());
+  const [registerKey, setRegisterKey] = useState<number>(Date.now());
+
   const handleNavigate = (view: AuthView) => {
     setCurrentView(view);
     if (view === "login" || view === "forgot_password" || view === "otp_login") {
       setFrontView(view);
+      setLoginKey(Date.now());
     } else {
       setBackView(view);
+      setRegisterKey(Date.now());
     }
   };
 
@@ -42,6 +47,7 @@ export function AuthFlipContainer() {
         >
           {frontView === "login" && (
             <LoginForm 
+              key={loginKey}
               onToggleForm={() => handleNavigate("register")} 
               onForgotPassword={() => handleNavigate("forgot_password")} 
             />
@@ -69,6 +75,7 @@ export function AuthFlipContainer() {
         >
           {backView === "register" && (
             <RegisterForm 
+              key={registerKey}
               onToggleForm={() => handleNavigate("login")} 
               onSuccess={() => handleNavigate("login")} 
             />
