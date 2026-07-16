@@ -34,8 +34,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Load from localStorage on mount
   useEffect(() => {
-    const savedUser = localStorage.getItem("mock_user");
-    if (savedUser) {
+    const savedUser = localStorage.getItem("auth_user");
+    const savedToken = localStorage.getItem("token");
+    if (savedUser && savedToken) {
       setUser(JSON.parse(savedUser));
       setIsAuthenticated(true);
     }
@@ -55,9 +56,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const login = async (userData: any, token: string) => {
-    setUser({ name: userData.fullName || "User", email: userData.email || userData.phone, roles: [userData.role as UserRole] });
+    const normalized = { 
+      name: userData.fullName || userData.name || "User", 
+      email: userData.email || userData.phone || "", 
+      roles: [userData.role as UserRole] 
+    };
+    setUser(normalized);
     setIsAuthenticated(true);
-    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("auth_user", JSON.stringify(normalized));
     localStorage.setItem("token", token);
   };
 
@@ -120,7 +126,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
+    localStorage.removeItem("auth_user");
     localStorage.removeItem("mock_user");
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   return (
