@@ -1,15 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { LoginForm } from "./LoginForm";
 import { RegisterForm } from "./RegisterForm";
 import { OtpForm } from "./OtpForm";
 import { ForgotPasswordForm } from "./ForgotPasswordForm";
 
 type AuthView = "login" | "register" | "otp_login" | "otp_register" | "forgot_password";
+type RoleType = "user" | "affiliate" | "business";
 
-export function AuthFlipContainer() {
-  const [currentView, setCurrentView] = useState<AuthView>("login");
+function AuthFlipContainerContent() {
+  const searchParams = useSearchParams();
+  const initialMode = searchParams?.get("mode");
+  const roleParam = searchParams?.get("role");
+  const isRoleLocked = !!roleParam;
+  const initialRole = (roleParam ?? "user") as RoleType;
+  const isRegister = initialMode === "register";
+
+  const [currentView, setCurrentView] = useState<AuthView>(isRegister ? "register" : "login");
   const [frontView, setFrontView] = useState<AuthView>("login");
   const [backView, setBackView] = useState<AuthView>("register");
 
@@ -37,7 +46,7 @@ export function AuthFlipContainer() {
         style={{
           transformStyle: "preserve-3d",
           transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
-          minHeight: "640px", 
+          minHeight: "580px",
         }}
       >
         {/* Front Side: Login, Forgot Password, OTP (from login) */}
@@ -76,6 +85,8 @@ export function AuthFlipContainer() {
           {backView === "register" && (
             <RegisterForm 
               key={registerKey}
+              initialRole={initialRole}
+              isRoleLocked={isRoleLocked}
               onToggleForm={() => handleNavigate("login")} 
               onSuccess={() => handleNavigate("login")} 
             />
@@ -88,5 +99,13 @@ export function AuthFlipContainer() {
         </div>
       </div>
     </div>
+  );
+}
+
+export function AuthFlipContainer() {
+  return (
+    <Suspense fallback={<div className="w-full min-h-[580px] flex items-center justify-center">Loading...</div>}>
+      <AuthFlipContainerContent />
+    </Suspense>
   );
 }
