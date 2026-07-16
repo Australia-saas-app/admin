@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -15,10 +15,7 @@ const emailSchema = z.object({
   email: z.string().email("Invalid email address"),
 })
 
-// Phase 2: OTP
-const otpSchema = z.object({
-  otp: z.string().min(6, "OTP must be at least 6 digits"),
-})
+// Phase 2: OTP - handled with individual digit state (no zod schema needed)
 
 // Phase 3: Password
 const passwordSchema = z.object({
@@ -48,16 +45,17 @@ export function ForgotPasswordPage({ onBackToLogin, onNext, onSuccess }: ForgotP
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
+  // OTP digit state (6 boxes)
+  const [otpDigits, setOtpDigits] = useState(["", "", "", "", "", ""])
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([])
+
   // Forms
   const emailForm = useForm({
     resolver: zodResolver(emailSchema),
     defaultValues: { email: "" },
   })
 
-  const otpForm = useForm({
-    resolver: zodResolver(otpSchema),
-    defaultValues: { otp: "" },
-  })
+  // OTP form removed - using otpDigits state directly
 
   const passwordForm = useForm({
     resolver: zodResolver(passwordSchema),
@@ -104,14 +102,6 @@ export function ForgotPasswordPage({ onBackToLogin, onNext, onSuccess }: ForgotP
     }
   }
 
-  const handleVerifyOTP = async (data: z.infer<typeof otpSchema>) => {
-    if (data.otp === "456789") {
-      toast.success("OTP Verified!")
-      setPhase("reset")
-    } else {
-      toast.error("Invalid OTP")
-    }
-  }
 
   const handleResetPassword = async (data: z.infer<typeof passwordSchema>) => {
     setIsSubmitting(true)
@@ -181,37 +171,73 @@ export function ForgotPasswordPage({ onBackToLogin, onNext, onSuccess }: ForgotP
 
         {/* PHASE 2: OTP */}
         {phase === "otp" && (
-          <Form {...otpForm}>
-            <form onSubmit={otpForm.handleSubmit(handleVerifyOTP)} className="space-y-6">
-              <div className="text-center mb-6 text-sm text-slate-600">
-                Enter the OTP sent to <span className="font-bold text-slate-900">{verifiedEmail}</span>
+          <div className="space-y-5 animate-in fade-in duration-300">
+            <div className="p-4 bg-blue-50/50 rounded-xl border border-blue-100 text-center">
+              <p className="text-sm font-medium text-slate-700 mb-4">
+                Enter the 6-digit code sent to<br/>
+                <span className="font-bold text-slate-900">{verifiedEmail}</span>
+              </p>
+
+              <div className="flex justify-center gap-2 mb-5">
+                {otpDigits.map((digit, index) => (
+                  <input
+                    key={index}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={1}
+                    ref={(el) => { otpRefs.current[index] = el; }}
+                    value={digit}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/[^0-9]/g, "");
+                      if (val.length > 1) return;
+                      const newDigits = [...otpDigits];
+                      newDigits[index] = val;
+                      setOtpDigits(newDigits);
+                      if (val !== "" && index < 5) otpRefs.current[index + 1]?.focus();
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Backspace" && otpDigits[index] === "" && index > 0) {
+                        otpRefs.current[index - 1]?.focus();
+                      }
+                    }}
+                    className="w-11 h-13 text-center text-xl font-bold bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                    style={{ height: "3rem" }}
+                  />
+                ))}
               </div>
-              <div>
-                <FormTextInput control={otpForm.control} name="otp" placeholder="Enter OTP (e.g. 456789)" />
-              </div>
-              
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-medium text-slate-600">
+
+              <div className="flex justify-between items-center text-xs px-1">
+                <span className="font-medium text-slate-500">
                   {timeLeft > 0 ? `Expires in ${formatTime(timeLeft)}` : "Expired"}
                 </span>
-                <button 
+                <button
                   type="button"
                   disabled={timeLeft > 0}
                   onClick={handleResendOTP}
-                  className="font-bold text-blue-600 hover:text-blue-800 disabled:opacity-50 transition-colors"
+                  className="font-bold text-blue-600 hover:text-blue-800 disabled:opacity-40 transition-colors"
                 >
                   Resend OTP
                 </button>
               </div>
+            </div>
 
-              <button 
-                type="submit" 
-                className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-sm transition-all flex items-center justify-center"
-              >
-                Submit OTP
-              </button>
-            </form>
-          </Form>
+            <button
+              type="button"
+              disabled={isSubmitting || otpDigits.join("").length < 6}
+              onClick={() => {
+                const code = otpDigits.join("");
+                if (code === "456789") {
+                  toast.success("OTP Verified!");
+                  setPhase("reset");
+                } else {
+                  toast.error("Invalid OTP");
+                }
+              }}
+              className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-sm transition-all flex items-center justify-center disabled:opacity-50"
+            >
+              {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Verify OTP"}
+            </button>
+          </div>
         )}
 
         {/* PHASE 3: RESET PASSWORD */}
