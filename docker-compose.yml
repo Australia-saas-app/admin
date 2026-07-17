@@ -11,8 +11,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: saas_frontend
-    ports:
-      - "3000:3000"
     environment:
       - NODE_ENV=production
       # Next.js will use this public URL for API calls
@@ -29,8 +27,6 @@ services:
       context: ./admin
       dockerfile: Dockerfile
     container_name: saas_admin
-    ports:
-      - "8001:3001"
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=/api
@@ -47,8 +43,6 @@ services:
       context: ./backend/apps/sso
       dockerfile: Dockerfile
     container_name: saas_backend
-    ports:
-      - "3001:3001"
     environment:
       - NODE_ENV=production
       - DB_HOST=saas_postgres
