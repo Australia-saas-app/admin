@@ -1,0 +1,348 @@
+{
+	"info": {
+		"_postman_id": "notice-api-collection-2024",
+		"name": "Notice Collection",
+		"description": "Notice API endpoints for managing notices with title, description, file (photo or PDF), and priority.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "gatewayUrl",
+			"value": "http://35.162.205.9:3006"
+		},
+		{
+			"key": "platformUrl",
+			"value": "http://35.162.205.9:3006"
+		},
+		{
+			"key": "adminToken",
+			"value": ""
+		},
+		{
+			"key": "noticeId",
+			"value": ""
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{adminToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"item": [
+		{
+			"name": "Public Endpoints",
+			"item": [
+				{
+					"name": "Get All Notices",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/notices?page=1&limit=20",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "notices"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get all visible notices with pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Notice by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/notices/{{noticeId}}",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "notices", "{{noticeId}}"]
+						},
+						"description": "Get a specific notice by ID"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin Endpoints",
+			"item": [
+				{
+					"name": "Get All Notices (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data && jsonData.data.length > 0) {",
+									"        pm.collectionVariables.set('noticeId', jsonData.data[0].id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "admin-token",
+								"value": "{{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/notices?page=1&limit=20",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "notices"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get all notices including hidden ones (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Notice by ID (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "admin-token",
+								"value": "{{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/notices/{{noticeId}}",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "notices", "{{noticeId}}"]
+						},
+						"description": "Get a specific notice by ID with full details"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Notice",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('noticeId', jsonData.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "admin-token",
+								"value": "{{adminToken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Important System Update",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Please review the new policy changes effective from next month",
+									"type": "text"
+								},
+								{
+									"key": "priority",
+									"value": "high",
+									"type": "text"
+								},
+								{
+									"key": "isVisible",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"description": "Select photo or PDF file to upload"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/notices",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "notices"]
+						},
+						"description": "Create a new notice. File is uploaded to notice folder (ID: 6a876d28-57b2-4718-9b64-15a050c5364f). Supports: JPG, PNG, GIF, WebP, PDF."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Notice",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "admin-token",
+								"value": "{{adminToken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Updated Important System Update",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Updated description with additional information",
+									"type": "text"
+								},
+								{
+									"key": "priority",
+									"value": "warning",
+									"type": "text"
+								},
+								{
+									"key": "isVisible",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"description": "Select new photo or PDF file (optional - only uploads if provided)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/notices/{{noticeId}}",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "notices", "{{noticeId}}"]
+						},
+						"description": "Update notice. Upload new file to notice folder (ID: 6a876d28-57b2-4718-9b64-15a050c5364f) if attachment should change. All fields are optional."
+					},
+					"response": []
+				},
+				{
+					"name": "Upload File to Notice",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "admin-token",
+								"value": "{{adminToken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"description": "Select photo or PDF file to upload"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/notices/{{noticeId}}/file",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "notices", "{{noticeId}}", "file"]
+						},
+						"description": "Upload a photo or PDF file to file-storage and attach to notice. The file is uploaded to the notice folder (ID: 6a876d28-57b2-4718-9b64-15a050c5364f). Supported formats: JPG, PNG, GIF, WebP, PDF."
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle Visibility",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "admin-token",
+								"value": "{{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/notices/{{noticeId}}/visibility",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "notices", "{{noticeId}}", "visibility"]
+						},
+						"description": "Toggle notice visibility (show/hide)"
+					},
+					"response": []
+				},
+				{
+					"name": "Mark as Read",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "admin-token",
+								"value": "{{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/notices/{{noticeId}}/read",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "notices", "{{noticeId}}", "read"]
+						},
+						"description": "Mark notice as read"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Notice",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "admin-token",
+								"value": "{{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/notices/{{noticeId}}",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "notices", "{{noticeId}}"]
+						},
+						"description": "Delete a notice permanently"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

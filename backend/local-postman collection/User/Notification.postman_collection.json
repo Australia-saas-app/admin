@@ -1,0 +1,70 @@
+{
+  "info": {
+    "_postman_id": "notification-id",
+    "name": "Notification - Vero2 Local",
+    "description": "Chat and notification endpoints. Updated for local testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Notification",
+      "item": [
+        {
+          "name": "Get Chat Conversations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{chatBaseUrl}}/live/conversations?page=1&limit=20",
+              "host": ["http://localhost:3006/api/chat"],
+              "path": ["live", "conversations"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get user's chat conversations for notifications"
+          },
+          "response": []
+        },
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Hello, I have a question about my order.\"\n}"
+            },
+            "url": {
+              "raw": "{{chatBaseUrl}}/conversations/{{conversationId}}/messages",
+              "host": ["http://localhost:3006/api/chat"],
+              "path": ["conversations", "{{conversationId}}", "messages"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

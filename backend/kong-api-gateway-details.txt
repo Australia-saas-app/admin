@@ -1,0 +1,49 @@
+API Gateway Service Details - Kong
+
+Overview:
+Kong Gateway 3.5+ is used as the Enterprise API Management solution in the Vero platform architecture.
+
+Port Configuration:
+- HTTP Port: 8000
+- HTTPS Port: 8443
+
+Key Features:
+1. Rate Limiting Plugin
+2. Authentication Plugins
+3. Load Balancing
+4. Service Discovery
+5. Circuit Breaker
+6. Request/Response Transformation
+7. Analytics and Monitoring
+8. MySQL Backend for Configuration
+
+Security Implementation:
+- Rate Limiting with Redis Backend
+- DDoS Protection with Rate Limiting
+- Authentication Plugins Integration
+- Public APIs: 100 requests/minute per IP
+- Authenticated APIs: 1000 requests/minute per user
+- Admin APIs: 500 requests/minute per admin
+- Request Throttling and Burst Protection
+
+Architecture Integration:
+- Acts as the central API Gateway for all microservices
+- Routes requests to appropriate services
+- Handles authentication and authorization
+- Provides monitoring and analytics for API usage
+
+Database Backend:
+- Uses MySQL for configuration storage
+- Integrates with Redis for rate limiting and caching
+
+Deployment:
+- Configured in production Docker Compose setup
+- Included in Kong production setup phase
+- SSL/TLS setup for secure communication
+
+Purpose in Platform:
+- Manages all API traffic across microservices
+- Provides unified entry point for clients
+- Implements security policies consistently
+- Enables service discovery and load balancing
+- Offers monitoring and analytics capabilities

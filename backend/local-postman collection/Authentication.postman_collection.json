@@ -1,0 +1,442 @@
+{
+  "info": {
+    "_postman_id": "auth-collection-id",
+    "name": "Authentication",
+    "description": "Vero2 Authentication Collection - covers Registration, Identity Verification, Token Issuance, Role & Permission, SSO Integration, Logging & Audit, Session Management/Expiration",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Registration",
+      "item": [
+        {
+          "name": "User",
+          "item": [
+            {
+              "name": "Register User",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123!\",\n  \"accountType\": \"user\",\n  \"currency\": \"USD\"\n}"
+                },
+                "url": {
+                  "raw": "{{ssoBaseUrl}}/auth/user/register",
+                  "host": ["{{ssoBaseUrl}}"],
+                  "path": ["auth", "user", "register"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Verify User OTP",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"user@example.com\",\n  \"otp\": \"123456\"\n}"
+                },
+                "url": {
+                  "raw": "{{ssoBaseUrl}}/auth/user/verify-otp",
+                  "host": ["{{ssoBaseUrl}}"],
+                  "path": ["auth", "user", "verify-otp"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Business",
+          "item": [
+            {
+              "name": "Register Business",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"Business Corp\",\n  \"email\": \"business@example.com\",\n  \"password\": \"Password123!\",\n  \"accountType\": \"business\",\n  \"currency\": \"USD\",\n  \"businessInfo\": {\n    \"businessName\": \"Business Corp\",\n    \"businessIndustry\": \"Tech\"\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{ssoBaseUrl}}/auth/user/register",
+                  "host": ["{{ssoBaseUrl}}"],
+                  "path": ["auth", "user", "register"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Verify Business OTP",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"business@example.com\",\n  \"otp\": \"123456\"\n}"
+                },
+                "url": {
+                  "raw": "{{ssoBaseUrl}}/auth/user/verify-otp",
+                  "host": ["{{ssoBaseUrl}}"],
+                  "path": ["auth", "user", "verify-otp"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Admin",
+          "item": [
+             {
+               "name": "Register Admin",
+               "request": {
+                 "method": "POST",
+                 "header": [
+                   {
+                     "key": "Content-Type",
+                     "value": "application/json"
+                   }
+                 ],
+                 "body": {
+                   "mode": "raw",
+                   "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"AdminPassword123!\",\n  \"fullName\": \"Admin User\",\n  \"bootstrapSecret\": \"change-me-bootstrap\"\n}"
+                 },
+                 "url": {
+                   "raw": "{{adminBaseUrl}}/auth/admin/register",
+                   "host": ["{{adminBaseUrl}}"],
+                   "path": ["auth", "admin", "register"]
+                 }
+               },
+               "response": []
+             }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Identity Verification",
+      "item": [
+        {
+          "name": "Send OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"type\": \"login\"\n}"
+            },
+            "url": {
+              "raw": "{{ssoBaseUrl}}/auth/send-otp",
+              "host": ["{{ssoBaseUrl}}"],
+              "path": ["auth", "send-otp"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify OTP for Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{ssoBaseUrl}}/auth/user/verify-otp",
+              "host": ["{{ssoBaseUrl}}"],
+              "path": ["auth", "user", "verify-otp"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Token Issuance (JWT/OAuth)",
+      "item": [
+        {
+          "name": "Password Grant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {"key": "grant_type", "value": "password"},
+                {"key": "client_id", "value": "first-party-app"},
+                {"key": "client_secret", "value": "replace-me-in-production"},
+                {"key": "username", "value": "user@example.com"},
+                {"key": "password", "value": "Password123!"},
+                {"key": "scope", "value": "openid profile email offline_access"}
+              ]
+            },
+            "url": {
+              "raw": "{{ssoBaseUrl}}/token",
+              "host": ["{{ssoBaseUrl}}"],
+              "path": ["token"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {"key": "grant_type", "value": "refresh_token"},
+                {"key": "client_id", "value": "first-party-app"},
+                {"key": "client_secret", "value": "replace-me-in-production"},
+                {"key": "refresh_token", "value": "{{refreshToken}}"}
+              ]
+            },
+            "url": {
+              "raw": "{{ssoBaseUrl}}/token",
+              "host": ["{{ssoBaseUrl}}"],
+              "path": ["token"]
+            }
+          },
+          "response": []
+        },
+             {
+               "name": "Admin Login",
+               "request": {
+                 "method": "POST",
+                 "header": [
+                   {
+                     "key": "Content-Type",
+                     "value": "application/json"
+                   }
+                 ],
+                 "body": {
+                   "mode": "raw",
+                   "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"AdminPassword123!\"\n}"
+                 },
+                 "url": {
+                   "raw": "{{adminBaseUrl}}/auth/admin/login",
+                   "host": ["{{adminBaseUrl}}"],
+                   "path": ["auth", "admin", "login"]
+                 }
+               },
+               "response": []
+             }
+      ]
+    },
+
+    {
+      "name": "SSO Integration",
+      "item": [
+        {
+          "name": "OpenID Configuration",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{ssoBaseUrl}}/.well-known/openid-configuration",
+              "host": ["{{ssoBaseUrl}}"],
+              "path": [".well-known", "openid-configuration"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "JWKS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{ssoBaseUrl}}/.well-known/jwks.json",
+              "host": ["{{ssoBaseUrl}}"],
+              "path": [".well-known", "jwks.json"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Logging & Audit",
+      "item": [
+        {
+          "name": "List Users (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{adminBaseUrl}}/auth/admin/users",
+              "host": ["{{adminBaseUrl}}"],
+              "path": ["auth", "admin", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Details (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{adminBaseUrl}}/auth/admin/users/{{userId}}",
+              "host": ["{{adminBaseUrl}}"],
+              "path": ["auth", "admin", "users", "{{userId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Status (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"active\",\n  \"reason\": \"Verified documents\"\n}"
+            },
+            "url": {
+              "raw": "{{adminBaseUrl}}/auth/admin/users/{{userId}}/status",
+              "host": ["{{adminBaseUrl}}"],
+              "path": ["auth", "admin", "users", "{{userId}}", "status"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Session Management/Expiration",
+      "item": [
+        {
+          "name": "List Sessions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{ssoBaseUrl}}/sessions",
+              "host": ["{{ssoBaseUrl}}"],
+              "path": ["sessions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Revoke Session",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{ssoBaseUrl}}/sessions/{{sessionId}}",
+              "host": ["{{ssoBaseUrl}}"],
+              "path": ["sessions", "{{sessionId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "ssoBaseUrl",
+      "value": "http://localhost:3001/sso"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": "USER000001"
+    },
+     {
+       "key": "sessionId",
+       "value": ""
+     },
+     {
+       "key": "adminBaseUrl",
+       "value": "http://localhost:3007/admin-service"
+     }
+   ]
+ }

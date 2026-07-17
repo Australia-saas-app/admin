@@ -1,0 +1,254 @@
+{
+	"info": {
+		"_postman_id": "branch-api-collection-2024",
+		"name": "Branch Collection",
+		"description": "Branch API endpoints for managing branches/locations with branchName, countryFlag, address, phone, email, workingHours, workingDays, services, and socialLinks.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "gatewayUrl",
+			"value": "http://35.162.205.9:3006"
+		},
+		{
+			"key": "platformUrl",
+			"value": "http://35.162.205.9:3006"
+		},
+		{
+			"key": "adminToken",
+			"value": ""
+		},
+		{
+			"key": "branchId",
+			"value": ""
+		}
+	],
+	"item": [
+		{
+			"name": "Public Endpoints",
+			"item": [
+				{
+					"name": "Get All Branches",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/branches?page=1&limit=20",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "branches"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get all visible branches with pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Branch by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/branches/{{branchId}}",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "branches", "{{branchId}}"]
+						},
+						"description": "Get a specific branch by ID"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin Endpoints",
+			"item": [
+				{
+					"name": "Get All Branches (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data && jsonData.data.length > 0) {",
+									"        pm.collectionVariables.set('branchId', jsonData.data[0].id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/branches?page=1&limit=20",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "branches"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get all branches including hidden ones (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Branch",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('branchId', jsonData.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"branchName\": \"Main Office\",\n  \"countryFlag\": \"US\",\n  \"address\": \"123 Main Street, New York, NY 10001\",\n  \"phone\": \"+1-555-123-4567\",\n  \"email\": \"mainoffice@example.com\",\n  \"workingHours\": \"9:00 AM - 6:00 PM\",\n  \"workingDays\": [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\"],\n  \"services\": [\"Consulting\", \"Sales\", \"Support\"],\n  \"socialLinks\": [\n    {\n      \"name\": \"facebook\",\n      \"url\": \"https://facebook.com/example\"\n    },\n    {\n      \"name\": \"twitter\",\n      \"url\": \"https://twitter.com/example\"\n    }\n  ],\n  \"isVisible\": \"true\"\n}"
+						},
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/branches",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "branches"]
+						},
+						"description": "Create a new branch with all fields: branchName, countryFlag, address, phone, email, workingHours, workingDays, services, and socialLinks."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Branch",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"branchName\": \"Updated Main Office\",\n  \"countryFlag\": \"UK\",\n  \"address\": \"456 Updated Street, London, UK\",\n  \"phone\": \"+44-20-1234-5678\",\n  \"email\": \"updatedoffice@example.com\",\n  \"workingHours\": \"8:00 AM - 7:00 PM\",\n  \"workingDays\": [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"],\n  \"services\": [\"Consulting\", \"Sales\", \"Support\", \"Training\"],\n  \"socialLinks\": [\n    {\n      \"name\": \"facebook\",\n      \"url\": \"https://facebook.com/updated\"\n    },\n    {\n      \"name\": \"instagram\",\n      \"url\": \"https://instagram.com/example\"\n    }\n  ],\n  \"isVisible\": \"true\"\n}"
+						},
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/branches/{{branchId}}",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "branches", "{{branchId}}"]
+						},
+						"description": "Update branch with all fields. All fields are optional - only include what you want to update."
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle Visibility",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/branches/{{branchId}}/visibility",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "branches", "{{branchId}}", "visibility"]
+						},
+						"description": "Toggle branch visibility (show/hide)"
+					},
+					"response": []
+				},
+				{
+					"name": "Reorder Branch",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"direction\": \"up\"\n}"
+						},
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/branches/{{branchId}}/reorder",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "branches", "{{branchId}}", "reorder"]
+						},
+						"description": "Reorder branch position (direction: 'up' or 'down')"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Branch",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/branches/{{branchId}}",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "branches", "{{branchId}}"]
+						},
+						"description": "Delete a branch permanently"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

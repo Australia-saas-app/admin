@@ -1,0 +1,36 @@
+services:
+  real-estate-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vero2-real-estate-service
+    ports:
+      - "3013:3011"
+    environment:
+      - PORT=3011
+      - NODE_ENV=production
+      - DB_HOST=vero2-postgres
+      - DB_PORT=5432
+      - DB_USERNAME=vero2_backend_app
+      - DB_PASSWORD=pGYvP0e9W00UhAwYn6D1hDX6+3osOS170J5uqfSDXVzIcnYe1X/UOXN+OYlgDbt1
+      - DB_NAME=vero2_backend
+      - SSO_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5ieoZWwB53aIWpU+DZdqxzTdM4N+1pFxl10J5gb7/jCw9YHW1i5N6bb3c/rhRnSJmH5bTIDGkYLtdjMVqKuKJiiLWXPllMLClvrc7dD+De3mku6Y4cuVIZHD/y/KeUG96PDJGKd5aVYO10OqSznJLNhD8Md2OSVk5YX4OkhxQ/AjugIx3OysxXGM7Eji2dobUpZ20bZ8lVf2xb+XLTxtVaPGB4VS7zUjKjarxgjnCBgo48FnCt1qVHmCoVlAOMti0/SW9XN0tc0lTb9z/Em82uiYzGEuAtdj+Jj7RKkoJr+lg8U+Aix3OaxlFjrOPBrYo8DJCso930wASzjf0Z2r+QIDAQAB-----END PUBLIC KEY-----
+      - SSO_ISSUER=http://sso:3001/sso
+      - RATE_LIMIT_TTL=60
+      - RATE_LIMIT_MAX=100
+    restart: unless-stopped
+    networks:
+      - vero2-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3011/api/real-estate/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+networks:
+  vero2-network:
+    name: vero2new_vero2-network
+    external: true
+
+

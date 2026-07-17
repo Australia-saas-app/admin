@@ -1,0 +1,1503 @@
+{
+	"info": {
+		"_postman_id": "file-storage-service-collection",
+		"name": "File Storage Service",
+		"description": "Complete API routes for File Storage Service - Cloudflare R2 storage with JWT authentication, file versioning, sharing, and folder management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Check if the file storage service is running. No authentication required."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Files - User Token",
+			"item": [
+				{
+					"name": "Upload File",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('file_id', response.id);",
+									"    pm.collectionVariables.set('file_key', response.key);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text",
+								"description": "JWT token from SSO service (user login)"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [],
+									"description": "The file to upload (required)"
+								},
+								{
+									"key": "ownerId",
+									"value": "user-123",
+									"type": "text",
+									"description": "Owner/user ID (optional - will use userId from token if not provided)"
+								},
+								{
+									"key": "folderId",
+									"value": "{{folder_id}}",
+									"type": "text",
+									"description": "Folder ID (optional)"
+								},
+								{
+									"key": "tags",
+									"value": "photo,profile",
+									"type": "text",
+									"description": "Comma-separated tags (optional) - Example: photo,profile"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						},
+						"description": "Upload a file using user JWT token. The file will be validated and scanned automatically.\n\n**How to get user token:**\n1. Login to SSO service: POST http://localhost:3001/sso/auth/login\n2. Use the `accessToken` from response\n3. Set `jwt_token_user` variable in Postman"
+					},
+					"response": []
+				},
+				{
+					"name": "List Files",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}?limit=50&offset=0",
+							"host": [
+								"{{base_url}}"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50",
+									"description": "Maximum number of results (optional, default: 100, max: 1000)"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Pagination offset (optional, default: 0)"
+								}
+							]
+						},
+						"description": "List all files with optional filtering and pagination. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Get File Metadata",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}"
+							]
+						},
+						"description": "Get metadata for a specific file by ID. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Download File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/download",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"download"
+							]
+						},
+						"description": "Download a file by ID. Returns the file as a stream. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete File",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}"
+							]
+						},
+						"description": "Permanently delete a file from disk and database. Uses user JWT token."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File Metadata - User Token",
+			"item": [
+				{
+					"name": "Update File Metadata",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"filename\": \"updated-name.pdf\",\n  \"folderId\": \"{{folder_id}}\",\n  \"tags\": [\"updated\", \"important\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/metadata",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"metadata"
+							]
+						},
+						"description": "Update file metadata (filename, folderId, tags). Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Soft Delete File",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/soft",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"soft"
+							]
+						},
+						"description": "Soft delete a file (mark as deleted). Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Restore File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/restore",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"restore"
+							]
+						},
+						"description": "Restore a soft-deleted file. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Scan Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/scan",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"scan"
+							]
+						},
+						"description": "Get antivirus scan status for a file. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Scan Status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"scanStatus\": \"clean\",\n  \"scanResult\": {\n    \"manuallyUpdated\": true,\n    \"timestamp\": \"2024-01-01T00:00:00Z\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/scan",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"scan"
+							]
+						},
+						"description": "Update antivirus scan status for a file. Uses user JWT token."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Presigned Upload - User Token",
+			"item": [
+				{
+					"name": "Create Presigned Upload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('presigned_file_id', response.id);",
+									"    pm.collectionVariables.set('presigned_upload_url', response.uploadUrl);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"filename\": \"document.pdf\",\n  \"mimeType\": \"application/pdf\",\n  \"size\": 1024000,\n  \"ownerId\": \"user-123\",\n  \"folderId\": \"{{folder_id}}\",\n  \"tags\": [\"document\", \"important\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/presign/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"presign",
+								"upload"
+							]
+						},
+						"description": "Create a presigned upload URL for large files. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Complete Presigned Upload",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{presigned_file_id}}/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{presigned_file_id}}",
+								"upload"
+							]
+						},
+						"description": "Complete the presigned upload and validate the file. Uses user JWT token."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File Versions - User Token",
+			"item": [
+				{
+					"name": "Create New Version",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('version_id', response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [],
+									"description": "The new version file to upload"
+								},
+								{
+									"key": "changeDescription",
+									"value": "Updated document with new information",
+									"type": "text",
+									"description": "Description of changes (optional)"
+								},
+								{
+									"key": "createdBy",
+									"value": "user-123",
+									"type": "text",
+									"description": "User who created this version (optional)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/versions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"versions"
+							]
+						},
+						"description": "Create a new version of an existing file. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "List File Versions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/versions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"versions"
+							]
+						},
+						"description": "List all versions of a file. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Download Specific Version",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/versions/2/download?expiresIn=3600",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"versions",
+								"2",
+								"download"
+							],
+							"query": [
+								{
+									"key": "expiresIn",
+									"value": "3600",
+									"description": "URL expiration time in seconds"
+								}
+							]
+						},
+						"description": "Download a specific version of a file. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Rollback to Version",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/versions/1/rollback",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"versions",
+								"1",
+								"rollback"
+							]
+						},
+						"description": "Rollback file to a previous version. Uses user JWT token."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File Sharing - User Token",
+			"item": [
+				{
+					"name": "Create File Share",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('share_id', response.id);",
+									"    pm.collectionVariables.set('share_token', response.shareToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"expiresAt\": \"2027-12-31T23:59:59Z\",\n  \"password\": \"secret123\",\n  \"permissions\": {\n    \"view\": true,\n    \"download\": true\n  },\n  \"maxAccesses\": 100,\n  \"createdBy\": \"user-123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/shares",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"shares"
+							]
+						},
+						"description": "Create a share link for a file. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "List File Shares",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/shares",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"shares"
+							]
+						},
+						"description": "List all shares for a file. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Share",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"expiresAt\": \"2027-12-31T23:59:59Z\",\n  \"maxAccesses\": 200,\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/shares/{{share_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shares",
+								"{{share_id}}"
+							]
+						},
+						"description": "Update share settings. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Share",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/shares/{{share_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"shares",
+								"{{share_id}}"
+							]
+						},
+						"description": "Delete a share link. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Access Shared File (Public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/share/{{share_token}}?password=secret123",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"share",
+								"{{share_token}}"
+							],
+							"query": [
+								{
+									"key": "password",
+									"value": "secret123",
+									"description": "Share password if required"
+								}
+							]
+						},
+						"description": "Access a shared file without authentication. Password may be required."
+					},
+					"response": []
+				},
+				{
+					"name": "Download Shared File (Public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/share/{{share_token}}/download?password=secret123",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"share",
+								"{{share_token}}",
+								"download"
+							],
+							"query": [
+								{
+									"key": "password",
+									"value": "secret123",
+									"description": "Share password if required"
+								}
+							]
+						},
+						"description": "Download a shared file without authentication. Password may be required."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Folders - User Token",
+			"item": [
+				{
+					"name": "Create Folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('folder_id', response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"documents\",\n  \"ownerId\": \"user-123\",\n  \"parentId\": null\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/folders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"folders"
+							]
+						},
+						"description": "Create a new folder. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "List Folders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/folders?ownerId=user-123",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"folders"
+							],
+							"query": [
+								{
+									"key": "ownerId",
+									"value": "user-123",
+									"description": "Filter by owner ID"
+								}
+							]
+						},
+						"description": "List all folders. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Folder",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/folders/{{folder_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"folders",
+								"{{folder_id}}"
+							]
+						},
+						"description": "Get folder details by ID. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Folder",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"important-documents\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/folders/{{folder_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"folders",
+								"{{folder_id}}"
+							]
+						},
+						"description": "Update folder name. Uses user JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Folder",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_user}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/folders/{{folder_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"folders",
+								"{{folder_id}}"
+							]
+						},
+						"description": "Delete a folder (must be empty). Uses user JWT token."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Files - Admin Token",
+			"item": [
+				{
+					"name": "Upload File (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('file_id', response.id);",
+									"    pm.collectionVariables.set('file_key', response.key);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_admin}}",
+								"type": "text",
+								"description": "JWT token from SSO service (admin login)"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [],
+									"description": "The file to upload (required)"
+								},
+								{
+									"key": "ownerId",
+									"value": "admin-123",
+									"type": "text",
+									"description": "Owner/user ID (optional)"
+								},
+								{
+									"key": "folder",
+									"value": "admin-docs",
+									"type": "text",
+									"description": "Folder name (optional)"
+								},
+								{
+									"key": "tags",
+									"value": "admin,internal",
+									"type": "text",
+									"description": "Comma-separated tags (optional)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						},
+						"description": "Upload a file using admin JWT token.\n\n**How to get admin token:**\n1. Login to Admin Service: POST http://localhost:3007/admin-service/auth/admin/login\n2. Use the `data.token` from response\n3. Set `jwt_token_admin` variable in Postman\n\n**Note:** Admin service is separate from SSO service (port 3007 vs 3001)"
+					},
+					"response": []
+				},
+				{
+					"name": "List Files (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}?ownerId=user-123&folderId={{folder_id}}&search=photo&tag=profile&limit=10&offset=0",
+							"host": [
+								"{{base_url}}"
+							],
+							"query": [
+								{
+									"key": "ownerId",
+									"value": "user-123",
+									"description": "Filter by owner ID (optional)"
+								},
+								{
+									"key": "folderId",
+									"value": "{{folder_id}}",
+									"description": "Filter by folder ID (optional)"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Pagination offset"
+								}
+							]
+						},
+						"description": "List all files (admin can see all files). Uses admin JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Get File Metadata (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}"
+							]
+						},
+						"description": "Get metadata for a specific file by ID. Uses admin JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Download File (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/download",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"download"
+							]
+						},
+						"description": "Download a file by ID. Uses admin JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete File (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}"
+							]
+						},
+						"description": "Delete a file. Admin can delete any file. Uses admin JWT token."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File Metadata - Admin Token",
+			"item": [
+				{
+					"name": "Update File Metadata (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_admin}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"filename\": \"updated-name.pdf\",\n  \"folderId\": \"{{folder_id}}\",\n  \"tags\": [\"updated\", \"important\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/metadata",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"metadata"
+							]
+						},
+						"description": "Update file metadata (admin can update any file)."
+					},
+					"response": []
+				},
+				{
+					"name": "Soft Delete File (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/soft",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"soft"
+							]
+						},
+						"description": "Soft delete any file. Uses admin JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Restore File (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/restore",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"restore"
+							]
+						},
+						"description": "Restore any soft-deleted file. Uses admin JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Scan Status (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/scan",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"scan"
+							]
+						},
+						"description": "Get antivirus scan status for any file. Uses admin JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Scan Status (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_admin}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"scanStatus\": \"infected\",\n  \"scanResult\": {\n    \"threat\": \"malware_found\",\n    \"severity\": \"high\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/{{file_id}}/scan",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{file_id}}",
+								"scan"
+							]
+						},
+						"description": "Update antivirus scan status for any file. Uses admin JWT token."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Folders - Admin Token",
+			"item": [
+				{
+					"name": "Create Folder (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('folder_id', response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_admin}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"admin-docs\",\n  \"ownerId\": \"admin-123\",\n  \"parentId\": null\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/folders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"folders"
+							]
+						},
+						"description": "Create a new folder as admin. Uses admin JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "List All Folders (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/folders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"folders"
+							]
+						},
+						"description": "List all folders (admin can see all). Uses admin JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Folder (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/folders/{{folder_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"folders",
+								"{{folder_id}}"
+							]
+						},
+						"description": "Get any folder details by ID. Uses admin JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Folder (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_admin}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"system-documents\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/folders/{{folder_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"folders",
+								"{{folder_id}}"
+							]
+						},
+						"description": "Update any folder name. Uses admin JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Folder (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_admin}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/folders/{{folder_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"folders",
+								"{{folder_id}}"
+							]
+						},
+						"description": "Delete any folder (must be empty). Uses admin JWT token."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3009/api/files",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token_user",
+			"value": "",
+			"type": "string",
+			"description": "JWT token from SSO service (user login). Get from: POST http://localhost:3001/sso/auth/login"
+		},
+		{
+			"key": "jwt_token_admin",
+			"value": "",
+			"type": "string",
+			"description": "JWT token from Admin Service (port 3007). Get from: POST http://localhost:3007/admin-service/auth/admin/login"
+		},
+		{
+			"key": "file_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "file_key",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "folder_id",
+			"value": "",
+			"type": "string",
+			"description": "ID of a folder (auto-saved from folder creation)"
+		},
+		{
+			"key": "version_id",
+			"value": "",
+			"type": "string",
+			"description": "ID of a file version (auto-saved from version creation)"
+		},
+		{
+			"key": "share_id",
+			"value": "",
+			"type": "string",
+			"description": "ID of a file share (auto-saved from share creation)"
+		},
+		{
+			"key": "share_token",
+			"value": "",
+			"type": "string",
+			"description": "Share token for public access (auto-saved from share creation)"
+		},
+		{
+			"key": "presigned_file_id",
+			"value": "",
+			"type": "string",
+			"description": "ID of a file created via presigned upload"
+		},
+		{
+			"key": "presigned_upload_url",
+			"value": "",
+			"type": "string",
+			"description": "Presigned upload URL for file upload"
+		}
+	]
+}

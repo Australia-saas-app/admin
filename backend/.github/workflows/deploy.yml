@@ -1,0 +1,50 @@
+name: Deploy to EC2
+
+on:
+  push:
+    tags:
+      - 'v[0-9].[0-9].[0-9]'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref_name }}
+        
+      - name: Configure SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+        shell: bash
+        
+      - name: Create .env file on EC2
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
+            cd Backend-main
+            printf '%s' '${{ secrets.ENV_CONTENT }}' > .env
+          "
+        shell: bash
+        
+      - name: Deploy to EC2
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
+            cd Backend-main
+            git fetch --tags
+            git checkout ${{ github.ref_name }}
+            docker compose up -d --build
+          "
+        shell: bash
+        
+      - name: Verify deployment
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
+            docker ps
+          "
+        shell: bash

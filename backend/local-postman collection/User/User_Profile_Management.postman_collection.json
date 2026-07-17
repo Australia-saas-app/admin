@@ -1,0 +1,251 @@
+{
+  "info": {
+    "_postman_id": "user-profile-management-id",
+    "name": "User Profile Management - Vero2 Local",
+    "description": "User Profile Management endpoints for local testing. Updated to use direct service URLs.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "User Profile Management",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"nationality\": \"US\",\n  \"currency\": \"USD\",\n  \"country\": \"United States\",\n  \"state\": \"California\",\n  \"city\": \"San Francisco\",\n  \"zipCode\": \"94102\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profilePhoto\": \"https://example.com/photo.jpg\",\n  \"fullName\": \"John Doe\",\n  \"nationality\": \"US\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"identityNumber\": \"123456789\",\n  \"identityType\": \"passport\",\n  \"documentUrl\": \"https://example.com/document.pdf\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/verify",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["profile", "verify"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile Photo",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"photoUrl\": \"https://example.com/new-photo.jpg\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/photo",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["profile", "photo"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Contacts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/contacts",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["profile", "contacts"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Contact",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"email\",\n  \"value\": \"secondary@example.com\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/contacts",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["profile", "contacts"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send Contact OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"secondary@example.com\",\n  \"type\": \"profile-contact\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/send-otp",
+              "host": ["http://localhost:3001/sso/auth"],
+              "path": ["send-otp"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Contact OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"{{contactOtp}}\",\n  \"type\": \"profile-contact\",\n  \"email\": \"secondary@example.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/verify-otp/generic",
+              "host": ["http://localhost:3001/sso/auth/verify-otp"],
+              "path": ["generic"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Primary Contact",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contactId\": \"CONTACT001\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/contacts/primary",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["profile", "contacts", "primary"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Contact",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"YourPassword123!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/contacts/{{contactId}}",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["profile", "contacts", "{{contactId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,968 @@
+{
+  "info": {
+    "_postman_id": "platform-collection-id",
+    "name": "Platform Collection - Vero2",
+    "description": "Comprehensive platform content management endpoints covering Gallery, Notices, Blog, Contact Us, Our Team, Branch, and Company information. Includes both public viewing and admin management routes.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Gallery",
+      "item": [
+        {
+          "name": "Get Gallery Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/gallery?page=1&limit=20",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "gallery"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get all gallery categories with images (public access)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Gallery Category Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/gallery/{{categoryId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "gallery", "{{categoryId}}"]
+            },
+            "description": "Get specific gallery category with all images"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Gallery Category (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryName\": \"Events\",\n  \"description\": \"Event gallery images\",\n  \"isVisible\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/gallery",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "gallery"]
+            },
+            "description": "Create a new gallery category"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Gallery Category (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryName\": \"Updated Events\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/gallery/{{categoryId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "gallery", "{{categoryId}}"]
+            },
+            "description": "Update gallery category details"
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Images to Gallery (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"images\": [\n    {\n      \"imageUrl\": \"https://example.com/image1.jpg\",\n      \"altText\": \"Image 1\",\n      \"displayOrder\": 1\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/gallery/{{categoryId}}/images",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "gallery", "{{categoryId}}", "images"]
+            },
+            "description": "Upload images to a gallery category"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Gallery Image (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/gallery/{{categoryId}}/images/{{imageIndex}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "gallery", "{{categoryId}}", "images", "{{imageIndex}}"]
+            },
+            "description": "Delete a specific image from gallery"
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Gallery Visibility (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/gallery/{{categoryId}}/visibility",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "gallery", "{{categoryId}}", "visibility"]
+            },
+            "description": "Toggle gallery category visibility"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notices",
+      "item": [
+        {
+          "name": "Get Active Notices",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/notices?page=1&limit=20",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "notices"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get all active notices (public access)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notice Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/notices/{{noticeId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "notices", "{{noticeId}}"]
+            },
+            "description": "Get specific notice details"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Notice (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"System Maintenance\",\n  \"content\": \"Scheduled maintenance tonight\",\n  \"priority\": \"high\",\n  \"isVisible\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/notices",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "notices"]
+            },
+            "description": "Create a new notice"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Notice (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Notice\",\n  \"content\": \"Updated content\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/notices/{{noticeId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "notices", "{{noticeId}}"]
+            },
+            "description": "Update notice details"
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Notice Visibility (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/notices/{{noticeId}}/visibility",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "notices", "{{noticeId}}", "visibility"]
+            },
+            "description": "Toggle notice visibility"
+          },
+          "response": []
+        },
+        {
+          "name": "Reorder Notices (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"direction\": \"up\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/notices/{{noticeId}}/reorder",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "notices", "{{noticeId}}", "reorder"]
+            },
+            "description": "Reorder notice position"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Blog",
+      "item": [
+        {
+          "name": "Get Published Blogs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/blogs?page=1&limit=20",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "blogs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get all published blog posts"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Blog Post Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/blogs/{{blogId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "blogs", "{{blogId}}"]
+            },
+            "description": "Get specific blog post details"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Blog Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/blogs/categories",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "blogs", "categories"]
+            },
+            "description": "Get available blog categories"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Blog Post (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"New Blog Post\",\n  \"content\": \"Blog content here\",\n  \"excerpt\": \"Short excerpt\",\n  \"category\": \"News\",\n  \"tags\": [\"tag1\", \"tag2\"],\n  \"isVisible\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/blogs",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "blogs"]
+            },
+            "description": "Create a new blog post"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Blog Post (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Title\",\n  \"content\": \"Updated content\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/blogs/{{blogId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "blogs", "{{blogId}}"]
+            },
+            "description": "Update blog post"
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Blog Visibility (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/blogs/{{blogId}}/visibility",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "blogs", "{{blogId}}", "visibility"]
+            },
+            "description": "Toggle blog post visibility"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Contact Us",
+      "item": [
+        {
+          "name": "Submit Contact Form",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"subject\": \"Inquiry\",\n  \"message\": \"Contact message here\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/contact-us",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "contact-us"]
+            },
+            "description": "Submit a contact form message"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Contact Submissions (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/contact-us?page=1&limit=20",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "contact-us"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get contact form submissions"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Contact Submission (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/contact-us/{{contactId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "contact-us", "{{contactId}}"]
+            },
+            "description": "Delete a contact submission"
+          },
+          "response": []
+        },
+        {
+          "name": "Bulk Delete Contact Submissions (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contactIds\": [\"id1\", \"id2\"]\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/contact-us",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "contact-us"]
+            },
+            "description": "Bulk delete contact submissions"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Our Team",
+      "item": [
+        {
+          "name": "Get Team Members",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/team?page=1&limit=20",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "team"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get all team members"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Team Member (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"position\": \"CEO\",\n  \"bio\": \"Team member bio\",\n  \"photoUrl\": \"https://example.com/photo.jpg\",\n  \"email\": \"john@example.com\",\n  \"linkedinUrl\": \"https://linkedin.com/in/johndoe\",\n  \"isVisible\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/team",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "team"]
+            },
+            "description": "Create a new team member"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Team Member (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"position\": \"CTO\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/team/{{teamId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "team", "{{teamId}}"]
+            },
+            "description": "Update team member details"
+          },
+          "response": []
+        },
+        {
+          "name": "Reorder Team Members (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"direction\": \"up\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/team/{{teamId}}/reorder",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "team", "{{teamId}}", "reorder"]
+            },
+            "description": "Reorder team member position"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Branches",
+      "item": [
+        {
+          "name": "Get Branches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/branches?page=1&limit=20",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "branches"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get all branches/locations"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Branch Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/branches/{{branchId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "branches", "{{branchId}}"]
+            },
+            "description": "Get specific branch details"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Branch (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branchName\": \"Main Office\",\n  \"address\": \"123 Main St, City, Country\",\n  \"phone\": \"+1234567890\",\n  \"email\": \"office@example.com\",\n  \"workingHours\": \"Mon-Fri 9AM-6PM\",\n  \"services\": [\"Service 1\", \"Service 2\"],\n  \"isVisible\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/branches",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "branches"]
+            },
+            "description": "Create a new branch/location"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Branch (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branchName\": \"Updated Office\",\n  \"phone\": \"+0987654321\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/branches/{{branchId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "branches", "{{branchId}}"]
+            },
+            "description": "Update branch details"
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Branch Visibility (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/branches/{{branchId}}/visibility",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "branches", "{{branchId}}", "visibility"]
+            },
+            "description": "Toggle branch visibility"
+          },
+          "response": []
+        },
+        {
+          "name": "Reorder Branches (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"direction\": \"up\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/admin/branches/{{branchId}}/reorder",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "admin", "branches", "{{branchId}}", "reorder"]
+            },
+            "description": "Reorder branch position"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Company",
+      "item": [
+        {
+          "name": "Get All Companies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/company",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "company"]
+            },
+            "description": "Get all company information (public access)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Company Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/company/{{companyId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "company", "{{companyId}}"]
+            },
+            "description": "Get specific company details"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Company (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Vero2 Technologies\",\n  \"description\": \"Leading technology solutions provider\",\n  \"isVisible\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/company",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "company"]
+            },
+            "description": "Create company information"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Company (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Company Name\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/company/{{companyId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "company", "{{companyId}}"]
+            },
+            "description": "Update company information"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Company (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/company/{{companyId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "company", "{{companyId}}"]
+            },
+            "description": "Soft delete company information"
+          },
+          "response": []
+        },
+        {
+          "name": "Recover Company (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/platform-service/company/{{companyId}}/recover",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["platform-service", "company", "{{companyId}}", "recover"]
+            },
+            "description": "Recover soft deleted company information"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "gatewayUrl",
+      "value": "http://localhost:3013"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "categoryId",
+      "value": ""
+    },
+    {
+      "key": "noticeId",
+      "value": ""
+    },
+    {
+      "key": "blogId",
+      "value": ""
+    },
+    {
+      "key": "contactId",
+      "value": ""
+    },
+    {
+      "key": "teamId",
+      "value": ""
+    },
+    {
+      "key": "branchId",
+      "value": ""
+    },
+    {
+      "key": "companyId",
+      "value": ""
+    },
+    {
+      "key": "imageIndex",
+      "value": "0"
+    }
+  ]
+}

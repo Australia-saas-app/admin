@@ -1,0 +1,45 @@
+# Environment
+- PORT=3017
+- NODE_ENV=production
+- MONGO_URI=mongodb://localhost:27017/visa-travel
+- SSO_PUBLIC_KEY=<paste RS256 public key>
+- SSO_ISSUER=http://localhost:3001/sso
+
+# Routes (global prefix `/visa-travel`)
+- Health: GET `/health`
+- Packages:
+  - GET `/packages` (public filters: destination, type, status)
+  - GET `/packages/:id` (public)
+  - POST `/packages` (admin)
+  - PUT `/packages/:id` (admin)
+  - DELETE `/packages/:id` (admin)
+- Visa Applications (JWT: user/agency/admin unless noted):
+  - POST `/applications`
+  - GET `/applications` (filters: userId, agencyId, status, date range, pagination)
+  - GET `/applications/:id`
+  - PUT `/applications/:id`
+  - POST `/applications/:id/submit`
+  - POST `/applications/:id/status` (admin)
+  - GET `/applications/:id/timeline`
+  - POST `/applications/:id/access` (admin)
+  - POST `/applications/:id/access-scope` (admin)
+  - POST `/applications/:id/documents` (admin)
+  - POST `/applications/:id/assign` (admin)
+  - GET `/applications/stats/summary`
+- Bookings (JWT: user/agency/admin unless noted):
+  - POST `/bookings`
+  - GET `/bookings` (filters: userId, agencyId, status, date range, pagination)
+  - GET `/bookings/:id`
+  - PUT `/bookings/:id`
+  - POST `/bookings/:id/status` (admin)
+  - POST `/bookings/:id/paid`
+  - POST `/bookings/:id/refund` (admin)
+  - POST `/bookings/:id/access` (admin)
+  - POST `/bookings/:id/access-scope` (admin)
+  - POST `/bookings/:id/delivery` (admin)
+  - POST `/bookings/:id/documents` (admin)
+  - POST `/bookings/:id/assign` (admin)
+  - POST `/bookings/:id/profit` (admin)
+  - GET `/bookings/stats/summary`
+  - GET `/bookings/:id/timeline`
+

@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-47a8-b9c0-d1e2f3a4b5c6",
+		"name": "User & Business Profile Services",
+		"description": "Endpoints to fetch profile information for users and businesses to verify identity resolution in chat.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User Profile Service",
+			"item": [
+				{
+					"name": "Get Current User Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{user_profile_url}}/profile",
+							"host": [
+								"{{user_profile_url}}"
+							],
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Profile by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{user_profile_url}}/profile/:userId",
+							"host": [
+								"{{user_profile_url}}"
+							],
+							"path": [
+								"profile",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Business Service",
+			"item": [
+				{
+					"name": "Get Current Business Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{business_url}}/profile",
+							"host": [
+								"{{business_url}}"
+							],
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Business Profile by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{business_url}}/:userId",
+							"host": [
+								"{{business_url}}"
+							],
+							"path": [
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{business_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "user_profile_url",
+			"value": "http://localhost:3005/user-profile-service",
+			"type": "string"
+		},
+		{
+			"key": "business_url",
+			"value": "http://localhost:3004/business",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "YOUR_JWT_TOKEN_HERE",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "01KKRGV8PGN7XKXWFVSW8FYS61",
+			"type": "string"
+		},
+		{
+			"key": "business_id",
+			"value": "01KKRGWX77DD5B938N9NJG8KST",
+			"type": "string"
+		}
+	]
+}

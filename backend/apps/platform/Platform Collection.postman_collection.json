@@ -1,0 +1,1196 @@
+{
+	"info": {
+		"_postman_id": "1b696e87-21d3-464d-a62f-0b4436cbeda6",
+		"name": "Platform Collection",
+		"description": "Comprehensive platform content management endpoints covering Gallery, Notices, Blog, Contact Us, Our Team, Branch, and Company information. Includes both public viewing and admin management routes.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "19531119"
+	},
+	"item": [
+		{
+			"name": "Gallery",
+			"item": [
+				{
+					"name": "Get Gallery Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/gallery?page=1&limit=20",
+							"host": [
+								"{{gatewayUrl}}"
+							],
+							"path": [
+								"platform-service",
+								"gallery"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get all gallery categories with images (public access)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Gallery Category Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{gatewayUrl}}/platform-service/gallery/{{categoryId}}",
+						"description": "Get specific gallery category with all images"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Gallery Category (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"categoryName\": \"Events 2\",\n  \"description\": \"Event gallery images\",\n  \"isVisible\": true\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/admin/gallery",
+						"description": "Create a new gallery category"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Gallery Category (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"categoryName\": \"Updated Events\",\n  \"description\": \"Updated description\"\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/admin/gallery/{{categoryId}}",
+						"description": "Update gallery category details"
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Images to Gallery (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjdjODQ3MGRlZDQ3MTgyMjVjMTRiODk0NjM0ZTdjMDg2In0.eyJhZG1pbklkIjoiNTY4MTQ2OWMtMmRlNi00MGEyLWIyNzUtNjdmZDVjNTAxZDQ2IiwiZW1haWwiOiJmYWl6YW5qdmQzMTVAZ21haWwuY29tIiwicm9sZSI6InN1cGVyX2FkbWluIiwic3ViIjoiNTY4MTQ2OWMtMmRlNi00MGEyLWIyNzUtNjdmZDVjNTAxZDQ2IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDozMDAxL3NzbyIsImF1ZCI6ImFkbWluIiwianRpIjoiY2EwZjYxN2QtYTc3MC00ODgyLWJkYWYtNWU3MmRkOWM0YWYwIiwiaWF0IjoxNzcyMDU3MzIyLCJleHAiOjE3NzI2NjIxMjJ9.CRc6-VlJQleRMKbQTC1mNm5hggEkyrjJ4xHXdK3q6fAjS0GQSelwGfAGRRPzdgU-xVdrZRNs8udm9sP5H2ZlcBqt1o02b_fAmZ4geO1z-cGUeJHE8bc_wRHK6h0CpMY9LttDPTQrZ3H_Ro2vg582nZ2R08tL52_TD8IGQDjvzpYt-Wa8YJi56U6Hpdd9BLYYAcmHFGjTeDaa_bdO4FAlzAcleIj_ymrihMJg9zBZMfj0RpuJ2o6YIfh7m2MaiG9m7GrJkq1iY7emA3k6C-8v6Ip-dbKnhf8L7adUKIA1nCthH0_PwVMsSQiMycBwW4D8rrxP_HwBa2YUczA-BnEMqA"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"images\": [\n    {\n      \"imageUrl\": \"https://example.com/image1.jpg\",\n      \"altText\": \"Image 1\",\n      \"displayOrder\": 1\n    }\n  ]\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/admin/gallery/{{categoryId}}/images",
+						"description": "Upload images to a gallery category"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Gallery Image (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{gatewayUrl}}/platform-service/admin/gallery/{{categoryId}}/images/{{imageIndex}}",
+						"description": "Delete a specific image from gallery"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Gallery Category (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjdjODQ3MGRlZDQ3MTgyMjVjMTRiODk0NjM0ZTdjMDg2In0.eyJhZG1pbklkIjoiNTY4MTQ2OWMtMmRlNi00MGEyLWIyNzUtNjdmZDVjNTAxZDQ2IiwiZW1haWwiOiJmYWl6YW5qdmQzMTVAZ21haWwuY29tIiwicm9sZSI6InN1cGVyX2FkbWluIiwic3ViIjoiNTY4MTQ2OWMtMmRlNi00MGEyLWIyNzUtNjdmZDVjNTAxZDQ2IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDozMDAxL3NzbyIsImF1ZCI6ImFkbWluIiwianRpIjoiY2EwZjYxN2QtYTc3MC00ODgyLWJkYWYtNWU3MmRkOWM0YWYwIiwiaWF0IjoxNzcyMDU3MzIyLCJleHAiOjE3NzI2NjIxMjJ9.CRc6-VlJQleRMKbQTC1mNm5hggEkyrjJ4xHXdK3q6fAjS0GQSelwGfAGRRPzdgU-xVdrZRNs8udm9sP5H2ZlcBqt1o02b_fAmZ4geO1z-cGUeJHE8bc_wRHK6h0CpMY9LttDPTQrZ3H_Ro2vg582nZ2R08tL52_TD8IGQDjvzpYt-Wa8YJi56U6Hpdd9BLYYAcmHFGjTeDaa_bdO4FAlzAcleIj_ymrihMJg9zBZMfj0RpuJ2o6YIfh7m2MaiG9m7GrJkq1iY7emA3k6C-8v6Ip-dbKnhf8L7adUKIA1nCthH0_PwVMsSQiMycBwW4D8rrxP_HwBa2YUczA-BnEMqA"
+							}
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{gatewayUrl}}/platform-service/admin/gallery/{{categoryId}}",
+						"description": "Delete a specific image from gallery"
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle Gallery Visibility (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{gatewayUrl}}/platform-service/admin/gallery/{{categoryId}}/visibility",
+						"description": "Toggle gallery category visibility"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Categories (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjdjODQ3MGRlZDQ3MTgyMjVjMTRiODk0NjM0ZTdjMDg2In0.eyJhZG1pbklkIjoiNTY4MTQ2OWMtMmRlNi00MGEyLWIyNzUtNjdmZDVjNTAxZDQ2IiwiZW1haWwiOiJmYWl6YW5qdmQzMTVAZ21haWwuY29tIiwicm9sZSI6InN1cGVyX2FkbWluIiwic3ViIjoiNTY4MTQ2OWMtMmRlNi00MGEyLWIyNzUtNjdmZDVjNTAxZDQ2IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDozMDAxL3NzbyIsImF1ZCI6ImFkbWluIiwianRpIjoiY2EwZjYxN2QtYTc3MC00ODgyLWJkYWYtNWU3MmRkOWM0YWYwIiwiaWF0IjoxNzcyMDU3MzIyLCJleHAiOjE3NzI2NjIxMjJ9.CRc6-VlJQleRMKbQTC1mNm5hggEkyrjJ4xHXdK3q6fAjS0GQSelwGfAGRRPzdgU-xVdrZRNs8udm9sP5H2ZlcBqt1o02b_fAmZ4geO1z-cGUeJHE8bc_wRHK6h0CpMY9LttDPTQrZ3H_Ro2vg582nZ2R08tL52_TD8IGQDjvzpYt-Wa8YJi56U6Hpdd9BLYYAcmHFGjTeDaa_bdO4FAlzAcleIj_ymrihMJg9zBZMfj0RpuJ2o6YIfh7m2MaiG9m7GrJkq1iY7emA3k6C-8v6Ip-dbKnhf8L7adUKIA1nCthH0_PwVMsSQiMycBwW4D8rrxP_HwBa2YUczA-BnEMqA"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/gallery?page=1&limit=10",
+							"host": [
+								"{{gatewayUrl}}"
+							],
+							"path": [
+								"platform-service",
+								"admin",
+								"gallery"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Toggle gallery category visibility"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notices",
+			"item": [
+				{
+					"name": "Get Active Notices",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/notices?page=1&limit=20",
+							"host": [
+								"{{gatewayUrl}}"
+							],
+							"path": [
+								"platform-service",
+								"notices"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get all active notices (public access)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Notice Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{gatewayUrl}}/platform-service/notices/{{noticeId}}",
+						"description": "Get specific notice details"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Notice (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"System Maintenance\",\n  \"content\": \"Scheduled maintenance tonight\",\n  \"priority\": \"high\",\n  \"isVisible\": true\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/admin/notices",
+						"description": "Create a new notice"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Notice (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Notice\",\n  \"content\": \"Updated content\"\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/admin/notices/{{noticeId}}",
+						"description": "Update notice details"
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Read Notice (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": "{{gatewayUrl}}/platform-service/admin/notices/{{noticeId}}/read",
+						"description": "Update notice details"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Notice (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": "{{gatewayUrl}}/platform-service/admin/notices/{{noticeId}}",
+						"description": "Update notice details"
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle Notice Visibility (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{gatewayUrl}}/platform-service/admin/notices/{{noticeId}}/visibility",
+						"description": "Toggle notice visibility"
+					},
+					"response": []
+				},
+				{
+					"name": "Reorder Notices (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"direction\": \"up\"\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/admin/notices/{{noticeId}}/reorder",
+						"description": "Reorder notice position"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Notices (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/notices?page=1&limit=10",
+							"host": [
+								"{{gatewayUrl}}"
+							],
+							"path": [
+								"platform-service",
+								"admin",
+								"notices"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "type",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "priority",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "Reorder notice position"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Blog",
+			"item": [
+				{
+					"name": "Get Published Blogs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/blogs?page=1&limit=20",
+							"host": [
+								"{{gatewayUrl}}"
+							],
+							"path": [
+								"platform-service",
+								"blogs"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get all published blog posts"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Blog Post Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{gatewayUrl}}/platform-service/blogs/{{blogId}}",
+						"description": "Get specific blog post details"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Blog Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{gatewayUrl}}/platform-service/blogs/categories",
+						"description": "Get available blog categories"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Blogs (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/blogs?page=1&limit=20",
+							"host": [
+								"{{gatewayUrl}}"
+							],
+							"path": [
+								"platform-service",
+								"admin",
+								"blogs"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get all blog posts (Admin)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Blog Post (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"New Blog Post\",\n  \"content\": \"Blog content here\",\n  \"excerpt\": \"Short excerpt\",\n  \"category\": \"News\",\n  \"tags\": [\"tag1\", \"tag2\"],\n  \"isVisible\": true\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/admin/blogs",
+						"description": "Create a new blog post"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Blog Post (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Title\",\n  \"content\": \"Updated content\"\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/admin/blogs/{{blogId}}",
+						"description": "Update blog post"
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle Blog Visibility (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{gatewayUrl}}/platform-service/admin/blogs/{{blogId}}/visibility",
+						"description": "Toggle blog post visibility"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Blog Post (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{gatewayUrl}}/platform-service/admin/blogs/{{blogId}}",
+						"description": "Delete a blog post"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contact Us",
+			"item": [
+				{
+					"name": "Submit Contact Form",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"subject\": \"Inquiry\",\n  \"message\": \"Contact message here\"\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/contact-us",
+						"description": "Submit a contact form message"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contact Us (Admin)",
+			"item": [
+				{
+					"name": "Get Contact Submissions (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/contact-us?page=1&limit=20",
+							"host": [
+								"{{gatewayUrl}}"
+							],
+							"path": [
+								"platform-service",
+								"admin",
+								"contact-us"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get contact form submissions"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contact By ID (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{gatewayUrl}}/platform-service/admin/contact-us/{{contactId}}",
+						"description": "Get contact submission by ID (Admin)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Contact (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"resolved\",\n  \"isRead\": true\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/admin/contact-us/{{contactId}}",
+						"description": "Update contact submission (Admin)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Contact Submission (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{gatewayUrl}}/platform-service/admin/contact-us/{{contactId}}",
+						"description": "Delete a contact submission"
+					},
+					"response": []
+				},
+				{
+					"name": "Bulk Delete Contact Submissions (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"contactIds\": [\"bacbedf7-7867-47ae-bb66-9ea4bfce31c7\", \"c39a1b77-da47-47af-841d-e5e4c5a96586\"]\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/admin/contact-us",
+						"description": "Bulk delete contact submissions"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Our Team",
+			"item": [
+				{
+					"name": "Get Team Members",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/team?page=1&limit=20",
+							"host": [
+								"{{gatewayUrl}}"
+							],
+							"path": [
+								"platform-service",
+								"team"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get all team members"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Team Member (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjdjODQ3MGRlZDQ3MTgyMjVjMTRiODk0NjM0ZTdjMDg2In0.eyJhZG1pbklkIjoiNTY4MTQ2OWMtMmRlNi00MGEyLWIyNzUtNjdmZDVjNTAxZDQ2IiwiZW1haWwiOiJmYWl6YW5qdmQzMTVAZ21haWwuY29tIiwicm9sZSI6InN1cGVyX2FkbWluIiwic3ViIjoiNTY4MTQ2OWMtMmRlNi00MGEyLWIyNzUtNjdmZDVjNTAxZDQ2IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDozMDAxL3NzbyIsImF1ZCI6ImFkbWluIiwianRpIjoiY2EwZjYxN2QtYTc3MC00ODgyLWJkYWYtNWU3MmRkOWM0YWYwIiwiaWF0IjoxNzcyMDU3MzIyLCJleHAiOjE3NzI2NjIxMjJ9.CRc6-VlJQleRMKbQTC1mNm5hggEkyrjJ4xHXdK3q6fAjS0GQSelwGfAGRRPzdgU-xVdrZRNs8udm9sP5H2ZlcBqt1o02b_fAmZ4geO1z-cGUeJHE8bc_wRHK6h0CpMY9LttDPTQrZ3H_Ro2vg582nZ2R08tL52_TD8IGQDjvzpYt-Wa8YJi56U6Hpdd9BLYYAcmHFGjTeDaa_bdO4FAlzAcleIj_ymrihMJg9zBZMfj0RpuJ2o6YIfh7m2MaiG9m7GrJkq1iY7emA3k6C-8v6Ip-dbKnhf8L7adUKIA1nCthH0_PwVMsSQiMycBwW4D8rrxP_HwBa2YUczA-BnEMqA"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"position\": \"CEO\",\n  \"bio\": \"Team member bio\",\n  \"photoUrl\": \"https://example.com/photo.jpg\",\n  \"email\": \"john@example.com\",\n  \"linkedinUrl\": \"https://linkedin.com/in/johndoe\",\n  \"isVisible\": true\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/admin/team",
+						"description": "Create a new team member"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Team Member (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"position\": \"CTO\"\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/admin/team/{{teamId}}",
+						"description": "Update team member details"
+					},
+					"response": []
+				},
+				{
+					"name": "Reorder Team Members (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"direction\": \"up\"\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/admin/team/{{teamId}}/reorder",
+						"description": "Reorder team member position"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Team Member Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{gatewayUrl}}/platform-service/team/{{teamId}}",
+						"description": "Get specific team member details"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Team Member (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{gatewayUrl}}/platform-service/admin/team/{{teamId}}",
+						"description": "Delete a team member"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Branches",
+			"item": [
+				{
+					"name": "Get Branches",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/branches?page=1&limit=20",
+							"host": [
+								"{{gatewayUrl}}"
+							],
+							"path": [
+								"platform-service",
+								"branches"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get all branches/locations"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Branch Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{gatewayUrl}}/platform-service/branches/{{branchId}}",
+						"description": "Get specific branch details"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Branch (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjdjODQ3MGRlZDQ3MTgyMjVjMTRiODk0NjM0ZTdjMDg2In0.eyJhZG1pbklkIjoiNTY4MTQ2OWMtMmRlNi00MGEyLWIyNzUtNjdmZDVjNTAxZDQ2IiwiZW1haWwiOiJmYWl6YW5qdmQzMTVAZ21haWwuY29tIiwicm9sZSI6InN1cGVyX2FkbWluIiwic3ViIjoiNTY4MTQ2OWMtMmRlNi00MGEyLWIyNzUtNjdmZDVjNTAxZDQ2IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDozMDAxL3NzbyIsImF1ZCI6ImFkbWluIiwianRpIjoiY2EwZjYxN2QtYTc3MC00ODgyLWJkYWYtNWU3MmRkOWM0YWYwIiwiaWF0IjoxNzcyMDU3MzIyLCJleHAiOjE3NzI2NjIxMjJ9.CRc6-VlJQleRMKbQTC1mNm5hggEkyrjJ4xHXdK3q6fAjS0GQSelwGfAGRRPzdgU-xVdrZRNs8udm9sP5H2ZlcBqt1o02b_fAmZ4geO1z-cGUeJHE8bc_wRHK6h0CpMY9LttDPTQrZ3H_Ro2vg582nZ2R08tL52_TD8IGQDjvzpYt-Wa8YJi56U6Hpdd9BLYYAcmHFGjTeDaa_bdO4FAlzAcleIj_ymrihMJg9zBZMfj0RpuJ2o6YIfh7m2MaiG9m7GrJkq1iY7emA3k6C-8v6Ip-dbKnhf8L7adUKIA1nCthH0_PwVMsSQiMycBwW4D8rrxP_HwBa2YUczA-BnEMqA"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"branchName\": \"Main Office\",\n  \"address\": \"123 Main St, City, Country\",\n  \"phone\": \"+1234567890\",\n  \"email\": \"office@example.com\",\n  \"workingHours\": \"Mon-Fri 9AM-6PM\",\n  \"services\": [\"Service 1\", \"Service 2\"],\n  \"isVisible\": true\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/admin/branches",
+						"description": "Create a new branch/location"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Branch (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"branchName\": \"Updated Office\",\n  \"phone\": \"+0987654321\"\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/admin/branches/{{branchId}}",
+						"description": "Update branch details"
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle Branch Visibility (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{gatewayUrl}}/platform-service/admin/branches/{{branchId}}/visibility",
+						"description": "Toggle branch visibility"
+					},
+					"response": []
+				},
+				{
+					"name": "Reorder Branches (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"direction\": \"up\"\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/admin/branches/{{branchId}}/reorder",
+						"description": "Reorder branch position"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Branch (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{gatewayUrl}}/platform-service/admin/branches/{{branchId}}",
+						"description": "Delete a branch (Admin)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Company",
+			"item": [
+				{
+					"name": "Get All Companies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{gatewayUrl}}/platform-service/company",
+						"description": "Get all company information (public access)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Company Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{gatewayUrl}}/platform-service/company/{{companyId}}",
+						"description": "Get specific company details"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Company (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjdjODQ3MGRlZDQ3MTgyMjVjMTRiODk0NjM0ZTdjMDg2In0.eyJhZG1pbklkIjoiNTY4MTQ2OWMtMmRlNi00MGEyLWIyNzUtNjdmZDVjNTAxZDQ2IiwiZW1haWwiOiJmYWl6YW5qdmQzMTVAZ21haWwuY29tIiwicm9sZSI6InN1cGVyX2FkbWluIiwic3ViIjoiNTY4MTQ2OWMtMmRlNi00MGEyLWIyNzUtNjdmZDVjNTAxZDQ2IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDozMDAxL3NzbyIsImF1ZCI6ImFkbWluIiwianRpIjoiY2EwZjYxN2QtYTc3MC00ODgyLWJkYWYtNWU3MmRkOWM0YWYwIiwiaWF0IjoxNzcyMDU3MzIyLCJleHAiOjE3NzI2NjIxMjJ9.CRc6-VlJQleRMKbQTC1mNm5hggEkyrjJ4xHXdK3q6fAjS0GQSelwGfAGRRPzdgU-xVdrZRNs8udm9sP5H2ZlcBqt1o02b_fAmZ4geO1z-cGUeJHE8bc_wRHK6h0CpMY9LttDPTQrZ3H_Ro2vg582nZ2R08tL52_TD8IGQDjvzpYt-Wa8YJi56U6Hpdd9BLYYAcmHFGjTeDaa_bdO4FAlzAcleIj_ymrihMJg9zBZMfj0RpuJ2o6YIfh7m2MaiG9m7GrJkq1iY7emA3k6C-8v6Ip-dbKnhf8L7adUKIA1nCthH0_PwVMsSQiMycBwW4D8rrxP_HwBa2YUczA-BnEMqA"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Vero2 Technologies 2\",\n  \"description\": \"Leading technology solutions provider\",\n  \"isVisible\": true\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/company",
+						"description": "Create company information"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Company (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Company Name\",\n  \"description\": \"Updated description\"\n}"
+						},
+						"url": "{{gatewayUrl}}/platform-service/company/{{companyId}}",
+						"description": "Update company information"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Company (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{gatewayUrl}}/platform-service/company/{{companyId}}",
+						"description": "Soft delete company information"
+					},
+					"response": []
+				},
+				{
+					"name": "Recover Company (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{gatewayUrl}}/platform-service/company/{{companyId}}/recover",
+						"description": "Recover soft deleted company information"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "gatewayUrl",
+			"value": "http://35.162.205.9:3006"
+		},
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjdjODQ3MGRlZDQ3MTgyMjVjMTRiODk0NjM0ZTdjMDg2In0.eyJhZG1pbklkIjoiMmE3MTc1YTctY2E4Ni00NjcxLTlkNjItNzU5NzY5MWQ1YTUwIiwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInJvbGUiOiJzdXBlcl9hZG1pbiIsInN1YiI6IjJhNzE3NWE3LWNhODYtNDY3MS05ZDYyLTc1OTc2OTFkNWE1MCIsImlzcyI6Imh0dHA6Ly9zc28tc2VydmljZTozMDAxL3NzbyIsImF1ZCI6ImFkbWluIiwianRpIjoiMWNlODA5ODctNzBlMS00ZjYwLTk4NDEtYjA0NTcxYzIzMzM5IiwiaWF0IjoxNzc2MDk3NzYyLCJleHAiOjE3NzY3MDI1NjJ9.ctugQYfScS1Q-JU160Pww3P5RHm6pJDjfGaxv4u1LvW2BayOU1aDXgf5X_p2-wLslw9vBiXdAmZVSU0rlCT0l4v__4MYJcGUKxu0lqm9Zwabqn8arcccAOoz6SS9mMJiGxPPy6bWHOIFBzDZF6cccjM6VY2XUlzZpm1yljmEx8T47iEdH1HPyhrm6ittHdf5QNVseocBFMX77qJq7nhEATk9KjzS6FnVE0w2hJ2gnifywF3sqZAeVGQl8PPc4cGAkddHksKJDShxGbvBq69YIwXqZY_cRS9AtF1Id8NZHAoJzMx6cpyeKSqR7RCyFK7sQwtHc-M8YjJSSP2UVlTumA"
+		},
+		{
+			"key": "categoryId",
+			"value": "f7bcfedc-ca1b-452a-9810-97e6434e46fc"
+		},
+		{
+			"key": "noticeId",
+			"value": ""
+		},
+		{
+			"key": "blogId",
+			"value": ""
+		},
+		{
+			"key": "contactId",
+			"value": ""
+		},
+		{
+			"key": "teamId",
+			"value": ""
+		},
+		{
+			"key": "branchId",
+			"value": ""
+		},
+		{
+			"key": "companyId",
+			"value": ""
+		},
+		{
+			"key": "imageIndex",
+			"value": "0"
+		}
+	]
+}

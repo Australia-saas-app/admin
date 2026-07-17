@@ -1,0 +1,59 @@
+{
+  "info": {
+    "_postman_id": "user-preferences-id",
+    "name": "User Preferences - Vero2 Local",
+    "description": "User preferences and settings management endpoints. Updated for local testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "User Preferences / Settings",
+      "item": [
+        {
+          "name": "Get Preferences",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/preferences",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["preferences"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Preferences",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currency\": \"USD\",\n  \"language\": \"en\",\n  \"theme\": \"dark\",\n  \"emailNotifications\": true,\n  \"smsNotifications\": false,\n  \"pushNotifications\": true,\n  \"twoFactorEnabled\": true,\n  \"twoFactorMethod\": \"email\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/preferences",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["preferences"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

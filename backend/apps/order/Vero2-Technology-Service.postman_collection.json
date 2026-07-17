@@ -1,0 +1,728 @@
+{
+  "info": {
+    "name": "Vero2 Technology Service",
+    "description": "Postman collection for Technology Service (Port 3011)\n\n**ROLES & ACCESS:**\n- **Public Routes**: No authentication required\n- **User/Agency Routes**: Use `user_token` (from POST /sso/auth/user/login)\n  - Users and agencies can CREATE services\n- **Admin Routes**: Use `admin_token` (from POST /sso/auth/admin/login)\n  - Admins can MANAGE visibility, update, delete, and reorder services\n  - Admins can CREATE and MANAGE categories\n\n**IMPORTANT:**\n- Visibility endpoint REQUIRES admin token (admin-only operation)\n- Creating services REQUIRES user token (user/agency operation)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.1"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3011",
+      "type": "string"
+    },
+    {
+      "key": "api_prefix",
+      "value": "api/technical",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string",
+      "description": "JWT Bearer token from SSO Service (admin role required)"
+    },
+    {
+      "key": "user_token",
+      "value": "",
+      "type": "string",
+      "description": "JWT Bearer token from SSO Service (for user routes if needed)"
+    },
+    {
+      "key": "service_id",
+      "value": "",
+      "type": "string",
+      "description": "Service ID from create service response"
+    },
+    {
+      "key": "category_id",
+      "value": "",
+      "type": "string",
+      "description": "Category ID from create category response"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "health"]
+            },
+            "description": "Check service health status"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Services - Public",
+      "item": [
+        {
+          "name": "Get All Visible Services",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services?page=1&limit=10&search=&category=&isVisible=",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Items per page"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Search by title"
+                },
+                {
+                  "key": "category",
+                  "value": "",
+                  "description": "Filter by category name"
+                },
+                {
+                  "key": "isVisible",
+                  "value": "",
+                  "description": "Filter by visibility (admin only)"
+                }
+              ]
+            },
+            "description": "Get all visible technical services (Public). Only visible services are returned."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Service by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/{{service_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "{{service_id}}"]
+            },
+            "description": "Get single service details by service ID (Public). Only visible services are returned."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Services - Shared User/Agency/Business",
+      "item": [
+        {
+          "name": "Create Service (Shared)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.serviceId) {",
+                  "        pm.collectionVariables.set('service_id', response.serviceId);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Web Development\",\n  \"photo\": \"https://example.com/photo.jpg\",\n  \"tag\": \"frontend\",\n  \"category\": \"Web Development\",\n  \"description\": \"Professional web development services including frontend, backend, and full-stack solutions\",\n  \"displayOrder\": 1,\n  \"isVisible\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services"]
+            },
+            "description": "Create new technical service (User/Agency/Business).\n\n✅ Users, agencies, and businesses can call this generic endpoint.\n⚠️ Requires a valid `user_token`."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Services - User",
+      "item": [
+        {
+          "name": "Create Service (User Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"User Exclusive Service\",\n  \"photo\": \"https://example.com/photo-user.jpg\",\n  \"tag\": \"user\",\n  \"category\": \"User Services\",\n  \"description\": \"Service created via /services/user endpoint\",\n  \"isVisible\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/user",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "user"]
+            },
+            "description": "Create service restricted to **accountType = user**. Fails with 403 if token belongs to agency/business."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Service (User Owns)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"User Updated Service\",\n  \"description\": \"Updated by original user owner\",\n  \"tag\": \"user-update\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/user/{{service_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "user", "{{service_id}}"]
+            },
+            "description": "Update service owned by the authenticated **user** account. Fails with 403 if service was created by another account or token is not user type."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Service (User Owns)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/user/{{service_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "user", "{{service_id}}"]
+            },
+            "description": "Delete a service created by the authenticated **user**. Returns 403 if service belongs to another account or token type mismatch."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Services - Agent",
+      "item": [
+        {
+          "name": "Create Service (Agent/Agency Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Agency Managed Service\",\n  \"photo\": \"https://example.com/photo-agent.jpg\",\n  \"tag\": \"agency\",\n  \"category\": \"Agency Services\",\n  \"description\": \"Service created via /services/agent endpoint\",\n  \"displayOrder\": 2,\n  \"isVisible\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/agent",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "agent"]
+            },
+            "description": "Create service restricted to **accountType = agency**. Use an agency/agent token."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Service (Agent/Agency Owns)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Agency Updated Service\",\n  \"description\": \"Updated by agency owner\",\n  \"tag\": \"agency-update\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/agent/{{service_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "agent", "{{service_id}}"]
+            },
+            "description": "Update service owned by the authenticated **agency** account."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Service (Agent/Agency Owns)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/agent/{{service_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "agent", "{{service_id}}"]
+            },
+            "description": "Delete a service created by the authenticated **agency**."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Services - Admin",
+      "item": [
+        {
+          "name": "Get All Services (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/admin/list?page=1&limit=10&search=&isVisible=&category=",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "admin", "list"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Search by title"
+                },
+                {
+                  "key": "isVisible",
+                  "value": "",
+                  "description": "Filter by visibility (true/false)"
+                },
+                {
+                  "key": "category",
+                  "value": "",
+                  "description": "Filter by category name"
+                }
+              ]
+            },
+            "description": "Get all technical services including hidden ones (Admin)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Service by ID (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/admin/{{service_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "admin", "{{service_id}}"]
+            },
+            "description": "Get single service details by service ID (Admin). Can access hidden services."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Service",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Web Development\",\n  \"description\": \"Updated description with more details\",\n  \"tag\": \"fullstack\",\n  \"photo\": \"https://example.com/updated-photo.jpg\",\n  \"isVisible\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/{{service_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "{{service_id}}"]
+            },
+            "description": "Update technical service (Admin). Partial updates supported."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Service",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/{{service_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "{{service_id}}"]
+            },
+            "description": "Delete technical service (Admin). Permanently removes the service."
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Service Visibility",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isVisible\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/{{service_id}}/visibility",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "{{service_id}}", "visibility"]
+            },
+            "description": "Toggle service visibility (Admin ONLY). \n\n⚠️ REQUIRES ADMIN TOKEN - This endpoint is for admins to manage service visibility. \n\nUsers/agencies can CREATE services but cannot change visibility - this is an admin function.\n\nUse admin_token from: POST {{ssoBaseUrl}}/auth/admin/login\n\nBody: {\"isVisible\": true} or {\"isVisible\": false}"
+          },
+          "response": []
+        },
+        {
+          "name": "Reorder Service (Move Up)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"direction\": \"up\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/{{service_id}}/reorder",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "{{service_id}}", "reorder"]
+            },
+            "description": "Move service up in the list (Admin). Swaps display order with service above."
+          },
+          "response": []
+        },
+        {
+          "name": "Reorder Service (Move Down)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"direction\": \"down\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/{{service_id}}/reorder",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "{{service_id}}", "reorder"]
+            },
+            "description": "Move service down in the list (Admin). Swaps display order with service below."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categories - Public",
+      "item": [
+        {
+          "name": "Get All Active Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/categories/list?page=1&limit=50&isActive=",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "categories", "list"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Items per page"
+                },
+                {
+                  "key": "isActive",
+                  "value": "",
+                  "description": "Filter by active status (admin only)"
+                }
+              ]
+            },
+            "description": "Get all active technical categories (Public). Only active categories are returned."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categories - Admin",
+      "item": [
+        {
+          "name": "Create Category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.categoryId) {",
+                  "        pm.collectionVariables.set('category_id', response.categoryId);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Web Development\",\n  \"description\": \"Web development services including frontend, backend, and full-stack solutions\",\n  \"displayOrder\": 1,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/categories",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "categories"]
+            },
+            "description": "Create new technical category (Admin). Category name must be unique."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Categories (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/admin/categories/list?page=1&limit=50&isActive=",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "admin", "categories", "list"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "isActive",
+                  "value": "",
+                  "description": "Filter by active status (true/false)"
+                }
+              ]
+            },
+            "description": "Get all technical categories including inactive ones (Admin)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category by ID (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/admin/categories/{{category_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "admin", "categories", "{{category_id}}"]
+            },
+            "description": "Get single category details by category ID (Admin)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Web Development\",\n  \"description\": \"Updated category description\",\n  \"isActive\": true,\n  \"displayOrder\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/categories/{{category_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "categories", "{{category_id}}"]
+            },
+            "description": "Update technical category (Admin). Partial updates supported."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/categories/{{category_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "categories", "{{category_id}}"]
+            },
+            "description": "Delete technical category (Admin). Only allowed if no services are using this category."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}
+

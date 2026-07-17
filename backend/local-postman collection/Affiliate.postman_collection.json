@@ -1,0 +1,668 @@
+{
+  "info": {
+    "_postman_id": "affiliate-collection-id",
+    "name": "Affiliate Collection - Vero2",
+    "description": "Comprehensive affiliate service endpoints covering Referral Tracking, Commission Calculation, Affiliate Wallet / Earnings, Performance Analytics, Notifications, Wallet Integration, and Affiliate Levels & Ranks. Uses JWT tokens for authentication.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Referral Tracking",
+      "item": [
+        {
+          "name": "Get Referral Code",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/referral-code",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "referral-code"]
+            },
+            "description": "Get personal referral code/link for the authenticated affiliate user"
+          },
+          "response": []
+        },
+        {
+          "name": "List Referrals",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/referrals?page=1&limit=20",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "referrals"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "List referrals with pagination for the authenticated affiliate user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Referral Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/referrals/{{referralId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "referrals", "{{referralId}}"]
+            },
+            "description": "Get detailed information about a specific referral"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Referral Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/referrals/stats",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "referrals", "stats"]
+            },
+            "description": "Get referral statistics for the authenticated affiliate user"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Commission Calculation",
+      "item": [
+        {
+          "name": "List Commission History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/commissions?page=1&limit=20",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "commissions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "List commission history with pagination"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pending Commissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/commissions/pending",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "commissions", "pending"]
+            },
+            "description": "Get pending commissions awaiting payout"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Paid Commissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/commissions/paid",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "commissions", "paid"]
+            },
+            "description": "Get paid commissions history"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Affiliate Wallet / Earnings",
+      "item": [
+        {
+          "name": "Get Earnings Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/earnings",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "earnings"]
+            },
+            "description": "Get earnings summary for the authenticated affiliate user"
+          },
+          "response": []
+        },
+        {
+          "name": "Request Withdrawal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100.00,\n  \"currency\": \"USD\",\n  \"method\": \"wallet_transfer\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/withdraw",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "withdraw"]
+            },
+            "description": "Request withdrawal of earnings to main wallet"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Withdrawal History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/withdrawals?page=1&limit=20",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "withdrawals"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get withdrawal history"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Performance Analytics",
+      "item": [
+        {
+          "name": "Get Analytics Overview",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/analytics/overview",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "analytics", "overview"]
+            },
+            "description": "Get dashboard overview analytics"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Referral Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/analytics/referrals",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "analytics", "referrals"]
+            },
+            "description": "Get referral analytics data"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Commission Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/analytics/commissions",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "analytics", "commissions"]
+            },
+            "description": "Get commission analytics data"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Performance Trends",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/analytics/trends?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "analytics", "trends"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get performance trends over time"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notification",
+      "item": [
+        {
+          "name": "Get Notification History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/notifications?page=1&limit=20",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "notifications"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get notification history for the authenticated affiliate user"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Notification Preferences",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"emailNotifications\": true,\n  \"commissionAlerts\": true,\n  \"referralAlerts\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/notifications/preferences",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "notifications", "preferences"]
+            },
+            "description": "Update notification preferences"
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/notifications/{{notificationId}}/read",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "notifications", "{{notificationId}}", "read"]
+            },
+            "description": "Mark a specific notification as read"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Wallet",
+      "item": [
+        {
+          "name": "Get Wallet Balance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/wallet",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "wallet"]
+            },
+            "description": "Get affiliate wallet balance and details"
+          },
+          "response": []
+        },
+        {
+          "name": "Transfer to Main Wallet",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50.00,\n  \"currency\": \"USD\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/wallet/transfer",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "wallet", "transfer"]
+            },
+            "description": "Transfer funds from affiliate wallet to main wallet"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Wallet Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/wallet/transactions?page=1&limit=20",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "wallet", "transactions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get wallet transaction history"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Affiliate Levels & Ranks",
+      "item": [
+        {
+          "name": "Get Current Level",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/level",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "level"]
+            },
+            "description": "Get current affiliate level/rank information"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Level Requirements",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/level/requirements",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "level", "requirements"]
+            },
+            "description": "Get requirements for next level progression"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Leaderboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/leaderboard?page=1&limit=10",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "leaderboard"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get top affiliates leaderboard"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Affiliate Profile Management",
+      "item": [
+        {
+          "name": "Get Affiliate Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/profile",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "profile"]
+            },
+            "description": "Get affiliate profile information"
+          },
+          "response": []
+        },
+        {
+          "name": "Sign Up for Affiliate Program",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"termsAccepted\": true,\n  \"referralCode\": \"OPTIONAL_REFERRAL_CODE\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/signup",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "signup"]
+            },
+            "description": "Sign up for the affiliate program"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Affiliate Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"displayName\": \"Affiliate Name\",\n  \"bio\": \"Short bio\",\n  \"socialLinks\": {\n    \"website\": \"https://example.com\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/affiliate-service/profile",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["affiliate-service", "profile"]
+            },
+            "description": "Update affiliate profile information"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "gatewayUrl",
+      "value": "http://localhost:3012"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "referralId",
+      "value": ""
+    },
+    {
+      "key": "notificationId",
+      "value": ""
+    }
+  ]
+}

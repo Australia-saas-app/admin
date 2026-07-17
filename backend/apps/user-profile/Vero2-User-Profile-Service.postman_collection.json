@@ -1,0 +1,480 @@
+{
+  "info": {
+    "_postman_id": "user-profile-service-001",
+    "name": "Vero2 User Profile Service",
+    "description": "Postman collection for User Profile Service (Port 3005). Use SSO Login first to populate the bearer token variable.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SSO Helper Flows",
+      "item": [
+        {
+          "name": "Send OTP (Profile Contact)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"secondary@example.com\",\n  \"phone\": \"\",\n  \"type\": \"profile-contact\"\n}"
+            },
+            "url": {
+              "raw": "{{ssoBaseUrl}}/sso/auth/send-otp",
+              "host": [
+                "{{ssoBaseUrl}}"
+              ],
+              "path": [
+                "sso",
+                "auth",
+                "send-otp"
+              ]
+            }
+          },
+          "description": "Hit this endpoint before calling Add Contact so the SSO service issues an OTP with the \"profile-contact\" type."
+        },
+        {
+          "name": "Verify OTP (Profile Contact)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"secondary@example.com\",\n  \"otp\": \"123456\",\n  \"type\": \"profile-contact\"\n}"
+            },
+            "url": {
+              "raw": "{{ssoBaseUrl}}/sso/auth/verify-otp/generic",
+              "host": [
+                "{{ssoBaseUrl}}"
+              ],
+              "path": [
+                "sso",
+                "auth",
+                "verify-otp",
+                "generic"
+              ]
+            }
+          },
+          "description": "User-profile Add Contact now requires this OTP verification. Provide whichever contact value (email or phone) was used."
+        },
+        {
+          "name": "Verify Password (Before Contact Delete)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"USER000001\",\n  \"password\": \"YourPassword123!\"\n}"
+            },
+            "url": {
+              "raw": "{{ssoBaseUrl}}/sso/auth/verify-password",
+              "host": [
+                "{{ssoBaseUrl}}"
+              ],
+              "path": [
+                "sso",
+                "auth",
+                "verify-password"
+              ]
+            }
+          },
+          "description": "Use this endpoint (or provide the same body in Delete Contact) to satisfy the password verification requirement."
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"nationality\": \"US\",\n  \"currency\": \"USD\",\n  \"country\": \"United States\",\n  \"state\": \"California\",\n  \"city\": \"San Francisco\",\n  \"zipCode\": \"94102\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Verify Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profilePhoto\": \"https://example.com/photo.jpg\",\n  \"fullName\": \"John Doe\",\n  \"nationality\": \"US\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"identityNumber\": \"123456789\",\n  \"identityType\": \"passport\",\n  \"documentUrl\": \"https://example.com/document.pdf\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/profile/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile",
+                "verify"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Profile Photo",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"photoUrl\": \"https://example.com/new-photo.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/profile/photo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile",
+                "photo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Contacts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profile/contacts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile",
+                "contacts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Contact",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"email\",\n  \"value\": \"secondary@example.com\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/profile/contacts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile",
+                "contacts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Change Primary Contact",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contactId\": \"{{contactId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/profile/contacts/primary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile",
+                "contacts",
+                "primary"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Contact",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"YourPassword123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/profile/contacts/{{contactId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile",
+                "contacts",
+                "{{contactId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Preferences",
+      "item": [
+        {
+          "name": "Get Preferences",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/preferences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "preferences"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Preferences",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currency\": \"USD\",\n  \"language\": \"en\",\n  \"theme\": \"dark\",\n  \"emailNotifications\": true,\n  \"smsNotifications\": false,\n  \"pushNotifications\": true,\n  \"twoFactorEnabled\": true,\n  \"twoFactorMethod\": \"email\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/preferences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "preferences"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Activity",
+      "item": [
+        {
+          "name": "Get Activity Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/activity?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "activity"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "action",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "resource",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3005/user-profile-service"
+    },
+    {
+      "key": "ssoBaseUrl",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "contactId",
+      "value": ""
+    }
+  ]
+}
+

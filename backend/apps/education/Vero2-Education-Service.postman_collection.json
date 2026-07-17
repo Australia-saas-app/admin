@@ -1,0 +1,339 @@
+{
+  "info": {
+    "name": "Vero2-Education-Service.postman_collection",
+    "description": "Postman collection for Vero2 Education Service API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3015",
+      "type": "string"
+    },
+    {
+      "key": "jwtToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Courses",
+      "item": [
+        {
+          "name": "Get All Courses (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/education/courses?page=1&limit=10&search=javascript",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "courses"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": "javascript"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Course Details (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/education/courses/EDU-ABC123",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "courses", "EDU-ABC123"]
+            }
+          }
+        },
+        {
+          "name": "Create Course (Authenticated)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Complete Web Development Bootcamp\",\n  \"description\": \"Learn full-stack web development from scratch\",\n  \"category\": \"Programming\",\n  \"price\": 99.99,\n  \"durationHours\": 40,\n  \"thumbnail\": \"https://example.com/thumbnail.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/education/courses",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "courses"]
+            }
+          }
+        },
+         {
+           "name": "Create Course (Admin)",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Authorization",
+                 "value": "Bearer {{adminToken}}"
+               },
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"title\": \"Complete Web Development Bootcamp\",\n  \"description\": \"Learn full-stack web development from scratch\",\n  \"category\": \"Programming\",\n  \"price\": 99.99,\n  \"durationHours\": 40,\n  \"thumbnail\": \"https://example.com/thumbnail.jpg\"\n}"
+             },
+             "url": {
+               "raw": "{{baseUrl}}/education/courses/admin",
+               "host": ["{{baseUrl}}"],
+               "path": ["education", "courses", "admin"]
+             }
+           }
+         },
+         {
+           "name": "Update Course (Admin)",
+           "request": {
+             "method": "PATCH",
+             "header": [
+               {
+                 "key": "Authorization",
+                 "value": "Bearer {{adminToken}}"
+               },
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"title\": \"Updated Course Title\",\n  \"price\": 149.99\n}"
+             },
+             "url": {
+               "raw": "{{baseUrl}}/education/courses/EDU-ABC123",
+               "host": ["{{baseUrl}}"],
+               "path": ["education", "courses", "EDU-ABC123"]
+             }
+           }
+         }
+      ]
+    },
+    {
+      "name": "Lessons",
+      "item": [
+        {
+          "name": "Create Lesson",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Introduction to JavaScript\",\n  \"description\": \"Learn the basics of JavaScript\",\n  \"videoUrl\": \"https://example.com/lesson1.mp4\",\n  \"durationMinutes\": 30\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/education/courses/EDU-ABC123/lessons",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "courses", "EDU-ABC123", "lessons"]
+            }
+          }
+        },
+        {
+          "name": "Get Lessons for Course",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/education/courses/EDU-ABC123/lessons",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "courses", "EDU-ABC123", "lessons"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Enrollments",
+      "item": [
+        {
+          "name": "Enroll in Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseId\": \"EDU-ABC123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/education/enrollments",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "enrollments"]
+            }
+          }
+        },
+        {
+          "name": "Get User Enrollments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/education/enrollments",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "enrollments"]
+            }
+          }
+        },
+        {
+          "name": "Update Progress",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"completionPercentage\": 50\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/education/enrollments/ENROLL-ABC123/progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "enrollments", "ENROLL-ABC123", "progress"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/education/categories/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "categories", "list"]
+            }
+          }
+        },
+        {
+          "name": "Create Category (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Data Science\",\n  \"description\": \"Courses related to data science and analytics\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/education/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "categories"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Certificates",
+      "item": [
+        {
+          "name": "Issue Certificate (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/education/enrollments/ENROLL-ABC123/certificate",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "enrollments", "ENROLL-ABC123", "certificate"]
+            }
+          }
+        },
+        {
+          "name": "Get User Certificates",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/education/certificates",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "certificates"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

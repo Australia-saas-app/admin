@@ -1,0 +1,1342 @@
+{
+  "info": {
+    "_postman_id": "56f0d5c0-6d6f-4bc1-94da-9d7e1ae15ec2",
+    "name": "Technology Service - Project Management",
+    "description": "Postman collection for technology services and project management features: Technical Services, Categories, Project creation & lifecycle, Project management, Business participation & work tracking, Communication & access control, Status transitions",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "20143455",
+    "_collection_link": "https://go.postman.co/collection/20143455-56f0d5c0-6d6f-4bc1-94da-9d7e1ae15ec2?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Check the health status of the technology service"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Technical Services - Public",
+      "item": [
+        {
+          "name": "Get All Services",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services?page=1&limit=10&category=cat123&isVisible=true&search=web",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of items per page"
+                },
+                {
+                  "key": "category",
+                  "value": "cat123",
+                  "description": "Filter by category"
+                },
+                {
+                  "key": "isVisible",
+                  "value": "true",
+                  "description": "Filter by visibility status (true/false)"
+                },
+                {
+                  "key": "search",
+                  "value": "web",
+                  "description": "Search by title"
+                },
+                {
+                  "key": "userId",
+                  "value": "user123",
+                  "description": "Filter by user ID (creator)"
+                }
+              ]
+            },
+            "description": "Get all visible technical services (Public)\n\n**Query Parameters:**\n- `page` (integer, optional): Page number (default: 1)\n- `limit` (integer, optional): Items per page (default: 10)\n- `category` (string, optional): Filter by category\n- `isVisible` (boolean, optional): Filter by visibility status\n- `search` (string, optional): Search by title\n- `userId` (string, optional): Filter by user ID (creator)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Service Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/{{serviceId}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "{{serviceId}}"]
+            },
+            "description": "Get single technical service details (Public)\n\n**Path Parameters:**\n- `serviceId` (string, required): The service ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Categories (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/categories/list?page=1&limit=50&isActive=true",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "categories", "list"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Number of items per page (default: 50)"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true",
+                  "description": "Filter by active status"
+                }
+              ]
+            },
+            "description": "Get all active technical categories (Public)\n\n**Query Parameters:**\n- `page` (integer, optional): Page number (default: 1)\n- `limit` (integer, optional): Items per page (default: 50)\n- `isActive` (boolean, optional): Filter by active status"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Technical Services - User/Agency",
+      "item": [
+        {
+          "name": "Create Service (User/Agency/Business)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Web Development\",\n  \"description\": \"Professional web development services\",\n  \"category\": \"Web Development\",\n  \"photo\": \"https://example.com/photo.jpg\",\n  \"tag\": \"frontend\",\n  \"displayOrder\": 1,\n  \"isVisible\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services"]
+            },
+            "description": "Create technical service (User/Agency/Business)\n\n**Body Parameters:**\n- `title` (string, required): Service title\n- `description` (string, required): Service description\n- `category` (string, required): Category name\n- `photo` (string, optional): Service photo URL\n- `tag` (string, optional): Service tag\n- `displayOrder` (integer, optional): Display order\n- `isVisible` (boolean, optional): Visibility status (default: true)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Service (User Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Web Development\",\n  \"description\": \"Professional web development services\",\n  \"category\": \"Web Development\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/user",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "user"]
+            },
+            "description": "Create technical service (User only)\n\n**Body Parameters:**\n- `title` (string, required): Service title\n- `description` (string, required): Service description\n- `category` (string, required): Category name"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Service (Agent/Agency Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Web Development\",\n  \"description\": \"Professional web development services\",\n  \"category\": \"Web Development\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/agent",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "agent"]
+            },
+            "description": "Create technical service (Agent/Agency only)\n\n**Body Parameters:**\n- `title` (string, required): Service title\n- `description` (string, required): Service description\n- `category` (string, required): Category name"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Service (User Owns)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Service Title\",\n  \"description\": \"Updated description\",\n  \"category\": \"Web Development\",\n  \"photo\": \"https://example.com/updated-photo.jpg\",\n  \"tag\": \"backend\",\n  \"displayOrder\": 2,\n  \"isVisible\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/user/{{serviceId}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "user", "{{serviceId}}"]
+            },
+            "description": "Update technical service (User owns service)\n\n**Path Parameters:**\n- `serviceId` (string, required): The service ID to update\n\n**Body Parameters:**\n- `title` (string, optional): Updated service title\n- `description` (string, optional): Updated description\n- `category` (string, optional): Updated category name\n- `photo` (string, optional): Updated service photo URL\n- `tag` (string, optional): Updated service tag\n- `displayOrder` (integer, optional): Updated display order\n- `isVisible` (boolean, optional): Updated visibility status"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Service (Agent/Agency Owns)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Service Title\",\n  \"description\": \"Updated description\",\n  \"category\": \"Web Development\",\n  \"photo\": \"https://example.com/updated-photo.jpg\",\n  \"tag\": \"backend\",\n  \"displayOrder\": 2,\n  \"isVisible\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/agent/{{serviceId}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "agent", "{{serviceId}}"]
+            },
+            "description": "Update technical service (Agent/Agency owns service)\n\n**Path Parameters:**\n- `serviceId` (string, required): The service ID to update\n\n**Body Parameters:**\n- `title` (string, optional): Updated service title\n- `description` (string, optional): Updated description\n- `category` (string, optional): Updated category name\n- `photo` (string, optional): Updated service photo URL\n- `tag` (string, optional): Updated service tag\n- `displayOrder` (integer, optional): Updated display order\n- `isVisible` (boolean, optional): Updated visibility status"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Service (User Owns)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/user/{{serviceId}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "user", "{{serviceId}}"]
+            },
+            "description": "Delete technical service (User owns service)\n\n**Path Parameters:**\n- `serviceId` (string, required): The service ID to delete"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Service (Agent/Agency Owns)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/agent/{{serviceId}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "agent", "{{serviceId}}"]
+            },
+            "description": "Delete technical service (Agent/Agency owns service)\n\n**Path Parameters:**\n- `serviceId` (string, required): The service ID to delete"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Technical Services - Admin",
+      "item": [
+        {
+          "name": "Get All Services (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "description": "Admin JWT access token"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/admin/list?page=1&limit=10&category=cat123&isVisible=true&userId=user123",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "admin", "list"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of items per page"
+                },
+                {
+                  "key": "category",
+                  "value": "cat123",
+                  "description": "Filter by category"
+                },
+                {
+                  "key": "isVisible",
+                  "value": "true",
+                  "description": "Filter by visibility status"
+                },
+                {
+                  "key": "userId",
+                  "value": "user123",
+                  "description": "Filter by user ID (creator)"
+                },
+                {
+                  "key": "search",
+                  "value": "web",
+                  "description": "Search by title"
+                }
+              ]
+            },
+            "description": "Get all technical services (Admin)\n\n**Query Parameters:**\n- `page` (integer, optional): Page number (default: 1)\n- `limit` (integer, optional): Items per page (default: 10)\n- `category` (string, optional): Filter by category\n- `isVisible` (boolean, optional): Filter by visibility status\n- `userId` (string, optional): Filter by user ID (creator)\n- `search` (string, optional): Search by title"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Service Details (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "description": "Admin JWT access token"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/admin/{{serviceId}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "admin", "{{serviceId}}"]
+            },
+            "description": "Get single technical service details (Admin)\n\n**Path Parameters:**\n- `serviceId` (string, required): The service ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Service (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "description": "Admin JWT access token"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Admin Updated Service\",\n  \"description\": \"Updated by admin\",\n  \"category\": \"Web Development\",\n  \"photo\": \"https://example.com/updated-photo.jpg\",\n  \"tag\": \"backend\",\n  \"displayOrder\": 2,\n  \"isVisible\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/{{serviceId}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "{{serviceId}}"]
+            },
+            "description": "Update technical service (Admin)\n\n**Path Parameters:**\n- `serviceId` (string, required): The service ID to update\n\n**Body Parameters:**\n- `title` (string, optional): Updated service title\n- `description` (string, optional): Updated description\n- `category` (string, optional): Updated category name\n- `photo` (string, optional): Updated service photo URL\n- `tag` (string, optional): Updated service tag\n- `displayOrder` (integer, optional): Updated display order\n- `isVisible` (boolean, optional): Updated visibility status"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Service (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "description": "Admin JWT access token"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/{{serviceId}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "{{serviceId}}"]
+            },
+            "description": "Delete technical service (Admin)\n\n**Path Parameters:**\n- `serviceId` (string, required): The service ID to delete"
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Service Visibility (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "description": "Admin JWT access token"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isVisible\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/{{serviceId}}/visibility",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "{{serviceId}}", "visibility"]
+            },
+            "description": "Toggle service visibility (Admin)\n\n**Path Parameters:**\n- `serviceId` (string, required): The service ID\n\n**Body Parameters:**\n- `isVisible` (boolean, required): Visibility status to set"
+          },
+          "response": []
+        },
+        {
+          "name": "Reorder Service (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "description": "Admin JWT access token"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"direction\": \"up\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/{{serviceId}}/reorder",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "{{serviceId}}", "reorder"]
+            },
+            "description": "Reorder service in list (Admin)\n\n**Path Parameters:**\n- `serviceId` (string, required): The service ID\n\n**Body Parameters:**\n- `direction` (string, required): Reorder direction (up, down)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Technical Categories - Admin",
+      "item": [
+        {
+          "name": "Create Category (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "description": "Admin JWT access token"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Web Development\",\n  \"description\": \"Web development services\",\n  \"displayOrder\": 1,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/categories",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "categories"]
+            },
+            "description": "Create technical category (Admin)\n\n**Body Parameters:**\n- `name` (string, required): Name of the category\n- `description` (string, optional): Category description\n- `displayOrder` (integer, optional): Display order\n- `isActive` (boolean, optional): Active status (default: true)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Categories (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "description": "Admin JWT access token"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/admin/categories/list?page=1&limit=50&isActive=true",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "admin", "categories", "list"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Number of items per page (default: 50)"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true",
+                  "description": "Filter by active status"
+                }
+              ]
+            },
+            "description": "Get all technical categories (Admin)\n\n**Query Parameters:**\n- `page` (integer, optional): Page number (default: 1)\n- `limit` (integer, optional): Items per page (default: 50)\n- `isActive` (boolean, optional): Filter by active status"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category Details (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "description": "Admin JWT access token"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/admin/categories/{{categoryId}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "admin", "categories", "{{categoryId}}"]
+            },
+            "description": "Get single category details (Admin)\n\n**Path Parameters:**\n- `categoryId` (string, required): The category ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "description": "Admin JWT access token"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Category Name\",\n  \"description\": \"Updated description\",\n  \"displayOrder\": 2,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/categories/{{categoryId}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "categories", "{{categoryId}}"]
+            },
+            "description": "Update category (Admin)\n\n**Path Parameters:**\n- `categoryId` (string, required): The category ID\n\n**Body Parameters:**\n- `name` (string, optional): Updated category name\n- `description` (string, optional): Updated description\n- `displayOrder` (integer, optional): Updated display order\n- `isActive` (boolean, optional): Updated active status"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "description": "Admin JWT access token"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/services/categories/{{categoryId}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "services", "categories", "{{categoryId}}"]
+            },
+            "description": "Delete category (Admin)\n\n**Path Parameters:**\n- `categoryId` (string, required): The category ID to delete"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Project Creation & Lifecycle",
+      "item": [
+        {
+          "name": "Create Project",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"project_id\", pm.response.json().projectId);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Sample Project\",\n  \"description\": \"Project description\",\n  \"startDate\": \"2026-01-01\",\n  \"endDate\": \"2026-12-31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects"]
+            },
+            "description": "Create a new project\n\n**Body Parameters:**\n- `title` (string, required): Project title\n- `description` (string, required): Project description\n- `startDate` (string, optional): Start date (YYYY-MM-DD)\n- `endDate` (string, optional): End date (YYYY-MM-DD)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Projects",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects?page=1&limit=10&status=active&search=project&createdBy=user123",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of items per page"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "description": "Filter by project status (draft, active, completed, archived)"
+                },
+                {
+                  "key": "search",
+                  "value": "project",
+                  "description": "Search by title"
+                },
+                {
+                  "key": "createdBy",
+                  "value": "user123",
+                  "description": "Filter by creator user ID"
+                }
+              ]
+            },
+            "description": "Get projects for authenticated user\n\n**Query Parameters:**\n- `page` (integer, optional): Page number (default: 1)\n- `limit` (integer, optional): Items per page (default: 10)\n- `status` (string, optional): Filter by status (draft, active, completed, archived)\n- `search` (string, optional): Search by title\n- `createdBy` (string, optional): Filter by creator user ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Project",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/{{project_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "{{project_id}}"]
+            },
+            "description": "Get single project details\n\n**Path Parameters:**\n- `projectId` (string, required): The project ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Project",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Project Title\",\n  \"description\": \"Updated description\",\n  \"status\": \"active\",\n  \"startDate\": \"2026-01-01\",\n  \"endDate\": \"2026-12-31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/{{project_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "{{project_id}}"]
+            },
+            "description": "Update project details\n\n**Path Parameters:**\n- `projectId` (string, required): The project ID\n\n**Body Parameters:**\n- `title` (string, optional): Updated project title\n- `description` (string, optional): Updated description\n- `status` (string, optional): Project status (draft, active, completed, archived)\n- `startDate` (string, optional): Updated start date (YYYY-MM-DD)\n- `endDate` (string, optional): Updated end date (YYYY-MM-DD)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/{{project_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "{{project_id}}"]
+            },
+            "description": "Delete a project\n\n**Path Parameters:**\n- `projectId` (string, required): The project ID to delete"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Project Management - Participants",
+      "item": [
+        {
+          "name": "Add Participant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user123\",\n  \"userName\": \"John Doe\",\n  \"role\": \"member\",\n  \"accountType\": \"business\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/{{project_id}}/participants",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "{{project_id}}", "participants"]
+            },
+            "description": "Add participant to project\n\n**Path Parameters:**\n- `projectId` (string, required): The project ID\n\n**Body Parameters:**\n- `userId` (string, required): User ID of the participant\n- `userName` (string, required): Name of the participant\n- `role` (string, required): Participant role (owner, admin, member, viewer)\n- `accountType` (string, required): Account type (user, agency, business)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Participant Role",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/{{project_id}}/participants/{{userId}}/role",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "{{project_id}}", "participants", "{{userId}}", "role"]
+            },
+            "description": "Update participant role in project\n\n**Path Parameters:**\n- `projectId` (string, required): The project ID\n- `userId` (string, required): The participant's user ID\n\n**Body Parameters:**\n- `role` (string, required): New role (owner, admin, member, viewer)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Project - Tasks",
+      "item": [
+        {
+          "name": "Create Task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"task_id\", pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Sample Task\",\n  \"description\": \"Task description\",\n  \"assignedTo\": \"user123\",\n  \"dueDate\": \"2026-06-01\",\n  \"priority\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/{{project_id}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "{{project_id}}", "tasks"]
+            },
+            "description": "Create task in project\n\n**Path Parameters:**\n- `projectId` (string, required): The project ID\n\n**Body Parameters:**\n- `title` (string, required): Task title\n- `description` (string, optional): Task description\n- `assignedTo` (string, optional): User ID to assign task to\n- `dueDate` (string, optional): Due date (YYYY-MM-DD)\n- `priority` (integer, optional): Priority level (0=low, 1=medium, 2=high)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Project Tasks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/{{project_id}}/tasks?page=1&limit=10&status=todo&assignedTo=user123&search=task",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "{{project_id}}", "tasks"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of items per page"
+                },
+                {
+                  "key": "status",
+                  "value": "todo",
+                  "description": "Filter by task status (todo, in_progress, completed)"
+                },
+                {
+                  "key": "assignedTo",
+                  "value": "user123",
+                  "description": "Filter by assigned user ID"
+                },
+                {
+                  "key": "search",
+                  "value": "task",
+                  "description": "Search by title"
+                },
+                {
+                  "key": "projectId",
+                  "value": "project123",
+                  "description": "Filter by project ID"
+                }
+              ]
+            },
+            "description": "Get tasks for project\n\n**Path Parameters:**\n- `projectId` (string, required): The project ID\n\n**Query Parameters:**\n- `page` (integer, optional): Page number (default: 1)\n- `limit` (integer, optional): Items per page (default: 10)\n- `status` (string, optional): Filter by status (todo, in_progress, completed)\n- `assignedTo` (string, optional): Filter by assigned user\n- `search` (string, optional): Search by title\n- `projectId` (string, optional): Filter by project ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Task",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "tasks", "{{task_id}}"]
+            },
+            "description": "Get single task details\n\n**Path Parameters:**\n- `taskId` (string, required): The task ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Task",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Task Title\",\n  \"description\": \"Updated description\",\n  \"status\": \"in_progress\",\n  \"priority\": 2,\n  \"assignedTo\": \"user456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "tasks", "{{task_id}}"]
+            },
+            "description": "Update task details\n\n**Path Parameters:**\n- `taskId` (string, required): The task ID\n\n**Body Parameters:**\n- `title` (string, optional): Updated task title\n- `description` (string, optional): Updated description\n- `status` (string, optional): Task status (todo, in_progress, completed)\n- `priority` (integer, optional): Priority level (0=low, 1=medium, 2=high)\n- `assignedTo` (string, optional): Updated assignee user ID\n- `dueDate` (string, optional): Updated due date (YYYY-MM-DD)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "tasks", "{{task_id}}"]
+            },
+            "description": "Delete a task\n\n**Path Parameters:**\n- `taskId` (string, required): The task ID to delete"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Project - Messages",
+      "item": [
+        {
+          "name": "Post Message",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"message_id\", pm.response.json().id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"messageType\": \"general\",\n  \"content\": \"Hello team!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/{{project_id}}/messages",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "{{project_id}}", "messages"]
+            },
+            "description": "Post message to project\n\n**Path Parameters:**\n- `projectId` (string, required): The project ID\n\n**Body Parameters:**\n- `messageType` (string, required): Message type (general, update, comment, system)\n- `content` (string, required): Message content"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Project Messages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/{{project_id}}/messages",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "{{project_id}}", "messages"]
+            },
+            "description": "Get messages for project\n\n**Path Parameters:**\n- `projectId` (string, required): The project ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Message",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/messages/{{message_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "messages", "{{message_id}}"]
+            },
+            "description": "Get single message details\n\n**Path Parameters:**\n- `messageId` (string, required): The message ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Message",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated message content\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/messages/{{message_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "messages", "{{message_id}}"]
+            },
+            "description": "Update message content\n\n**Path Parameters:**\n- `messageId` (string, required): The message ID\n\n**Body Parameters:**\n- `content` (string, required): Updated message content"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Message",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/messages/{{message_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "messages", "{{message_id}}"]
+            },
+            "description": "Delete a message\n\n**Path Parameters:**\n- `messageId` (string, required): The message ID to delete"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Status Transitions",
+      "item": [
+        {
+          "name": "Update Project Status (Draft to Active)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/{{project_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "{{project_id}}"]
+            },
+            "description": "Transition project status from Draft to Active\n\n**Path Parameters:**\n- `projectId` (string, required): The project ID\n\n**Body Parameters:**\n- `status` (string, required): New status (active)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Project Status (Active to Completed)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/{{project_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "{{project_id}}"]
+            },
+            "description": "Transition project status from Active to Completed\n\n**Path Parameters:**\n- `projectId` (string, required): The project ID\n\n**Body Parameters:**\n- `status` (string, required): New status (completed)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Task Status (Todo to In Progress)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"in_progress\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "tasks", "{{task_id}}"]
+            },
+            "description": "Transition task status from Todo to In Progress\n\n**Path Parameters:**\n- `taskId` (string, required): The task ID\n\n**Body Parameters:**\n- `status` (string, required): New status (in_progress)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Task Status (In Progress to Completed)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT access token for authentication"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{api_prefix}}/projects/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "projects", "tasks", "{{task_id}}"]
+            },
+            "description": "Transition task status from In Progress to Completed\n\n**Path Parameters:**\n- `taskId` (string, required): The task ID\n\n**Body Parameters:**\n- `status` (string, required): New status (completed)"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://35.162.205.9:3010",
+      "description": "Technology service base URL"
+    },
+    {
+      "key": "api_prefix",
+      "value": "api/technical",
+      "description": "API prefix for technology service routes"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "description": "JWT access token for authentication"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "description": "Admin JWT access token"
+    },
+    {
+      "key": "project_id",
+      "value": "",
+      "description": "Project ID"
+    },
+    {
+      "key": "task_id",
+      "value": "",
+      "description": "Task ID"
+    },
+    {
+      "key": "message_id",
+      "value": "",
+      "description": "Message ID"
+    },
+    {
+      "key": "serviceId",
+      "value": "",
+      "description": "Technical service ID"
+    },
+    {
+      "key": "categoryId",
+      "value": "",
+      "description": "Category ID"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "description": "User ID"
+    }
+  ]
+}

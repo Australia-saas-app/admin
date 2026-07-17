@@ -1,0 +1,316 @@
+{
+	"info": {
+		"_postman_id": "gallery-api-collection-2024",
+		"name": "Gallery Collection",
+		"description": "Gallery API endpoints for managing gallery items with title, description, media (photo/video), and category.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "gatewayUrl",
+			"value": "http://35.162.205.9:3006"
+		},
+		{
+			"key": "platformUrl",
+			"value": "http://35.162.205.9:3006"
+		},
+		{
+			"key": "adminToken",
+			"value": ""
+		},
+		{
+			"key": "galleryId",
+			"value": ""
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{adminToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"item": [
+		{
+			"name": "Public Endpoints",
+			"item": [
+				{
+					"name": "Get All Gallery Items",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/gallery?page=1&limit=20",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "gallery"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get all visible gallery items with pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Gallery Item by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/gallery/{{galleryId}}",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "gallery", "{{galleryId}}"]
+						},
+						"description": "Get a specific gallery item by ID"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin Endpoints",
+			"item": [
+				{
+					"name": "Get All Gallery Items (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data && jsonData.data.length > 0) {",
+									"        pm.collectionVariables.set('galleryId', jsonData.data[0].id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/gallery?page=1&limit=20",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "gallery"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get all gallery items including hidden ones (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Existing Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/gallery/categories",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "gallery", "categories"]
+						},
+						"description": "Get list of all existing gallery categories"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Gallery Item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('galleryId', jsonData.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Summer Vacation 2024",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Photos from our summer vacation trip to the beach",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "Travel",
+									"type": "text"
+								},
+								{
+									"key": "isVisible",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"description": "Select photo or video file to upload"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/gallery",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "gallery"]
+						},
+						"description": "Create a new gallery item. Upload file to gallery folder (ID: f7bcfedc-ca1b-452a-9810-97e6434e46fc). Supports: JPG, PNG, GIF, WebP, MP4, MOV."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Gallery Item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data && jsonData.data.id) {",
+									"        pm.collectionVariables.set('galleryId', jsonData.data.id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Updated Summer Vacation 2024",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Updated description for vacation photos",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "Holidays",
+									"type": "text"
+								},
+								{
+									"key": "isVisible",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"description": "Select new photo or video file (optional - only uploads if provided)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/gallery/{{galleryId}}",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "gallery", "{{galleryId}}"]
+						},
+						"description": "Update gallery item. Upload new file to gallery folder (ID: f7bcfedc-ca1b-452a-9810-97e6434e46fc) if attachment should change. All fields are optional."
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle Visibility",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/gallery/{{galleryId}}/visibility",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "gallery", "{{galleryId}}", "visibility"]
+						},
+						"description": "Toggle gallery item visibility (show/hide)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Gallery Item",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/gallery/{{galleryId}}",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "gallery", "{{galleryId}}"]
+						},
+						"description": "Delete a gallery item permanently"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

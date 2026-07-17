@@ -1,0 +1,1141 @@
+{
+  "info": {
+    "_postman_id": "analytics-collection-id",
+    "name": "Analytics Collection - Vero2",
+    "description": "Comprehensive analytics system covering Data Aggregation, Real-time & Batch Processing, Business Analytics, User & Service Metrics, Custom Reports & Dashboards, Integration with Other Services, Alerts & Thresholds, and Data Storage & Archival. Based on existing analytics and reporting functionality in the admin service.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Data Aggregation",
+      "item": [
+        {
+          "name": "Aggregate User Data",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/aggregate/users?period=month&groupBy=country",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "aggregate", "users"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                },
+                {
+                  "key": "groupBy",
+                  "value": "country",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Aggregate user data for analytics processing"
+          },
+          "response": []
+        },
+        {
+          "name": "Aggregate Transaction Data",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/aggregate/transactions?period=week&groupBy=paymentMethod",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "aggregate", "transactions"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "week"
+                },
+                {
+                  "key": "groupBy",
+                  "value": "paymentMethod",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Aggregate transaction data for financial analytics"
+          },
+          "response": []
+        },
+        {
+          "name": "Aggregate Service Usage Data",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/aggregate/services?period=month&groupBy=category",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "aggregate", "services"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                },
+                {
+                  "key": "groupBy",
+                  "value": "category",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Aggregate service usage data for business intelligence"
+          },
+          "response": []
+        },
+        {
+          "name": "Custom Data Aggregation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataSource\": \"orders\",\n  \"aggregationType\": \"sum\",\n  \"field\": \"totalAmount\",\n  \"groupBy\": \"serviceType\",\n  \"filters\": {\n    \"status\": \"completed\",\n    \"dateRange\": {\n      \"start\": \"2024-01-01\",\n      \"end\": \"2024-12-31\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/aggregate/custom",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "aggregate", "custom"]
+            },
+            "description": "Create custom data aggregation queries"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Real-time & Batch Processing",
+      "item": [
+        {
+          "name": "Real-time User Activity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/realtime/users?lastMinutes=30",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "realtime", "users"],
+              "query": [
+                {
+                  "key": "lastMinutes",
+                  "value": "30"
+                }
+              ]
+            },
+            "description": "Get real-time user activity data"
+          },
+          "response": []
+        },
+        {
+          "name": "Real-time Transaction Processing",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/realtime/transactions?lastHours=1",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "realtime", "transactions"],
+              "query": [
+                {
+                  "key": "lastHours",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get real-time transaction processing data"
+          },
+          "response": []
+        },
+        {
+          "name": "Batch Process Historical Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataType\": \"user_registrations\",\n  \"startDate\": \"2024-01-01\",\n  \"endDate\": \"2024-12-31\",\n  \"batchSize\": 1000,\n  \"processType\": \"recalculate_metrics\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/batch/process",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "batch", "process"]
+            },
+            "description": "Trigger batch processing of historical data"
+          },
+          "response": []
+        },
+        {
+          "name": "Batch Process Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/batch/status/{{batchId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "batch", "status", "{{batchId}}"]
+            },
+            "description": "Check status of batch processing job"
+          },
+          "response": []
+        },
+        {
+          "name": "Scheduled Analytics Update",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scheduleType\": \"daily\",\n  \"analyticsType\": \"user_engagement\",\n  \"scheduleTime\": \"02:00\",\n  \"timezone\": \"UTC\",\n  \"enabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/schedule",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "schedule"]
+            },
+            "description": "Schedule automated analytics processing"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Business Analytics",
+      "item": [
+        {
+          "name": "Business Performance Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/dashboard?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "dashboard"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get comprehensive business performance dashboard"
+          },
+          "response": []
+        },
+        {
+          "name": "Revenue Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/revenue?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "revenue"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get detailed revenue analytics and trends"
+          },
+          "response": []
+        },
+        {
+          "name": "Service Performance Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/services/performance?period=quarter",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "services", "performance"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "quarter"
+                }
+              ]
+            },
+            "description": "Get business analytics for service performance"
+          },
+          "response": []
+        },
+        {
+          "name": "Market Analysis",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/market?period=month&segment=geographic",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "market"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                },
+                {
+                  "key": "segment",
+                  "value": "geographic",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get market analysis and business intelligence"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User & Service Metrics",
+      "item": [
+        {
+          "name": "User Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/users?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "users"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get comprehensive user analytics and metrics"
+          },
+          "response": []
+        },
+        {
+          "name": "Order Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/orders?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "orders"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get order analytics and service utilization metrics"
+          },
+          "response": []
+        },
+        {
+          "name": "Payment Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/payments?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "payments"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get payment analytics and transaction metrics"
+          },
+          "response": []
+        },
+        {
+          "name": "Traffic Analytics by Device",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/traffic/device?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "traffic", "device"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get traffic analytics by device type"
+          },
+          "response": []
+        },
+        {
+          "name": "Traffic Analytics by Location",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/traffic/location?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "traffic", "location"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get traffic analytics by geographic location"
+          },
+          "response": []
+        },
+        {
+          "name": "Visitor Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/visitors?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "visitors"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get detailed visitor statistics and engagement metrics"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Custom Reports & Dashboards",
+      "item": [
+        {
+          "name": "Create Custom Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Monthly Performance Report\",\n  \"description\": \"Custom monthly performance metrics\",\n  \"dataSources\": [\"users\", \"orders\", \"payments\"],\n  \"metrics\": [\"user_registrations\", \"order_value\", \"payment_volume\"],\n  \"filters\": {\n    \"dateRange\": {\n      \"start\": \"2024-01-01\",\n      \"end\": \"2024-12-31\"\n    }\n  },\n  \"format\": \"pdf\",\n  \"schedule\": \"monthly\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/reports/custom",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "reports", "custom"]
+            },
+            "description": "Create custom analytics reports"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Financial Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/reports/financial?startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "reports", "financial"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            },
+            "description": "Generate financial report (existing reports service)"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate User Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/reports/users?startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "reports", "users"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            },
+            "description": "Generate user activity report (existing reports service)"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Order Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/reports/orders?startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "reports", "orders"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            },
+            "description": "Generate order completion report (existing reports service)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Dashboard Widget",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Revenue Trend\",\n  \"type\": \"line_chart\",\n  \"metric\": \"revenue\",\n  \"period\": \"6months\",\n  \"filters\": {\n    \"currency\": \"USD\"\n  },\n  \"position\": {\n    \"x\": 0,\n    \"y\": 0,\n    \"width\": 6,\n    \"height\": 4\n  }\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/dashboards/widgets",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "dashboards", "widgets"]
+            },
+            "description": "Create custom dashboard widgets"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Dashboard Configuration",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/dashboards/{{dashboardId}}/config",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "dashboards", "{{dashboardId}}", "config"]
+            },
+            "description": "Get dashboard configuration and layout"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Integration with Other Services",
+      "item": [
+        {
+          "name": "Analytics Data from Order Service",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/integration/orders?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "integration", "orders"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get analytics data integrated from Order service"
+          },
+          "response": []
+        },
+        {
+          "name": "Analytics Data from Payment Service",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/integration/payments?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "integration", "payments"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get analytics data integrated from Payment service"
+          },
+          "response": []
+        },
+        {
+          "name": "Analytics Data from User Profile Service",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/integration/users?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "integration", "users"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get analytics data integrated from User Profile service"
+          },
+          "response": []
+        },
+        {
+          "name": "Analytics Data from Chat Service",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/integration/chat?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "integration", "chat"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get analytics data integrated from Chat service"
+          },
+          "response": []
+        },
+        {
+          "name": "Cross-Service Data Correlation",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/integration/correlation?userId={{userId}}&period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "integration", "correlation"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get correlated analytics data across multiple services"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Alerts & Thresholds",
+      "item": [
+        {
+          "name": "Create Analytics Alert",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Low Revenue Alert\",\n  \"description\": \"Alert when daily revenue drops below threshold\",\n  \"metric\": \"daily_revenue\",\n  \"condition\": \"less_than\",\n  \"threshold\": 1000.00,\n  \"timeWindow\": \"1day\",\n  \"channels\": [\"email\", \"slack\"],\n  \"recipients\": [\"admin@example.com\"],\n  \"enabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/alerts",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "alerts"]
+            },
+            "description": "Create analytics-based alerts and thresholds"
+          },
+          "response": []
+        },
+        {
+          "name": "List Active Alerts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/alerts?page=1&limit=20&status=active",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "alerts"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "status",
+                  "value": "active"
+                }
+              ]
+            },
+            "description": "List all active analytics alerts"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Alert Threshold",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"threshold\": 1500.00,\n  \"timeWindow\": \"1week\",\n  \"enabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/alerts/{{alertId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "alerts", "{{alertId}}"]
+            },
+            "description": "Update alert thresholds and settings"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Analytics Alert",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/alerts/{{alertId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "alerts", "{{alertId}}"]
+            },
+            "description": "Delete an analytics alert"
+          },
+          "response": []
+        },
+        {
+          "name": "Alert History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/alerts/history?page=1&limit=20&alertId={{alertId}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "alerts", "history"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "alertId",
+                  "value": "{{alertId}}",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get history of triggered alerts"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Data Storage & Archival",
+      "item": [
+        {
+          "name": "Archive Old Analytics Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataType\": \"user_activity\",\n  \"olderThanDays\": 365,\n  \"archiveLocation\": \"s3://analytics-archive\",\n  \"compression\": \"gzip\",\n  \"retentionPolicy\": \"7years\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/archive",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "archive"]
+            },
+            "description": "Archive old analytics data for long-term storage"
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve Archived Data",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/archive/{{archiveId}}/retrieve",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "archive", "{{archiveId}}", "retrieve"]
+            },
+            "description": "Retrieve data from archive for analysis"
+          },
+          "response": []
+        },
+        {
+          "name": "Configure Data Retention",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataType\": \"transaction_logs\",\n  \"retentionPeriodDays\": 2555,\n  \"archiveAfterDays\": 365,\n  \"deleteAfterDays\": 2555,\n  \"storageClass\": \"standard_ia\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/retention",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "retention"]
+            },
+            "description": "Configure data retention and archival policies"
+          },
+          "response": []
+        },
+        {
+          "name": "Data Cleanup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cleanupType\": \"expired_sessions\",\n  \"olderThanHours\": 24,\n  \"confirmationRequired\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/cleanup",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "cleanup"]
+            },
+            "description": "Clean up old or expired analytics data"
+          },
+          "response": []
+        },
+        {
+          "name": "Backup Analytics Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataTypes\": [\"user_metrics\", \"transaction_data\"],\n  \"backupLocation\": \"s3://analytics-backup\",\n  \"encryption\": true,\n  \"schedule\": \"daily\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/backup",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "backup"]
+            },
+            "description": "Create backups of analytics data"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "gatewayUrl",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "alertId",
+      "value": ""
+    },
+    {
+      "key": "batchId",
+      "value": ""
+    },
+    {
+      "key": "archiveId",
+      "value": ""
+    },
+    {
+      "key": "dashboardId",
+      "value": "default"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+services:
+  # PostgreSQL Service for Admin Service
+  postgres:
+    image: postgres:15-alpine
+    container_name: admin-service-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-vero2_admin}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    networks:
+      - admin-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+      timeout: 5s
+      retries: 5
+
+  # Admin Service
+  admin-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vero2-admin-service
+    restart: unless-stopped
+    ports:
+      - "${ADMIN_PORT:-3007}:3007"
+    environment:
+      PORT: ${ADMIN_PORT:-3007}
+      NODE_ENV: ${NODE_ENV:-development}
+      
+      # PostgreSQL Configuration
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: ${POSTGRES_USER:-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      DB_NAME: ${POSTGRES_DB:-vero2_admin}
+
+      # Rate Limiting
+      RATE_LIMIT_TTL: ${RATE_LIMIT_TTL:-60}
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-500}
+      
+      # SSO Configuration (for JWT verification)
+      SSO_PUBLIC_KEY: ${SSO_PUBLIC_KEY:-}
+      SSO_PRIVATE_KEY: ${SSO_PRIVATE_KEY:-}
+      SSO_ISSUER: ${SSO_ISSUER:-http://localhost:3001/sso}
+      
+      # Admin Bootstrap Secret
+      ADMIN_BOOTSTRAP_SECRET: ${ADMIN_BOOTSTRAP_SECRET:-change-me-bootstrap}
+    networks:
+      - admin-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3007/admin-service/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  admin-network:
+    driver: bridge
+

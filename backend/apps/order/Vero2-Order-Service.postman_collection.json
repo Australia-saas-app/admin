@@ -1,0 +1,498 @@
+{
+  "info": {
+    "_postman_id": "7a71db9c-27d8-41c0-9026-40c8698f8b9e",
+    "name": "Vero2 - Order Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Order Service covering user, agency, and admin flows described in vero.txt"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "health"
+          ]
+        }
+      }
+    },
+    {
+      "name": "[User] Create Order",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"orderType\": \"technology\",\n  \"serviceName\": \"Full-stack MVP\",\n  \"clientInfo\": {\n    \"fullName\": \"Alex Doe\",\n    \"email\": \"alex@example.com\",\n    \"phone\": \"+1-202-555-0112\",\n    \"nationality\": \"US\",\n    \"permanentAddress\": {\n      \"country\": \"USA\",\n      \"state\": \"CA\",\n      \"city\": \"San Francisco\",\n      \"zipCode\": \"94105\",\n      \"address\": \"1 Market St\"\n    }\n  },\n  \"pricing\": {\n    \"totalAmount\": 25000,\n    \"currency\": \"USD\"\n  },\n  \"orderDetails\": {\n    \"projectType\": \"company\",\n    \"priorityLevel\": \"high\",\n    \"expectedEndDate\": \"2025-12-31\"\n  },\n  \"documents\": [\n    {\n      \"fileName\": \"requirements.pdf\",\n      \"fileUrl\": \"https://files.example.com/requirements.pdf\",\n      \"fileType\": \"pdf\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/orders",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders"
+          ]
+        }
+      }
+    },
+    {
+      "name": "[User] List Orders + Analytics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/orders?status=pending,working&includeAnalytics=true",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "pending,working"
+            },
+            {
+              "key": "includeAnalytics",
+              "value": "true"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "[User] Get Order",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/{{orderCode}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "{{orderCode}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "[User] Update Pending Order",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"serviceName\": \"Updated MVP\",\n  \"referenceName\": \"Internal-Ref-001\",\n  \"description\": \"Updated scope after discovery\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/{{orderCode}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "{{orderCode}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "[User] Add Documents",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"documents\": [\n    {\n      \"fileName\": \"wireframes.pdf\",\n      \"fileUrl\": \"https://files.example.com/wireframes.pdf\",\n      \"fileType\": \"pdf\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/{{orderCode}}/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "{{orderCode}}",
+            "documents"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Public Real Estate Feed",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/public/real-estate/list?page=1&limit=12",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "public",
+            "real-estate",
+            "list"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "12"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "[Admin] List Orders",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/admin/list?statusEquals=pending&includeAnalytics=true",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "admin",
+            "list"
+          ],
+          "query": [
+            {
+              "key": "statusEquals",
+              "value": "pending"
+            },
+            {
+              "key": "includeAnalytics",
+              "value": "true"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "[Admin] Get Order Detail",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/admin/{{orderCode}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "admin",
+            "{{orderCode}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "[Admin] Update Pending Order",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"clientInfo\": {\n    \"fullName\": \"Alex Doe\",\n    \"email\": \"alex@example.com\"\n  },\n  \"orderDetails\": {\n    \"projectType\": \"enterprise\"\n  }\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/admin/{{orderCode}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "admin",
+            "{{orderCode}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "[Admin] Change Status",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"working\",\n  \"reason\": \"Team assigned\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/admin/{{orderCode}}/status",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "admin",
+            "{{orderCode}}",
+            "status"
+          ]
+        }
+      }
+    },
+    {
+      "name": "[Admin] Add Profit",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"profitAmount\": 1200\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/admin/{{orderCode}}/profit",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "admin",
+            "{{orderCode}}",
+            "profit"
+          ]
+        }
+      }
+    },
+    {
+      "name": "[Admin] Add Delivery Files",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"files\": [\n    {\n      \"fileName\": \"deliverable.zip\",\n      \"fileUrl\": \"https://files.example.com/deliverable.zip\",\n      \"fileType\": \"zip\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/admin/{{orderCode}}/files",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "admin",
+            "{{orderCode}}",
+            "files"
+          ]
+        }
+      }
+    },
+    {
+      "name": "[Admin] Record Payment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 10000,\n  \"currency\": \"USD\",\n  \"method\": \"stripe\",\n  \"transactionId\": \"pi_3Pxxxx\",\n  \"status\": \"succeeded\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/admin/{{orderCode}}/payments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "admin",
+            "{{orderCode}}",
+            "payments"
+          ]
+        }
+      }
+    },
+    {
+      "name": "[Admin] Status History",
+      "request": {
+        "method": "GET",
+        "description": "Fetch chronological status changes for the selected order. This endpoint only supports GET; use the dedicated \"[Admin] Delete Order\" request when you actually need to delete an order.",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/admin/{{orderCode}}/status-history",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "admin",
+            "{{orderCode}}",
+            "status-history"
+          ]
+        }
+      }
+    },
+    {
+      "name": "[Admin] Delete Order",
+      "request": {
+        "method": "DELETE",
+        "description": "Permanently delete an order (and audit history) by code. Requires a valid admin token.",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/orders/admin/{{orderCode}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "admin",
+            "{{orderCode}}"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3003"
+    },
+    {
+      "key": "userToken",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "orderCode",
+      "value": "ORDER000001"
+    }
+  ]
+}
+

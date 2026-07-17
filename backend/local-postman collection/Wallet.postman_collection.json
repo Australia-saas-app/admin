@@ -1,0 +1,703 @@
+{
+  "info": {
+    "_postman_id": "wallet-collection-id",
+    "name": "Wallet Services",
+    "description": "Vero2 Wallet Collection - covers Wallet Creation, Balance Management, Transaction Tracking, Integration with Other Services, Security & Fraud Prevention, Wallet Reporting & Analytics, Refund & Adjustment",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "directUrl",
+      "value": "http://localhost:3004",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "user123",
+      "type": "string"
+    },
+    {
+      "key": "orderId",
+      "value": "order123",
+      "type": "string"
+    },
+    {
+      "key": "transactionId",
+      "value": "txn123",
+      "type": "string"
+    },
+    {
+      "key": "cardId",
+      "value": "card123",
+      "type": "string"
+    },
+    {
+      "key": "sessionId",
+      "value": "session123",
+      "type": "string"
+    },
+    {
+      "key": "agencyId",
+      "value": "agency123",
+      "type": "string"
+    },
+    {
+      "key": "affiliateId",
+      "value": "affiliate123",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Wallet Creation",
+      "item": [
+        {
+          "name": "Get Wallet Balance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Balance Management",
+      "item": [
+        {
+          "name": "Add Payment Card",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cardHolderName\": \"John Doe\",\n  \"cardNumber\": \"4111111111111111\",\n  \"expiryMonth\": \"12\",\n  \"expiryYear\": \"2025\",\n  \"cvv\": \"123\",\n  \"cardType\": \"visa\"\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/cards",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "cards"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Funds to Wallet (Card Payment)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50.00,\n  \"currency\": \"USD\"\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/buy",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "buy"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Funds with Stripe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50.00,\n  \"currency\": \"USD\",\n  \"paymentIntentId\": \"pi_1234567890\"\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/stripe/buy",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "stripe", "buy"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Withdraw from Wallet",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 25.00,\n  \"currency\": \"USD\",\n  \"withdrawalMethod\": \"bank_transfer\",\n  \"accountDetails\": {\n    \"accountNumber\": \"123456789\",\n    \"routingNumber\": \"021000021\",\n    \"accountHolderName\": \"John Doe\",\n    \"bankName\": \"Test Bank\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/withdraw",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "withdraw"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Transaction Tracking",
+      "item": [
+        {
+          "name": "Get Transaction History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/transactions?page=1&limit=10",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "transactions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Integration with Other Services",
+      "item": [
+        {
+          "name": "Pay for Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 25.00,\n  \"description\": \"Payment for order {{orderId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/pay/order/{{orderId}}",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "pay", "order", "{{orderId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Checkout Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gateway\": \"stripe\",\n  \"currency\": \"USD\",\n  \"items\": [{\"name\": \"Wallet Top-up\", \"unitAmount\": 25.00, \"quantity\": 1}],\n  \"successUrl\": \"http://localhost:3000/success\",\n  \"cancelUrl\": \"http://localhost:3000/cancel\",\n  \"orderId\": \"{{orderId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/checkout",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "checkout"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Checkout Session",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/checkout/{{sessionId}}?gateway=stripe",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "checkout", "{{sessionId}}"],
+              "query": [
+                {
+                  "key": "gateway",
+                  "value": "stripe"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Checkout Session",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/checkout/{{sessionId}}?gateway=stripe",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "checkout", "{{sessionId}}"],
+              "query": [
+                {
+                  "key": "gateway",
+                  "value": "stripe"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Stripe Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"evt_1234567890\",\n  \"object\": \"event\",\n  \"type\": \"payment_intent.succeeded\",\n  \"data\": {\n    \"object\": {\n      \"id\": \"pi_1234567890\",\n      \"status\": \"succeeded\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/api/payment/webhooks/stripe",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "webhooks", "stripe"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PayPal Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"WH-1234567890\",\n  \"event_type\": \"PAYMENT.CAPTURE.COMPLETED\",\n  \"resource\": {\n    \"id\": \"paypal_order_123\",\n    \"status\": \"COMPLETED\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/api/payment/webhooks/paypal",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "webhooks", "paypal"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Security & Fraud Prevention",
+      "item": [
+        {
+          "name": "Get Payment Cards",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/cards",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "cards"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Set Default Card",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/cards/{{cardId}}/default",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "cards", "{{cardId}}", "default"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Payment Card",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/cards/{{cardId}}",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "cards", "{{cardId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Wallet Reporting & Analytics",
+      "item": [
+        {
+          "name": "Get Transaction Analytics (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/api/payment/admin/analytics/transactions?startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "admin", "analytics", "transactions"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Wallet Analytics (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/api/payment/admin/analytics/wallets",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "admin", "analytics", "wallets"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Revenue Analytics (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/api/payment/admin/analytics/revenue?startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "admin", "analytics", "revenue"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Fraud Analytics (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/api/payment/admin/analytics/fraud?startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "admin", "analytics", "fraud"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Refund & Adjustment",
+      "item": [
+        {
+          "name": "Refund Transaction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionId\": \"{{transactionId}}\",\n  \"refundAmount\": 25.00,\n  \"reason\": \"Customer requested refund\"\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/refund",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "refund"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refund with Stripe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionId\": \"{{transactionId}}\",\n  \"refundAmount\": 25.00,\n  \"reason\": \"Customer requested refund\"\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/stripe/refund",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "stripe", "refund"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Set Security Deposit (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 1000.00,\n  \"currency\": \"USD\"\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/api/payment/admin/security-deposit/{{agencyId}}",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "admin", "security-deposit", "{{agencyId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Process Security Deposit Refund (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refundAmount\": 500.00,\n  \"reason\": \"Agency completed project\"\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/api/payment/admin/security-deposit/refund/{{agencyId}}",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "admin", "security-deposit", "refund", "{{agencyId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Set Affiliate Commission Rates (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rates\": [\n    {\n      \"businessType\": \"referral\",\n      \"rate\": 5.00,\n      \"description\": \"Commission for referrals\"\n    },\n    {\n      \"businessType\": \"sales\",\n      \"rate\": 10.00,\n      \"description\": \"Commission for sales\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/api/payment/admin/affiliate/commission-rates",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "admin", "affiliate", "commission-rates"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Process Affiliate Payout (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payoutAmount\": 100.00,\n  \"currency\": \"USD\",\n  \"paymentMethod\": \"bank_transfer\"\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/api/payment/admin/affiliate/payout/{{affiliateId}}",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "admin", "affiliate", "payout", "{{affiliateId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

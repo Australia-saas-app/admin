@@ -1,70 +1,184 @@
-version: '3.8'
+version: "3.9"
 
 services:
-  # Primary Relational Database
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
   postgres:
-    image: postgres:15-alpine
-    container_name: saas_postgres
+    image: postgres:15
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: adminpassword
-      POSTGRES_DB: saas_db
+      POSTGRES_USER: ${POSTGRES_DB_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_DB_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB_NAME}
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: always
+      - postgres-data:/var/lib/postgresql/data
 
-  # Document Store for Chat/Logs
-  mongodb:
-    image: mongo:7
-    container_name: saas_mongodb
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    restart: unless-stopped
+    ports:
+      - "5050:80"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: adminpassword
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
-    restart: always
-
-  # Caching and Rate Limiting
-  redis:
-    image: redis:7-alpine
-    container_name: saas_redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    restart: always
-
-  # Kafka Dependency
-  zookeeper:
-    image: confluentinc/cp-zookeeper:latest
-    container_name: saas_zookeeper
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - "2181:2181"
-    restart: always
-
-  # Event Driven Communication
-  kafka:
-    image: confluentinc/cp-kafka:latest
-    container_name: saas_kafka
+      PGADMIN_DEFAULT_EMAIL: ${PG_ADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PG_ADMIN_PASSWORD}
     depends_on:
-      - zookeeper
+      - postgres
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+  sso-service:
+    build:
+      context: ./apps/sso
+      dockerfile: Dockerfile
     ports:
-      - "9092:9092"
+      - "3001:3001"
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    restart: always
+      PORT: 3001
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: ${POSTGRES_DB_USERNAME}
+      DB_PASSWORD: ${POSTGRES_DB_PASSWORD}
+      DB_NAME: ${POSTGRES_DB_NAME}
+      SES_SMTP_HOST: ${SES_SMTP_HOST}
+      SES_SMTP_PORT: ${SES_SMTP_PORT}
+      SES_SMTP_USER: ${SES_SMTP_USER}
+      SES_SMTP_PASSWORD: ${SES_SMTP_PASSWORD}
+      SES_FROM_EMAIL: ${SES_FROM_EMAIL}
+      SSO_PRIVATE_KEY: ${SSO_PRIVATE_KEY}
+      SSO_PUBLIC_KEY: ${SSO_PUBLIC_KEY}
+      SSO_ISSUER: ${SSO_ISSUER}
+      REDIS_URL: ${REDIS_URL}
+      SSO_SYNCHRONIZE: ${SSO_SYNCHRONIZE}
+
+  admin-service:
+    build:
+      context: ./apps/admin
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      PORT: 3002
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: ${POSTGRES_DB_USERNAME}
+      DB_PASSWORD: ${POSTGRES_DB_PASSWORD}
+      DB_NAME: ${POSTGRES_DB_NAME}
+      SSO_ISSUER: ${SSO_ISSUER}
+      SSO_PRIVATE_KEY: ${SSO_PRIVATE_KEY}
+      SSO_PUBLIC_KEY: ${SSO_PUBLIC_KEY}
+      ADMIN_BOOTSTRAP_SECRET: ${ADMIN_BOOTSTRAP_SECRET}
+      ORDER_SERVICE_URL: ${ORDER_SERVICE_URL}
+      FILE_STORAGE_SERVICE_URL: ${FILE_STORAGE_SERVICE_URL}
+      PAYMENT_SERVICE_URL: ${PAYMENT_SERVICE_URL}
+    depends_on:
+      - sso-service
+
+  platform-service:
+    build:
+      context: ./apps/platform
+      dockerfile: Dockerfile
+    ports:
+      - "3006:3006"
+    environment:
+      PORT: 3006
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: ${POSTGRES_DB_USERNAME}
+      DB_PASSWORD: ${POSTGRES_DB_PASSWORD}
+      DB_NAME: ${POSTGRES_DB_NAME}
+      SSO_ISSUER: ${SSO_ISSUER}
+      REDIS_URL: ${REDIS_URL}
+      SSO_PUBLIC_KEY: ${SSO_PUBLIC_KEY}
+      ADMIN_BOOTSTRAP_SECRET: ${ADMIN_BOOTSTRAP_SECRET}
+      JWKS_URI: ${JWKS_URI}
+    depends_on:
+      - sso-service
+
+  file-storage-service:
+    build:
+      context: ./apps/file-storage
+      dockerfile: Dockerfile
+    ports:
+      - "3007:3007"
+    environment:
+      PORT: 3007
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: ${POSTGRES_DB_USERNAME}
+      DB_PASSWORD: ${POSTGRES_DB_PASSWORD}
+      DB_NAME: ${POSTGRES_DB_NAME}
+      SSO_ISSUER: ${SSO_ISSUER}
+      REDIS_URL: ${REDIS_URL}
+      SSO_PUBLIC_KEY: ${SSO_PUBLIC_KEY}
+      ADMIN_BOOTSTRAP_SECRET: ${ADMIN_BOOTSTRAP_SECRET}
+      JWKS_URI: ${JWKS_URI}
+      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID}
+      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY}
+      R2_ACCOUNT_ID: ${R2_ACCOUNT_ID}
+      R2_BUCKET_NAME: ${R2_BUCKET_NAME}
+      R2_PUBLIC_URL: ${R2_PUBLIC_URL}
+      SKIP_JWT_VERIFICATION: "true"
+    depends_on:
+      - sso-service
+
+  chat-service:
+    build:
+      context: ./apps/chat
+      dockerfile: Dockerfile
+    ports:
+      - "3008:3008"
+    environment:
+      PORT: 3008
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: ${POSTGRES_DB_USERNAME}
+      DB_PASSWORD: ${POSTGRES_DB_PASSWORD}
+      DB_NAME: ${POSTGRES_DB_NAME}
+      SSO_ISSUER: ${SSO_ISSUER}
+      SSO_PUBLIC_KEY: ${SSO_PUBLIC_KEY}
+      REDIS_URL: ${REDIS_URL}
+      ORDER_SERVICE_URL: ${ORDER_SERVICE_URL}
+      FILE_STORAGE_SERVICE_URL: ${FILE_STORAGE_SERVICE_URL}
+      USER_PROFILE_SERVICE_URL: http://user-service:3013
+
+  technology-service:
+    build:
+      context: ./apps/technology
+      dockerfile: Dockerfile
+    ports:
+      - "3010:3010"
+    environment:
+      PORT: 3010
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: ${POSTGRES_DB_USERNAME}
+      DB_PASSWORD: ${POSTGRES_DB_PASSWORD}
+      DB_NAME: ${POSTGRES_DB_NAME}
+      SSO_ISSUER: ${SSO_ISSUER}
+      SSO_PUBLIC_KEY: ${SSO_PUBLIC_KEY}
+
+  user-service:
+    build:
+      context: ./apps/user-service
+      dockerfile: Dockerfile
+    ports:
+      - "3013:3013"
+    environment:
+      PORT: 3013
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: ${POSTGRES_DB_USERNAME}
+      DB_PASSWORD: ${POSTGRES_DB_PASSWORD}
+      DB_NAME: ${POSTGRES_DB_NAME}
+      SSO_ISSUER: ${SSO_ISSUER}
+      SSO_PUBLIC_KEY: ${SSO_PUBLIC_KEY}
+      SSO_PRIVATE_KEY: ${SSO_PRIVATE_KEY}
 
 volumes:
-  postgres_data:
-  mongodb_data:
-  redis_data:
+  postgres-data:
+  pgadmin-data:

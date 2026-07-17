@@ -1,0 +1,53 @@
+{
+  "info": {
+    "_postman_id": "user-search-id",
+    "name": "User Search & Listing - Vero2 Local",
+    "description": "Admin endpoints for searching and listing users. Updated for local testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "User Search & Listing",
+      "item": [
+        {
+          "name": "Search Users (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/admin/users?page=1&limit=20&search=john",
+              "host": ["http://localhost:3001/sso"],
+              "path": ["auth", "admin", "users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "search",
+                  "value": "john"
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Admin endpoint to search and list users"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

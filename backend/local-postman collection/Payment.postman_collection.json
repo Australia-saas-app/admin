@@ -1,0 +1,591 @@
+{
+  "info": {
+    "_postman_id": "payment-collection-id",
+    "name": "Payment Services",
+    "description": "Vero2 Payment Collection - covers Gateway Integration, Transaction Processing, Multi-Currency Support, Transaction History & Ledger, Security & Fraud Prevention, Refund & Chargeback, Payment Initialization, Payment Processing, Wallet Integration, Payment Status Tracking, Refund / Adjustment, Integration with Other Services, Security & Compliance, Reporting & Analytics",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "directUrl",
+      "value": "http://localhost:3004",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "user123",
+      "type": "string"
+    },
+    {
+      "key": "orderId",
+      "value": "order123",
+      "type": "string"
+    },
+    {
+      "key": "transactionId",
+      "value": "txn123",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Payment Processing",
+      "item": [
+        {
+          "name": "Process Payment for Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 25.00,\n  \"description\": \"Payment for order {{orderId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/pay/order/{{orderId}}",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "pay", "order", "{{orderId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Transaction History & Ledger",
+      "item": [
+        {
+          "name": "Get User Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/transactions?page=1&limit=10",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "transactions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transaction Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/api/payment/wallet/transactions/{{transactionId}}",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "wallet", "transactions", "{{transactionId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Refund & Chargeback",
+      "item": [
+        {
+          "name": "Issue Refund (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refundAmount\": 50.00,\n  \"feesRefundedAmount\": 2.90,\n  \"reason\": \"Customer requested refund\"\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/admin/payments/transactions/{{transactionId}}/refund",
+              "host": ["{{directUrl}}"],
+              "path": ["admin", "payments", "transactions", "{{transactionId}}", "refund"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Payment Status Tracking",
+      "item": [
+        {
+          "name": "Stripe Webhook Processing",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"evt_1234567890\",\n  \"object\": \"event\",\n  \"type\": \"payment_intent.succeeded\",\n  \"data\": {\n    \"object\": {\n      \"id\": \"pi_1234567890\",\n      \"status\": \"succeeded\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/payments/webhooks/stripe",
+              "host": ["{{directUrl}}"],
+              "path": ["payments", "webhooks", "stripe"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PayPal Webhook Processing",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"WH-1234567890\",\n  \"event_type\": \"PAYMENT.CAPTURE.COMPLETED\",\n  \"resource\": {\n    \"id\": \"paypal_order_123\",\n    \"status\": \"COMPLETED\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/api/payment/webhooks/paypal",
+              "host": ["{{directUrl}}"],
+              "path": ["api", "payment", "webhooks", "paypal"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reporting & Analytics",
+      "item": [
+        {
+          "name": "Get All Transactions (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/admin/payments/transactions?page=1&limit=10",
+              "host": ["{{directUrl}}"],
+              "path": ["admin", "payments", "transactions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transaction Details (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/admin/payments/transactions/{{transactionId}}",
+              "host": ["{{directUrl}}"],
+              "path": ["admin", "payments", "transactions", "{{transactionId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Payment Analytics (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/admin/payments/analytics?filterType=success-payment&startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{directUrl}}"],
+              "path": ["admin", "payments", "analytics"],
+              "query": [
+                {
+                  "key": "filterType",
+                  "value": "success-payment"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Gateway Integration",
+      "item": [
+        {
+          "name": "Stripe Payment Intent Creation (Mock)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer sk_test_..."
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 10000,\n  \"currency\": \"usd\",\n  \"payment_method_types\": [\"card\"]\n}"
+            },
+            "url": {
+              "raw": "https://api.stripe.com/v1/payment_intents",
+              "host": ["https://api.stripe.com"],
+              "path": ["v1", "payment_intents"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PayPal Order Creation (Mock)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer A21AA..."
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"intent\": \"CAPTURE\",\n  \"purchase_units\": [\n    {\n      \"amount\": {\n        \"currency_code\": \"USD\",\n        \"value\": \"100.00\"\n      }\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "https://api-m.sandbox.paypal.com/v2/checkout/orders",
+              "host": ["https://api-m.sandbox.paypal.com"],
+              "path": ["v2", "checkout", "orders"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Multi-Currency Support",
+      "item": [
+        {
+          "name": "Get Supported Currencies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{directUrl}}/currencies",
+              "host": ["{{directUrl}}"],
+              "path": ["currencies"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Convert Currency (Mock)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.exchangerate-api.com/v4/latest/USD",
+              "host": ["https://api.exchangerate-api.com"],
+              "path": ["v4", "latest", "USD"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Security & Fraud Prevention",
+      "item": [
+        {
+          "name": "Validate Payment Security (Mock)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cardNumber\": \"4111111111111111\",\n  \"expiryMonth\": \"12\",\n  \"expiryYear\": \"2025\",\n  \"cvv\": \"123\",\n  \"amount\": 100.00\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/payments/validate-security",
+              "host": ["{{directUrl}}"],
+              "path": ["payments", "validate-security"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Payment Initialization",
+      "item": [
+        {
+          "name": "Initialize Payment Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"{{orderId}}\",\n  \"amount\": 100.00,\n  \"currency\": \"USD\",\n  \"paymentMethods\": [\"stripe\", \"paypal\"]\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/payments/initialize",
+              "host": ["{{directUrl}}"],
+              "path": ["payments", "initialize"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Wallet Integration",
+      "item": [
+        {
+          "name": "Get Wallet Balance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/wallet/balance",
+              "host": ["{{directUrl}}"],
+              "path": ["wallet", "balance"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Funds to Wallet",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50.00,\n  \"currency\": \"USD\",\n  \"paymentMethod\": \"stripe\"\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/wallet/add-funds",
+              "host": ["{{directUrl}}"],
+              "path": ["wallet", "add-funds"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Refund / Adjustment",
+      "item": [
+        {
+          "name": "Process Adjustment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionId\": \"{{transactionId}}\",\n  \"adjustmentType\": \"fee_waiver\",\n  \"amount\": 2.90,\n  \"reason\": \"Customer service adjustment\"\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/admin/payments/adjustment",
+              "host": ["{{directUrl}}"],
+              "path": ["admin", "payments", "adjustment"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Integration with Other Services",
+      "item": [
+        {
+          "name": "Sync with Order Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"{{orderId}}\",\n  \"paymentStatus\": \"completed\",\n  \"syncType\": \"status_update\"\n}"
+            },
+            "url": {
+              "raw": "{{directUrl}}/payments/sync/order-service",
+              "host": ["{{directUrl}}"],
+              "path": ["payments", "sync", "order-service"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Security & Compliance",
+      "item": [
+        {
+          "name": "PCI Compliance Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/admin/payments/compliance/pci",
+              "host": ["{{directUrl}}"],
+              "path": ["admin", "payments", "compliance", "pci"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Audit Log Review",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{directUrl}}/admin/payments/audit-logs?startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{directUrl}}"],
+              "path": ["admin", "payments", "audit-logs"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

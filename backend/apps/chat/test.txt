@@ -1,0 +1,55 @@
+# Service Configuration
+PORT=3006
+NODE_ENV=development
+
+# MongoDB
+# For Docker: use mongodb (Docker service name)
+# For Local: use localhost
+MONGODB_URI=mongodb://mongodb:27017/chat_db
+MONGODB_DB_NAME=chat_db
+
+# Redis
+# For Docker: use redis (Docker service name)
+# For Local: use localhost
+REDIS_HOST=redis
+REDIS_PORT=6379
+REDIS_PASSWORD=
+
+# SSO Service
+# For Docker: use sso-service (Docker service name)
+# For Local: use localhost
+SSO_SERVICE_URL=http://sso-service:3001
+SSO_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAodIqPNSrdGthc/gfd4ff\nczkIcMb4Bebl2+Mo6kqRVjx4g3llKr1c8P2ARLO4Xg9aqNJjyjfZ59Pm/aBz8OnF\nE9cTJW5RqnAoX1wWGgYbhvvpgAGGl8z0EYUn/jqbl5aFy5BSZCuy8zIguycQwPlt\nl/ajhxp+Q9zJthCRy4kN5dZ7kpn0TnNpXEhopdk++e88y5CNHrnGWk6RamKucRD8\nA1EgUH/q+HzhXAl6QXHLfhxxfy1UHl60ldeAejMEsiUmb5snRADKliARUHwciphh\nhzMns3hNADJUR3vmUK5OeFwOnYTJvftJucmvEv4QmyJLfULtzbjr313KRIJJq/Tp\n5wIDAQAB\n-----END PUBLIC KEY-----\n
+SSO_ISSUER=http://sso-service:3001/sso
+
+# External Services
+# For Docker: use service names (e.g., order-service, user-profile-service)
+# For Local: use localhost
+ORDER_SERVICE_URL=http://order-service:3003
+USER_PROFILE_SERVICE_URL=http://user-profile-service:3005
+ADMIN_SERVICE_URL=http://admin-service:3007
+FILE_STORAGE_SERVICE_URL=http://file-storage-service:3009
+NOTIFICATION_SERVICE_URL=http://notification-service:3008
+
+# Kafka
+# For Docker: use kafka (Docker service name)
+# For Local: use localhost
+KAFKA_BROKERS=kafka:9092
+KAFKA_CLIENT_ID=chat-service
+KAFKA_GROUP_ID=chat-service-group
+
+# File Upload
+MAX_FILE_SIZE=1048576
+ALLOWED_FILE_TYPES=pdf,image/*,audio/*,video/*
+
+# Message Expiration
+ORDER_CHAT_EXPIRATION_DAYS=7
+AGENCY_CHAT_EXPIRATION_DAYS=7
+LIVE_CHAT_OFFLINE_TIMEOUT_MINUTES=15
+ADMIN_TIMEOUT_MINUTES=10
+
+# Security
+JWT_SECRET=change-me-jwt-secret
+RATE_LIMIT_TTL=60
+RATE_LIMIT_MAX=100
+

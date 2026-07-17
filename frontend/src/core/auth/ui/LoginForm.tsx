@@ -49,14 +49,16 @@ export function LoginForm({ onToggleForm, onForgotPassword }: LoginFormProps) {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/auth/login', {
+      const isEmail = data.email.includes('@');
+      const payload = {
+        password: data.password,
+        ...(isEmail ? { email: data.email } : { phone: data.email }),
+      };
+
+      const response = await fetch('/api/sso/auth/user/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contact: data.email, // Can be email or phone
-          password: data.password,
-          role: selectedRole
-        })
+        body: JSON.stringify(payload)
       });
 
       let resData;

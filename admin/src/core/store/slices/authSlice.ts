@@ -6,10 +6,16 @@ export const loginUser = createAsyncThunk(
   async (credentials: { email: string; password: string }, { rejectWithValue }) => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const response = await fetch(`${apiUrl}/auth/login`, {
+      const isEmail = credentials.email.includes('@');
+      const payload = {
+        password: credentials.password,
+        ...(isEmail ? { email: credentials.email } : { phone: credentials.email }),
+      };
+      
+      const response = await fetch(`${apiUrl}/sso/auth/user/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contact: credentials.email, password: credentials.password, role: 'super-admin' })
+        body: JSON.stringify(payload)
       });
       
       let data;

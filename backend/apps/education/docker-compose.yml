@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  education-service:
+    build: .
+    ports:
+      - "3015:3015"
+    environment:
+      - NODE_ENV=development
+      - PORT=3015
+      - DATABASE_URL=postgresql://user:password@postgres:5432/vero_education
+      - SSO_PUBLIC_KEY=${SSO_PUBLIC_KEY}
+      - SSO_ISSUER=http://sso:3001/sso
+    depends_on:
+      - postgres
+    networks:
+      - vero-network
+    restart: unless-stopped
+
+networks:
+  vero-network:
+    external: true
+    name: vero-network
+
+volumes:
+  education_data:

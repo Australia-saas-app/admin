@@ -1,0 +1,852 @@
+{
+  "info": {
+    "_postman_id": "business-collection-id",
+    "name": "Business Collection - Vero2",
+    "description": "Comprehensive business-related endpoints covering Profile Management, Business Verification & Approval, Order Management, Payment/Wallet Integration, Business Performance Analytics, Business Roles & Permissions, Wallet Services, Notifications, and Business Status Management. Uses admin JWT tokens for authentication.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Profile Management",
+      "item": [
+        {
+          "name": "Get Business Profile",
+          "request": {
+            "method": "GET",
+             "header": [
+               {
+                 "key": "Authorization",
+                 "value": "Bearer {{token}}"
+               }
+             ],
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile",
+              "host": ["localhost:3005"],
+              "path": ["user-profile-service", "profile"]
+            },
+            "description": "Get current business user profile information"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Business Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{businessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Updated Business Name\",\n  \"profilePhoto\": \"https://storage.example.com/photos/profile.jpg\",\n  \"nationality\": \"American\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"currency\": \"USD\",\n  \"country\": \"United States\",\n  \"state\": \"California\",\n  \"city\": \"San Francisco\",\n  \"zipCode\": \"94105\",\n  \"permanentAddress\": \"123 Business St, San Francisco, CA 94105\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile",
+              "host": ["localhost:3005"],
+              "path": ["user-profile-service", "profile"]
+            },
+            "description": "Update business profile information"
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Business Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{businessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profilePhoto\": \"https://storage.example.com/photos/profile.jpg\",\n  \"fullName\": \"John Doe\",\n  \"nationality\": \"American\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"identityNumber\": \"A123456789\",\n  \"identityType\": \"passport\",\n  \"documentUrl\": \"https://storage.example.com/documents/passport.pdf\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/verify",
+              "host": ["localhost:3005"],
+              "path": ["user-profile-service", "profile", "verify"]
+            },
+            "description": "Verify business profile with identity proof"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile Photo",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{businessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"photoUrl\": \"https://storage.example.com/photos/profile.jpg\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/photo",
+              "host": ["localhost:3005"],
+              "path": ["user-profile-service", "profile", "photo"]
+            },
+            "description": "Update business profile photo"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Business Contacts",
+          "request": {
+            "method": "GET",
+             "header": [
+               {
+                 "key": "Authorization",
+                 "value": "Bearer {{token}}"
+               }
+             ],
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/contacts",
+              "host": ["localhost:3005"],
+              "path": ["user-profile-service", "profile", "contacts"]
+            },
+            "description": "Get business contact information"
+          },
+          "response": []
+        },
+        {
+          "name": "Send OTP for Contact Verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"contact@business.com\",\n  \"type\": \"profile-contact\"\n}"
+            },
+            "url": {
+              "raw": "{{ssoUrl}}/sso/auth/send-otp",
+              "host": ["{{ssoUrl}}"],
+              "path": ["sso", "auth", "send-otp"]
+            },
+            "description": "Send OTP to email or phone for contact verification before adding contact. IMPORTANT: Use type: 'profile-contact' (not 'contact_verification')"
+          },
+          "response": []
+        },
+        {
+          "name": "Add Business Contact",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{businessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"email\",\n  \"value\": \"contact@business.com\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/contacts",
+              "host": ["localhost:3005"],
+              "path": ["user-profile-service", "profile", "contacts"]
+            },
+            "description": "Add a new business contact (requires OTP from Send OTP for Contact Verification)"
+          },
+          "response": []
+        },
+        {
+          "name": "Set Primary Contact",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{businessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contactId\": \"contact-uuid-here\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/contacts/primary",
+              "host": ["localhost:3005"],
+              "path": ["user-profile-service", "profile", "contacts", "primary"]
+            },
+            "description": "Set a contact as the primary contact"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Business Preferences",
+          "request": {
+            "method": "GET",
+             "header": [
+               {
+                 "key": "Authorization",
+                 "value": "Bearer {{token}}"
+               }
+             ],
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/preferences",
+              "host": ["localhost:3005"],
+              "path": ["user-profile-service", "preferences"]
+            },
+            "description": "Get business user preferences"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Business Preferences",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{businessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currency\": \"USD\",\n  \"language\": \"en\",\n  \"theme\": \"light\",\n  \"emailNotifications\": true,\n  \"smsNotifications\": false,\n  \"pushNotifications\": true,\n  \"twoFactorEnabled\": true,\n  \"twoFactorMethod\": \"email\",\n  \"notificationSettings\": {\n    \"orderUpdates\": true,\n    \"paymentAlerts\": true\n  },\n  \"privacySettings\": {\n    \"profileVisibility\": \"private\",\n    \"contactInfoVisible\": false\n  }\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/preferences",
+              "host": ["localhost:3005"],
+              "path": ["user-profile-service", "preferences"]
+            },
+            "description": "Update business user preferences"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Business Activity Logs",
+          "request": {
+            "method": "GET",
+             "header": [
+               {
+                 "key": "Authorization",
+                 "value": "Bearer {{token}}"
+               }
+             ],
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/activity?page=1&limit=20",
+              "host": ["localhost:3005"],
+              "path": ["user-profile-service", "activity"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get business user activity logs"
+          },
+          "response": []
+        }
+      ]
+    },
+     {
+       "name": "Business Verification & Approval",
+       "item": [
+         {
+           "name": "Verify Business Profile",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Authorization",
+                 "value": "Bearer {{businessToken}}"
+               },
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"profilePhoto\": \"https://storage.example.com/photos/profile.jpg\",\n  \"fullName\": \"John Doe\",\n  \"nationality\": \"American\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"identityNumber\": \"A123456789\",\n  \"identityType\": \"passport\",\n  \"documentUrl\": \"https://storage.example.com/documents/passport.pdf\"\n}"
+             },
+             "url": {
+               "raw": "http://localhost:3005/user-profile-service/profile/verify",
+               "host": ["localhost:3005"],
+               "path": ["user-profile-service", "profile", "verify"]
+             },
+             "description": "Submit business profile verification documents for review"
+           },
+           "response": []
+         }
+       ]
+     },
+    {
+      "name": "Order Management",
+       "item": [
+         {
+           "name": "Create Order",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Authorization",
+                 "value": "Bearer {{token}}"
+               },
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"orderType\": \"technology\",\n  \"serviceName\": \"Web Development Service\",\n  \"clientInfo\": {\n    \"fullName\": \"John Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"phone\": \"+1234567890\"\n  },\n  \"pricing\": {\n    \"totalAmount\": 25000,\n    \"currency\": \"USD\"\n  },\n  \"orderDetails\": {\n    \"projectType\": \"E-commerce website development\",\n    \"priorityLevel\": \"high\",\n    \"expectedEndDate\": \"2024-12-31\"\n  }\n}"
+             },
+             "url": {
+               "raw": "{{orderUrl}}/api/orders",
+               "host": ["localhost:3011"],
+               "path": ["api", "orders"]
+             },
+             "description": "Create a new order for a service"
+           },
+           "response": []
+         },
+         {
+           "name": "List All Orders",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+             "url": {
+               "raw": "{{orderUrl}}/api/orders?page=1&limit=20&status=working",
+               "host": ["localhost:3011"],
+               "path": ["api", "orders"],
+               "query": [
+                 {
+                   "key": "page",
+                   "value": "1"
+                 },
+                 {
+                   "key": "limit",
+                   "value": "20"
+                 },
+                 {
+                   "key": "status",
+                   "value": "working",
+                   "disabled": true
+                 },
+                 {
+                   "key": "orderType",
+                   "value": "",
+                   "disabled": true
+                 },
+                 {
+                   "key": "search",
+                   "value": "",
+                   "disabled": true
+                 }
+               ]
+             },
+             "description": "List all orders with filtering options"
+           },
+           "response": []
+         },
+         {
+            "name": "Get Order Details",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+             "url": {
+               "raw": "{{orderUrl}}/api/orders/{{orderCode}}",
+               "host": ["localhost:3011"],
+               "path": ["api", "orders", "{{orderCode}}"]
+             },
+             "description": "Get detailed information about a specific order"
+           },
+           "response": []
+         },
+         {
+            "name": "Update Order (Pending Status)",
+            "request": {
+              "method": "PATCH",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"serviceName\": \"Updated Service Name\",\n  \"pricing\": {\n    \"totalAmount\": 30000,\n    \"currency\": \"USD\"\n  },\n  \"orderDetails\": {\n    \"expectedEndDate\": \"2024-12-31\"\n  }\n}"
+             },
+             "url": {
+               "raw": "{{orderUrl}}/api/orders/{{orderCode}}",
+               "host": ["localhost:3011"],
+               "path": ["api", "orders", "{{orderCode}}"]
+             },
+             "description": "Update order details while in pending status"
+           },
+           "response": []
+          }
+      ]
+    },
+    {
+      "name": "Payment / Wallet Integration",
+      "item": [
+          {
+            "name": "Add Payment Card",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"cardNumber\": \"4242424242424242\",\n  \"expiryMonth\": \"12\",\n  \"expiryYear\": \"2025\",\n  \"cvv\": \"123\",\n  \"cardHolderName\": \"John Doe\",\n  \"cardType\": \"visa\",\n  \"isDefault\": true\n}"
+              },
+              "url": {
+                "raw": "http://localhost:3004/api/payment/wallet/cards",
+                "host": ["localhost:3004"],
+                "path": ["api", "payment", "wallet", "cards"]
+              },
+              "description": "Add a new payment card for wallet transactions"
+            },
+            "response": []
+          },
+          {
+            "name": "List Payment Cards",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:3004/api/payment/wallet/cards",
+                "host": ["localhost:3004"],
+                "path": ["api", "payment", "wallet", "cards"]
+              },
+              "description": "List all saved payment cards"
+            },
+            "response": []
+          },
+          {
+            "name": "Get Wallet Transaction History",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:3004/api/payment/wallet/transactions?page=1&limit=20",
+                "host": ["localhost:3004"],
+                "path": ["api", "payment", "wallet", "transactions"],
+                "query": [
+                  {
+                    "key": "page",
+                    "value": "1"
+                  },
+                  {
+                    "key": "limit",
+                    "value": "20"
+                  },
+                  {
+                    "key": "type",
+                    "value": "",
+                    "disabled": true
+                  }
+                ]
+              },
+              "description": "Get wallet transaction history for the authenticated user"
+            },
+            "response": []
+          },
+          {
+            "name": "Top Up Wallet",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"amount\": 1000.00,\n  \"currency\": \"USD\",\n  \"paymentMethod\": \"stripe\"\n}"
+              },
+              "url": {
+                "raw": "http://localhost:3004/api/payment/wallet/buy",
+                "host": ["localhost:3004"],
+                "path": ["api", "payment", "wallet", "buy"]
+              },
+              "description": "Add funds to wallet"
+            },
+            "response": []
+          },
+          {
+            "name": "Withdraw from Wallet",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"amount\": 500.00,\n  \"currency\": \"USD\",\n  \"withdrawalMethod\": \"bank_transfer\",\n  \"accountDetails\": {\n    \"accountNumber\": \"****1234\",\n    \"routingNumber\": \"****5678\",\n    \"accountHolderName\": \"Business Name\"\n  }\n}"
+              },
+              "url": {
+                "raw": "http://localhost:3004/api/payment/wallet/withdraw",
+                "host": ["localhost:3004"],
+                "path": ["api", "payment", "wallet", "withdraw"]
+              },
+              "description": "Withdraw funds from wallet"
+            },
+            "response": []
+          },
+          {
+            "name": "Refund Transaction",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"transactionId\": \"txn_123456\",\n  \"amount\": 500.00,\n  \"reason\": \"Customer requested refund\"\n}"
+              },
+              "url": {
+                "raw": "http://localhost:3004/api/payment/wallet/refund",
+                "host": ["localhost:3004"],
+                "path": ["api", "payment", "wallet", "refund"]
+              },
+              "description": "Refund a completed transaction"
+            },
+            "response": []
+          },
+          {
+            "name": "Get Wallet Balance",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:3004/api/payment/wallet",
+                "host": ["localhost:3004"],
+                "path": ["api", "payment", "wallet"]
+              },
+              "description": "Get wallet balance and details"
+            },
+            "response": []
+          }
+      ]
+    },
+    {
+      "name": "Business Performance Analytics",
+       "item": [
+         {
+           "name": "Dashboard Analytics",
+           "request": {
+             "method": "GET",
+             "header": [
+               {
+                 "key": "Authorization",
+                 "value": "Bearer {{token}}"
+               }
+             ],
+             "url": {
+               "raw": "http://localhost:3007/admin-service/analytics/dashboard?period=month&startDate=2024-01-01&endDate=2024-12-31",
+               "host": ["localhost:3007"],
+               "path": ["admin-service", "analytics", "dashboard"],
+               "query": [
+                 {
+                   "key": "period",
+                   "value": "month"
+                 },
+                 {
+                   "key": "startDate",
+                   "value": "2024-01-01",
+                   "disabled": true
+                 },
+                 {
+                   "key": "endDate",
+                   "value": "2024-12-31",
+                   "disabled": true
+                 }
+               ]
+             },
+             "description": "Get comprehensive dashboard analytics"
+           },
+           "response": []
+         },
+         {
+           "name": "Order Analytics",
+           "request": {
+             "method": "GET",
+             "header": [
+               {
+                 "key": "Authorization",
+                 "value": "Bearer {{token}}"
+               }
+             ],
+             "url": {
+               "raw": "http://localhost:3007/admin-service/analytics/orders?period=month",
+               "host": ["localhost:3007"],
+               "path": ["admin-service", "analytics", "orders"],
+               "query": [
+                 {
+                   "key": "period",
+                   "value": "month"
+                 }
+               ]
+             },
+             "description": "Get order creation and completion analytics"
+           },
+           "response": []
+         },
+         {
+           "name": "Payment Analytics",
+           "request": {
+             "method": "GET",
+             "header": [
+               {
+                 "key": "Authorization",
+                 "value": "Bearer {{token}}"
+               }
+             ],
+             "url": {
+               "raw": "http://localhost:3007/admin-service/analytics/payments?period=month",
+               "host": ["localhost:3007"],
+               "path": ["admin-service", "analytics", "payments"],
+               "query": [
+                 {
+                   "key": "period",
+                   "value": "month"
+                 }
+               ]
+             },
+             "description": "Get payment and revenue analytics"
+           },
+           "response": []
+         },
+         {
+           "name": "Revenue Analytics",
+           "request": {
+             "method": "GET",
+             "header": [
+               {
+                 "key": "Authorization",
+                 "value": "Bearer {{token}}"
+               }
+             ],
+             "url": {
+               "raw": "http://localhost:3007/admin-service/analytics/revenue?period=month",
+               "host": ["localhost:3007"],
+               "path": ["admin-service", "analytics", "revenue"],
+               "query": [
+                 {
+                   "key": "period",
+                   "value": "month"
+                 }
+               ]
+             },
+             "description": "Get detailed revenue breakdown analytics"
+           },
+           "response": []
+         }
+       ]
+    },
+
+
+
+     {
+       "name": "Business Status Management",
+       "item": [
+          {
+            "name": "Get My Business Orders",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{orderUrl}}/api/orders?page=1&limit=10",
+                "host": ["localhost:3011"],
+                "path": ["api", "orders"],
+                "query": [
+                  {
+                    "key": "page",
+                    "value": "1"
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10"
+                  }
+                ]
+              },
+              "description": "Get orders for the authenticated business user"
+            },
+            "response": []
+          },
+          {
+            "name": "Get My Business Transactions",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:3004/api/payment/wallet/transactions?page=1&limit=10",
+                "host": ["localhost:3004"],
+                "path": ["api", "payment", "wallet", "transactions"],
+                "query": [
+                  {
+                    "key": "page",
+                    "value": "1"
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10"
+                  }
+                ]
+              },
+              "description": "Get wallet transactions for the authenticated business user"
+            },
+            "response": []
+          }
+       ]
+     }
+  ],
+   "variable": [
+     {
+       "key": "gatewayUrl",
+       "value": "http://localhost:8000"
+     },
+     {
+       "key": "ssoUrl",
+       "value": "http://localhost:3001"
+     },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "businessToken",
+      "value": ""
+    },
+     {
+       "key": "businessId",
+       "value": ""
+     },
+     {
+       "key": "orderCode",
+       "value": ""
+     },
+     {
+       "key": "orderUrl",
+       "value": "http://localhost:3011"
+     },
+     {
+       "key": "token",
+       "value": ""
+     },
+     {
+       "key": "transactionId",
+       "value": ""
+     },
+    {
+      "key": "adminId",
+      "value": ""
+    },
+    {
+      "key": "notificationId",
+      "value": ""
+    }
+  ]
+}

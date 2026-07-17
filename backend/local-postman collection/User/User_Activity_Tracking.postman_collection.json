@@ -1,0 +1,43 @@
+{
+  "info": {
+    "_postman_id": "user-activity-id",
+    "name": "User Activity Tracking - Vero2 Local",
+    "description": "User activity logs and tracking endpoints. Updated for local testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "User Activity Tracking",
+      "item": [
+        {
+          "name": "Get Activity Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/activity?page=1&limit=20",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["activity"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

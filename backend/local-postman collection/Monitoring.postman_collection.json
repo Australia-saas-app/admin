@@ -1,0 +1,1366 @@
+{
+  "info": {
+    "_postman_id": "monitoring-collection-id",
+    "name": "Monitoring Collection - Vero2",
+    "description": "Comprehensive monitoring system covering Centralized Logging, Error Tracking & Alerting, Performance Monitoring, Health Checks, Analytics & Reporting, Integration with Other Services, Audit & Compliance, and Visualization & Dashboard functionality. Based on existing monitoring capabilities across all services.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Centralized Logging",
+      "item": [
+        {
+          "name": "View Application Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/logs/application?page=1&limit=50&service=chat&level=error",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "logs", "application"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "service",
+                  "value": "chat",
+                  "disabled": true
+                },
+                {
+                  "key": "level",
+                  "value": "error",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "View centralized application logs from all services"
+          },
+          "response": []
+        },
+        {
+          "name": "View User Activity Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/logs/activity?page=1&limit=50&userId={{userId}}&action=login",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "logs", "activity"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "userId",
+                  "value": "{{userId}}",
+                  "disabled": true
+                },
+                {
+                  "key": "action",
+                  "value": "login",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "View user activity logs for audit purposes"
+          },
+          "response": []
+        },
+        {
+          "name": "View API Request Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/logs/api?page=1&limit=50&endpoint=/api/chat&method=POST&statusCode=200",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "logs", "api"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "endpoint",
+                  "value": "/api/chat",
+                  "disabled": true
+                },
+                {
+                  "key": "method",
+                  "value": "POST",
+                  "disabled": true
+                },
+                {
+                  "key": "statusCode",
+                  "value": "200",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "View API request/response logs"
+          },
+          "response": []
+        },
+        {
+          "name": "Search Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/logs/search?query=error&service=chat&startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "logs", "search"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "error"
+                },
+                {
+                  "key": "service",
+                  "value": "chat",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            },
+            "description": "Search through all log entries with filters"
+          },
+          "response": []
+        },
+        {
+          "name": "Export Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/logs/export?format=json&service=chat&startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "logs", "export"],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "json"
+                },
+                {
+                  "key": "service",
+                  "value": "chat"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            },
+            "description": "Export logs in various formats for analysis"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Error Tracking & Alerting",
+      "item": [
+        {
+          "name": "View Error Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/errors?page=1&limit=50&service=chat&severity=high",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "errors"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "service",
+                  "value": "chat",
+                  "disabled": true
+                },
+                {
+                  "key": "severity",
+                  "value": "high",
+                  "disabled": true
+                },
+                {
+                  "key": "resolved",
+                  "value": "false",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "View application errors and exceptions"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Error Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/errors/stats?period=week&service=chat",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "errors", "stats"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "week"
+                },
+                {
+                  "key": "service",
+                  "value": "chat",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get error statistics and trends"
+          },
+          "response": []
+        },
+        {
+          "name": "Configure Error Alerts",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alertOnErrors\": true,\n  \"errorThreshold\": 10,\n  \"alertChannels\": [\"email\", \"slack\"],\n  \"alertRecipients\": [\"admin@example.com\"],\n  \"services\": [\"chat\", \"payment\", \"order\"]\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/errors/alerts/config",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "errors", "alerts", "config"]
+            },
+            "description": "Configure error alerting rules and thresholds"
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Error as Resolved",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resolved\": true,\n  \"resolution\": \"Fixed by deploying hotfix v1.2.1\",\n  \"resolvedBy\": \"admin@example.com\",\n  \"preventiveAction\": \"Added input validation\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/errors/{{errorId}}/resolve",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "errors", "{{errorId}}", "resolve"]
+            },
+            "description": "Mark an error as resolved with resolution details"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Alert History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/errors/alerts/history?page=1&limit=20",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "errors", "alerts", "history"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "View history of sent error alerts"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Performance Monitoring",
+      "item": [
+        {
+          "name": "Get API Performance Metrics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/performance/api?period=hour&endpoint=/api/chat",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "performance", "api"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "hour"
+                },
+                {
+                  "key": "endpoint",
+                  "value": "/api/chat",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Monitor API endpoint performance (response times, throughput)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Database Performance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/performance/database?period=hour",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "performance", "database"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "hour"
+                }
+              ]
+            },
+            "description": "Monitor database performance metrics"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Service Response Times",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/performance/services?period=hour&service=chat",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "performance", "services"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "hour"
+                },
+                {
+                  "key": "service",
+                  "value": "chat",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Monitor service-level response times and performance"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Resource Usage",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/performance/resources?period=hour&resource=cpu",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "performance", "resources"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "hour"
+                },
+                {
+                  "key": "resource",
+                  "value": "cpu",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Monitor system resource usage (CPU, memory, disk)"
+          },
+          "response": []
+        },
+        {
+          "name": "Set Performance Thresholds",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"apiResponseTimeThreshold\": 2000,\n  \"databaseQueryTimeThreshold\": 500,\n  \"cpuUsageThreshold\": 80,\n  \"memoryUsageThreshold\": 85,\n  \"alertChannels\": [\"email\", \"slack\"]\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/performance/thresholds",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "performance", "thresholds"]
+            },
+            "description": "Configure performance monitoring thresholds and alerts"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health Checks",
+      "item": [
+        {
+          "name": "Chat Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "chat", "health"]
+            },
+            "description": "Check Chat service health status"
+          },
+          "response": []
+        },
+        {
+          "name": "Payment Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/payment/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["payment", "health"]
+            },
+            "description": "Check Payment service health status"
+          },
+          "response": []
+        },
+        {
+          "name": "File Storage Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/files/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "files", "health"]
+            },
+            "description": "Check File Storage service health status"
+          },
+          "response": []
+        },
+        {
+          "name": "Order Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/orders/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "orders", "health"]
+            },
+            "description": "Check Order service health status"
+          },
+          "response": []
+        },
+        {
+          "name": "User Profile Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/user-profile-service/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["user-profile-service", "health"]
+            },
+            "description": "Check User Profile service health status"
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "health"]
+            },
+            "description": "Check Admin service health status"
+          },
+          "response": []
+        },
+        {
+          "name": "All Services Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/health/all",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "health", "all"]
+            },
+            "description": "Check health status of all services from admin dashboard"
+          },
+          "response": []
+        },
+        {
+          "name": "Database Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/health/database",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "health", "database"]
+            },
+            "description": "Check database connectivity and performance"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Analytics & Reporting",
+      "item": [
+        {
+          "name": "Dashboard Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/dashboard?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "dashboard"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get comprehensive dashboard analytics"
+          },
+          "response": []
+        },
+        {
+          "name": "User Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/users?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "users"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get user registration and activity analytics"
+          },
+          "response": []
+        },
+        {
+          "name": "Order Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/orders?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "orders"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get order creation and completion analytics"
+          },
+          "response": []
+        },
+        {
+          "name": "Payment Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/payments?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "payments"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get payment and transaction analytics"
+          },
+          "response": []
+        },
+        {
+          "name": "Revenue Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/revenue?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "revenue"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get detailed revenue breakdown and trends"
+          },
+          "response": []
+        },
+        {
+          "name": "Traffic Analytics by Device",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/traffic/device?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "traffic", "device"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get website traffic analytics by device type"
+          },
+          "response": []
+        },
+        {
+          "name": "Traffic Analytics by Location",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/traffic/location?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "traffic", "location"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get website traffic analytics by geographic location"
+          },
+          "response": []
+        },
+        {
+          "name": "Visitor Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/visitors?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "visitors"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get detailed visitor statistics and behavior analytics"
+          },
+          "response": []
+        },
+        {
+          "name": "Export Analytics Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/analytics/export?format=pdf&reportType=dashboard&startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "analytics", "export"],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "reportType",
+                  "value": "dashboard"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            },
+            "description": "Export analytics reports in various formats"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Integration with Other Services",
+      "item": [
+        {
+          "name": "Monitor Service Dependencies",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/monitoring/dependencies?service=chat",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "monitoring", "dependencies"],
+              "query": [
+                {
+                  "key": "service",
+                  "value": "chat"
+                }
+              ]
+            },
+            "description": "Monitor service dependencies and their health"
+          },
+          "response": []
+        },
+        {
+          "name": "External API Monitoring",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/monitoring/external-apis?page=1&limit=10",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "monitoring", "external-apis"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Monitor external API integrations (payment gateways, email services, etc.)"
+          },
+          "response": []
+        },
+        {
+          "name": "Webhook Monitoring",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/monitoring/webhooks?page=1&limit=20&status=failed",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "monitoring", "webhooks"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "status",
+                  "value": "failed",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Monitor webhook deliveries and failures"
+          },
+          "response": []
+        },
+        {
+          "name": "Third-Party Service Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/monitoring/third-party?service=stripe",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "monitoring", "third-party"],
+              "query": [
+                {
+                  "key": "service",
+                  "value": "stripe",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Monitor status of third-party services and integrations"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Audit & Compliance",
+      "item": [
+        {
+          "name": "View Audit Trails",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/audit/trails?page=1&limit=50&entityType=user",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "audit", "trails"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "entityType",
+                  "value": "user",
+                  "disabled": true
+                },
+                {
+                  "key": "userId",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "View detailed audit trails of system changes"
+          },
+          "response": []
+        },
+        {
+          "name": "View System Events",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/audit/events?page=1&limit=50&eventType=security",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "audit", "events"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "eventType",
+                  "value": "security",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "View system security events and alerts"
+          },
+          "response": []
+        },
+        {
+          "name": "Compliance Report Generation",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/audit/compliance/report?period=quarter&standard=GDPR",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "audit", "compliance", "report"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "quarter"
+                },
+                {
+                  "key": "standard",
+                  "value": "GDPR",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Generate compliance reports for regulatory standards"
+          },
+          "response": []
+        },
+        {
+          "name": "Data Retention Audit",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/audit/data-retention?entityType=user&olderThan=365",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "audit", "data-retention"],
+              "query": [
+                {
+                  "key": "entityType",
+                  "value": "user"
+                },
+                {
+                  "key": "olderThan",
+                  "value": "365"
+                }
+              ]
+            },
+            "description": "Audit data retention compliance"
+          },
+          "response": []
+        },
+        {
+          "name": "Access Control Audit",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/audit/access-control?page=1&limit=50&action=denied",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "audit", "access-control"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "action",
+                  "value": "denied",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Audit access control events and permission changes"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Visualization & Dashboard",
+      "item": [
+        {
+          "name": "Real-time Metrics Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/dashboard/realtime?metrics=cpu,memory,requests",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "dashboard", "realtime"],
+              "query": [
+                {
+                  "key": "metrics",
+                  "value": "cpu,memory,requests"
+                }
+              ]
+            },
+            "description": "Get real-time metrics for dashboard visualization"
+          },
+          "response": []
+        },
+        {
+          "name": "Custom Dashboard Configuration",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"widgets\": [\n    {\n      \"type\": \"chart\",\n      \"metric\": \"user_registrations\",\n      \"period\": \"month\",\n      \"position\": {\"x\": 0, \"y\": 0, \"width\": 6, \"height\": 4}\n    },\n    {\n      \"type\": \"metric\",\n      \"metric\": \"active_users\",\n      \"position\": {\"x\": 6, \"y\": 0, \"width\": 3, \"height\": 2}\n    }\n  ],\n  \"refreshInterval\": 30000\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/dashboard/config",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "dashboard", "config"]
+            },
+            "description": "Configure custom dashboard widgets and layout"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Dashboard Charts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/dashboard/charts?type=line&metric=user_growth&period=6months",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "dashboard", "charts"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "line"
+                },
+                {
+                  "key": "metric",
+                  "value": "user_growth"
+                },
+                {
+                  "key": "period",
+                  "value": "6months"
+                }
+              ]
+            },
+            "description": "Generate chart data for dashboard visualization"
+          },
+          "response": []
+        },
+        {
+          "name": "Alert Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/dashboard/alerts?page=1&limit=10&status=active",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "dashboard", "alerts"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "active"
+                }
+              ]
+            },
+            "description": "Get active alerts for dashboard display"
+          },
+          "response": []
+        },
+        {
+          "name": "Performance Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/dashboard/performance?period=hour",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "dashboard", "performance"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "hour"
+                }
+              ]
+            },
+            "description": "Get performance metrics for dashboard display"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "gatewayUrl",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "errorId",
+      "value": ""
+    }
+  ]
+}

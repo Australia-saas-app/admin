@@ -1,0 +1,385 @@
+{
+  "info": {
+    "_postman_id": "config-collection-id",
+    "name": "Config Collection - Vero2",
+    "description": "Centralized Configuration Management, Feature Flag Management, Environment-specific Config, Integration with Other Services, Real-time Updates, Versioning & Audit, Access Control, Monitoring & Analytics. Assumes config service running on localhost:3002.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Centralized Configuration Management",
+      "item": [
+        {
+          "name": "Create Configuration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"key\": \"app.timeout\", \"value\": \"30000\", \"description\": \"Application timeout in ms\", \"environment\": \"prod\"}"
+            },
+            "url": {
+              "raw": "{{configServiceUrl}}/config",
+              "host": ["{{configServiceUrl}}"],
+              "path": ["config"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Configuration",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{configServiceUrl}}/config/app.timeout",
+              "host": ["{{configServiceUrl}}"],
+              "path": ["config", "app.timeout"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Configuration",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"value\": \"45000\", \"description\": \"Updated timeout\"}"
+            },
+            "url": {
+              "raw": "{{configServiceUrl}}/config/app.timeout",
+              "host": ["{{configServiceUrl}}"],
+              "path": ["config", "app.timeout"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Configuration",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{configServiceUrl}}/config/app.timeout",
+              "host": ["{{configServiceUrl}}"],
+              "path": ["config", "app.timeout"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Configurations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{configServiceUrl}}/config?page=1&limit=10",
+              "host": ["{{configServiceUrl}}"],
+              "path": ["config"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Feature Flag Management",
+      "item": [
+        {
+          "name": "Create Feature Flag",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"new_ui\", \"enabled\": true, \"description\": \"Enable new UI features\"}"
+            },
+            "url": {
+              "raw": "{{configServiceUrl}}/feature-flags",
+              "host": ["{{configServiceUrl}}"],
+              "path": ["feature-flags"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Feature Flag",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{configServiceUrl}}/feature-flags/new_ui",
+              "host": ["{{configServiceUrl}}"],
+              "path": ["feature-flags", "new_ui"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Feature Flag",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"enabled\": false}"
+            },
+            "url": {
+              "raw": "{{configServiceUrl}}/feature-flags/new_ui",
+              "host": ["{{configServiceUrl}}"],
+              "path": ["feature-flags", "new_ui"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Environment-specific Config",
+      "item": [
+        {
+          "name": "Get Config by Environment",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{configServiceUrl}}/config?environment=prod",
+              "host": ["{{configServiceUrl}}"],
+              "path": ["config"],
+              "query": [
+                {
+                  "key": "environment",
+                  "value": "prod"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Integration with Other Services",
+      "item": [
+        {
+          "name": "Update Service Integration Config",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"service\": \"payment\", \"apiKey\": \"secret\", \"enabled\": true}"
+            },
+            "url": {
+              "raw": "{{configServiceUrl}}/integrations/payment",
+              "host": ["{{configServiceUrl}}"],
+              "path": ["integrations", "payment"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Real-time Updates",
+      "item": [
+        {
+          "name": "Subscribe to Config Changes (WebSocket)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "ws://{{configServiceUrl}}/ws/config-updates",
+              "host": ["{{configServiceUrl}}"],
+              "path": ["ws", "config-updates"]
+            },
+            "description": "WebSocket endpoint for real-time config updates"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Versioning & Audit",
+      "item": [
+        {
+          "name": "Get Config History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{configServiceUrl}}/config/app.timeout/history",
+              "host": ["{{configServiceUrl}}"],
+              "path": ["config", "app.timeout", "history"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Access Control",
+      "item": [
+        {
+          "name": "Set Config Permissions",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"role\": \"admin\", \"permissions\": [\"read\", \"write\"]}"
+            },
+            "url": {
+              "raw": "{{configServiceUrl}}/config/app.timeout/permissions",
+              "host": ["{{configServiceUrl}}"],
+              "path": ["config", "app.timeout", "permissions"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Monitoring & Analytics",
+      "item": [
+        {
+          "name": "Get Config Usage Metrics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{configServiceUrl}}/analytics/config-usage?period=7d",
+              "host": ["{{configServiceUrl}}"],
+              "path": ["analytics", "config-usage"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "7d"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "configServiceUrl",
+      "value": "http://localhost:3002",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

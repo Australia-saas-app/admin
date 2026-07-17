@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  visa-travel-service:
+    build: .
+    container_name: visa-travel-service
+    ports:
+      - "3017:3017"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/visa-travel
+      - PORT=3017
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-data:/data/db
+volumes:
+  mongo-data: {}
+

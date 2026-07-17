@@ -80,10 +80,10 @@ export function ForgotPasswordPage({ onBackToLogin, onNext, onSuccess }: ForgotP
     setIsSubmitting(true)
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const res = await fetch(`${apiUrl}/auth/verify-contact`, {
+      const res = await fetch(`${apiUrl}/sso/auth/user/forgot-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contact: data.email, role: 'super-admin' })
+        body: JSON.stringify({ email: data.email })
       })
       const result = await res.json()
       
@@ -107,10 +107,10 @@ export function ForgotPasswordPage({ onBackToLogin, onNext, onSuccess }: ForgotP
     setIsSubmitting(true)
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const res = await fetch(`${apiUrl}/auth/forgot-password-reset`, {
+      const res = await fetch(`${apiUrl}/sso/auth/user/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier: verifiedEmail, role: 'super-admin', newPassword: data.newPassword })
+        body: JSON.stringify({ email: verifiedEmail, otp: otpDigits.join(""), newPassword: data.newPassword })
       })
       const result = await res.json()
       
@@ -226,11 +226,10 @@ export function ForgotPasswordPage({ onBackToLogin, onNext, onSuccess }: ForgotP
               disabled={isSubmitting || otpDigits.join("").length < 6}
               onClick={() => {
                 const code = otpDigits.join("");
-                if (code === "456789") {
-                  toast.success("OTP Verified!");
+                if (code.length === 6) {
                   setPhase("reset");
                 } else {
-                  toast.error("Invalid OTP");
+                  toast.error("Please enter a 6-digit OTP");
                 }
               }}
               className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-sm transition-all flex items-center justify-center disabled:opacity-50"

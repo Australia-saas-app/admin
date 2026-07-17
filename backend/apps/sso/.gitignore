@@ -1,0 +1,42 @@
+# Node dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Security - Private Keys and Certificates (NEVER COMMIT THESE)
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+private.pem
+public.pem
+*.private
+*.secret
+*-key.pem
+*-private.pem
+*-public.pem
+private_key.txt
+temp-keygen.js

@@ -1,0 +1,782 @@
+{
+  "info": {
+    "_postman_id": "vero2-user-collection",
+    "name": "Vero2 User API Collection",
+    "description": "Complete collection of all Vero2 User API endpoints for local testing. Includes authentication, profile management, orders, payments, notifications, and more.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "user-collection"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "User Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"accountType\": \"user\",\n  \"currency\": \"USD\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/user/register",
+              "host": ["http://localhost:3001/sso"],
+              "path": ["auth", "user", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Registration OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/user/verify-otp",
+              "host": ["http://localhost:3001/sso"],
+              "path": ["auth", "user", "verify-otp"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User Login (Get SSO Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  pm.collectionVariables.set('ssoToken', json.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"deviceId\": \"postman-device\",\n  \"deviceName\": \"Postman Client\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/user/login",
+              "host": ["http://localhost:3001/sso"],
+              "path": ["auth", "user", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/user/forgot-password",
+              "host": ["http://localhost:3001/sso"],
+              "path": ["auth", "user", "forgot-password"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"otp\": \"123456\",\n  \"newPassword\": \"NewSecurePass123!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/user/reset-password",
+              "host": ["http://localhost:3001/sso"],
+              "path": ["auth", "user", "reset-password"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Profile Management",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"nationality\": \"US\",\n  \"currency\": \"USD\",\n  \"country\": \"United States\",\n  \"state\": \"California\",\n  \"city\": \"San Francisco\",\n  \"zipCode\": \"94102\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profilePhoto\": \"https://example.com/photo.jpg\",\n  \"fullName\": \"John Doe\",\n  \"nationality\": \"US\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"identityNumber\": \"123456789\",\n  \"identityType\": \"passport\",\n  \"documentUrl\": \"https://example.com/document.pdf\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/verify",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["profile", "verify"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile Photo",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"photoUrl\": \"https://example.com/new-photo.jpg\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/photo",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["profile", "photo"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Contacts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/contacts",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["profile", "contacts"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Contact",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"email\",\n  \"value\": \"secondary@example.com\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/contacts",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["profile", "contacts"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send Contact OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"secondary@example.com\",\n  \"type\": \"profile-contact\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/send-otp",
+              "host": ["http://localhost:3001/sso/auth"],
+              "path": ["send-otp"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Contact OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"{{contactOtp}}\",\n  \"type\": \"profile-contact\",\n  \"email\": \"secondary@example.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/verify-otp/generic",
+              "host": ["http://localhost:3001/sso/auth/verify-otp"],
+              "path": ["generic"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Primary Contact",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contactId\": \"CONTACT001\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/contacts/primary",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["profile", "contacts", "primary"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Contact",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"YourPassword123!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/profile/contacts/{{contactId}}",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["profile", "contacts", "{{contactId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Order / Business",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderType\": \"technology\",\n  \"serviceName\": \"Full-stack MVP\",\n  \"clientInfo\": {\n    \"fullName\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"phone\": \"+1-202-555-0112\",\n    \"nationality\": \"US\",\n    \"permanentAddress\": {\n      \"country\": \"United States\",\n      \"state\": \"CA\",\n      \"city\": \"San Francisco\",\n      \"zipCode\": \"94105\",\n      \"address\": \"1 Market St\"\n    }\n  },\n  \"pricing\": {\n    \"totalAmount\": 25000,\n    \"currency\": \"USD\"\n  },\n  \"orderDetails\": {\n    \"projectType\": \"Company\",\n    \"priorityLevel\": \"High\",\n    \"expectedEndDate\": \"2025-12-31\"\n  },\n  \"documents\": [\n    {\n      \"fileName\": \"requirements.pdf\",\n      \"fileUrl\": \"https://storage/req.pdf\",\n      \"fileType\": \"pdf\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{orderBaseUrl}}/orders",
+              "host": ["http://localhost:3011/api"],
+              "path": ["orders"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List My Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{orderBaseUrl}}/orders?page=1&limit=10&includeAnalytics=true",
+              "host": ["http://localhost:3011/api"],
+              "path": ["orders"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "includeAnalytics",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{orderBaseUrl}}/orders/{{orderCode}}",
+              "host": ["http://localhost:3011/api"],
+              "path": ["orders", "{{orderCode}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Payment Card",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cardHolderName\": \"John Doe\",\n  \"cardNumber\": \"4242424242424242\",\n  \"expiryMonth\": \"12\",\n  \"expiryYear\": \"2026\",\n  \"cvv\": \"123\",\n  \"cardType\": \"visa\",\n  \"billingAddress\": \"123 Test Street\",\n  \"billingCity\": \"Test City\",\n  \"billingState\": \"CA\",\n  \"billingZipCode\": \"94105\",\n  \"billingCountry\": \"US\",\n  \"isDefault\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3004/api/payment/wallet/cards",
+              "host": ["http://localhost:3004"],
+              "path": ["api", "payment", "wallet", "cards"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Funds to Wallet",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 5000,\n  \"currency\": \"USD\",\n  \"description\": \"Add funds for testing order payments\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3004/api/payment/wallet/buy",
+              "host": ["http://localhost:3004"],
+              "path": ["api", "payment", "wallet", "buy"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Pay for Order (Wallet)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 5000.00,\n  \"description\": \"Payment for order {{orderCode}}\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3004/api/payment/wallet/pay/order/{{orderCode}}",
+              "host": ["http://localhost:3004/api/payment"],
+              "path": ["wallet", "pay", "order", "{{orderCode}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Activity Tracking",
+      "item": [
+        {
+          "name": "Get Activity Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/activity?page=1&limit=20",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["activity"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Preferences / Settings",
+      "item": [
+        {
+          "name": "Get Preferences",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/preferences",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["preferences"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Preferences",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currency\": \"USD\",\n  \"language\": \"en\",\n  \"theme\": \"dark\",\n  \"emailNotifications\": true,\n  \"smsNotifications\": false,\n  \"pushNotifications\": true,\n  \"twoFactorEnabled\": true,\n  \"twoFactorMethod\": \"email\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/preferences",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["preferences"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Search Listing",
+      "item": [
+        {
+          "name": "Search Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/search?query=john&page=1&limit=10",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["search"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "john"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notification",
+      "item": [
+        {
+          "name": "Get Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/notifications?page=1&limit=20&status=unread",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["notifications"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "status",
+                  "value": "unread"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"read\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3005/user-profile-service/notifications/{{notificationId}}",
+              "host": ["http://localhost:3005/user-profile-service"],
+              "path": ["notifications", "{{notificationId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Soft Delete Account Deactivation",
+      "item": [
+        {
+          "name": "Deactivate Account",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"YourPassword123!\",\n  \"reason\": \"No longer need the service\",\n  \"confirm\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/user/deactivate",
+              "host": ["http://localhost:3001/sso/auth"],
+              "path": ["user", "deactivate"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reactivate Account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/user/reactivate",
+              "host": ["http://localhost:3001/sso/auth"],
+              "path": ["user", "reactivate"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "orderBaseUrl",
+      "value": "http://localhost:3011/api",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,289 @@
+{
+  "info": {
+    "name": "Vero2 Authentication API (Local)",
+    "description": "Postman collection for exercising the Express auth routes while running the backend locally on http://localhost:3000.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "directUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "otpCode",
+      "value": "123456",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Backend Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{directUrl}}/health"
+      }
+    },
+    {
+      "name": "User Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Demo User\",\n  \"email\": \"demo.user@example.com\",\n  \"password\": \"Password123!\",\n  \"accountType\": \"user\",\n  \"currency\": \"USD\"\n}"
+            },
+            "url": "{{directUrl}}/api/auth/user/register"
+          }
+        },
+        {
+          "name": "Register Agency",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Agency Owner\",\n  \"email\": \"agency@example.com\",\n  \"password\": \"Password123!\",\n  \"accountType\": \"agency\",\n  \"currency\": \"USD\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"agencyInfo\": {\n    \"agencyName\": \"Sample Agency\",\n    \"businessType\": \"Technology\"\n  }\n}"
+            },
+            "url": "{{directUrl}}/api/auth/user/register"
+          }
+        },
+        {
+          "name": "Register Business",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Business Owner\",\n  \"email\": \"business@example.com\",\n  \"password\": \"Password123!\",\n  \"accountType\": \"business\",\n  \"currency\": \"USD\",\n  \"dateOfBirth\": \"1985-01-01\",\n  \"businessInfo\": {\n    \"businessName\": \"Sample Business\",\n    \"businessIndustry\": \"Technology\"\n  }\n}"
+            },
+            "url": "{{directUrl}}/api/auth/user/register"
+          }
+        },
+        {
+          "name": "Verify Registration OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"demo.user@example.com\",\n  \"otp\": \"{{otpCode}}\"\n}"
+            },
+            "url": "{{directUrl}}/api/auth/user/verify-otp"
+          }
+        },
+        {
+          "name": "Login User (Email)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.data && json.data.token) {",
+                  "    pm.collectionVariables.set('authToken', json.data.token);",
+                  "  } else {",
+                  "    console.warn('Login response missing token payload');",
+                  "  }",
+                  "} else {",
+                  "  console.warn('Login failed with status', pm.response.code);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"demo.user@example.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": "{{directUrl}}/api/auth/user/login"
+          }
+        },
+        {
+          "name": "Login User (Phone)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+15555550123\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": "{{directUrl}}/api/auth/user/login"
+          }
+        },
+        {
+          "name": "Send OTP (Login, Email)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"demo.user@example.com\",\n  \"type\": \"login\"\n}"
+            },
+            "url": "{{directUrl}}/api/auth/send-otp"
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"demo.user@example.com\"\n}"
+            },
+            "url": "{{directUrl}}/api/auth/user/forgot-password"
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"demo.user@example.com\",\n  \"otp\": \"{{otpCode}}\",\n  \"newPassword\": \"NewPassword123!\"\n}"
+            },
+            "url": "{{directUrl}}/api/auth/user/reset-password"
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{directUrl}}/api/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Authentication",
+      "item": [
+        {
+          "name": "Create Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"Password123!\",\n  \"fullName\": \"Platform Admin\"\n}"
+            },
+            "url": "{{directUrl}}/api/auth/admin/create"
+          }
+        },
+        {
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.data && json.data.token) {",
+                  "    pm.collectionVariables.set('adminToken', json.data.token);",
+                  "  } else {",
+                  "    console.warn('Admin login response missing token payload');",
+                  "  }",
+                  "} else {",
+                  "  console.warn('Admin login failed with status', pm.response.code);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": "{{directUrl}}/api/auth/admin/login"
+          }
+        }
+      ]
+    }
+  ]
+}

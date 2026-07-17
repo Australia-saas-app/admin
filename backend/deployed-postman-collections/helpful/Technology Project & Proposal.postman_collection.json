@@ -1,0 +1,289 @@
+{
+	"info": {
+		"_postman_id": "7d9e8f1a-2b3c-4d5e-8f9a-0b1c2d3e4f5g",
+		"name": "Technology Project & Proposal - Vero2",
+		"description": "Specific routes for Project and Proposal management in the Technology service.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Project Management",
+			"item": [
+				{
+					"name": "Create New Project",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"New AI Integration Project\",\n  \"description\": \"I need a developer to integrate OpenAI API into my existing NestJS backend.\",\n  \"price\": 1500,\n  \"currency\": \"USD\",\n  \"category\": \"Backend Development\",\n  \"paymentType\": \"fixed\",\n  \"skills\": [\"NestJS\", \"OpenAI\", \"TypeScript\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/technical/projects",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"technical",
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find/Filter Project",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/technical/projects?page=1&limit=10&search=AI&category=Backend Development&paymentType=fixed",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"technical",
+								"projects"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "AI"
+								},
+								{
+									"key": "status",
+									"value": "open",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "Backend Development"
+								},
+								{
+									"key": "price",
+									"value": "1500",
+									"disabled": true
+								},
+								{
+									"key": "paymentType",
+									"value": "fixed"
+								},
+								{
+									"key": "skills",
+									"value": "NestJS",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List All Projects",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/technical/projects/all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"technical",
+								"projects",
+								"all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Proposal Management",
+			"item": [
+				{
+					"name": "Create Proposal (Apply to Project)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"proposal\": \"I have extensive experience with NestJS and OpenAI. I can complete this integration within 5 days with full test coverage.\",\n  \"price\": 1400,\n  \"currency\": \"USD\",\n  \"timeline\": \"5 days\",\n  \"paymentType\": \"fixed\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/technical/projects/:projectId/apply",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"technical",
+								"projects",
+								":projectId",
+								"apply"
+							],
+							"variable": [
+								{
+									"key": "projectId",
+									"value": "{{project_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Filter Proposals",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/technical/projects/:projectId/proposals?page=1&limit=10&paymentType=fixed",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"technical",
+								"projects",
+								":projectId",
+								"proposals"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "timeline",
+									"value": "5 days",
+									"disabled": true
+								},
+								{
+									"key": "paymentType",
+									"value": "fixed"
+								}
+							],
+							"variable": [
+								{
+									"key": "projectId",
+									"value": "{{project_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Proposal (Select Proposal)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/technical/projects/:projectId/proposals/:proposalId/select",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"technical",
+								"projects",
+								":projectId",
+								"proposals",
+								":proposalId",
+								"select"
+							],
+							"variable": [
+								{
+									"key": "projectId",
+									"value": "{{project_id}}"
+								},
+								{
+									"key": "proposalId",
+									"value": "{{proposal_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3011",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "project_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "proposal_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

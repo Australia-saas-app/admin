@@ -1,0 +1,263 @@
+{
+  "info": {
+    "_postman_id": "business-service-collection",
+    "name": "Business Service",
+    "description": "Business service endpoints for Vero2 platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Business",
+      "item": [
+        {
+          "name": "Get Business Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/business/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "business",
+                "profile"
+              ]
+            },
+            "description": "Get business profile"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Business Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessInfo\": {\n    \"businessName\": \"My Business\",\n    \"businessIndustry\": \"Technology\",\n    \"descriptionOfServices\": \"Software development services\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/business/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "business",
+                "profile"
+              ]
+            },
+            "description": "Update business profile"
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Business",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/business/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "business",
+                "verify"
+              ]
+            },
+            "description": "Verify business"
+          },
+          "response": []
+        },
+        {
+          "name": "Approve Business",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/business/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "business",
+                "approve"
+              ]
+            },
+            "description": "Approve business"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Business Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/business/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "business",
+                "status"
+              ]
+            },
+            "description": "Update business status"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Business Roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/business/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "business",
+                "roles"
+              ]
+            },
+            "description": "Get business roles"
+          },
+          "response": []
+        },
+        {
+          "name": "Assign Business Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"manager\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/business/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "business",
+                "roles"
+              ]
+            },
+            "description": "Assign business role"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Get Business Performance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/business/analytics/performance",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "business",
+                "analytics",
+                "performance"
+              ]
+            },
+            "description": "Get business performance analytics"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://35.162.205.9:3012"
+    },
+    {
+      "key": "token",
+      "value": "your_jwt_token_here"
+    }
+  ]
+}

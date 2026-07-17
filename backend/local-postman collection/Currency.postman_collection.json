@@ -1,0 +1,873 @@
+{
+  "info": {
+    "_postman_id": "currency-collection-id",
+    "name": "Currency Collection - Vero2",
+    "description": "Currency management system covering Currency Catalog/Management, Exchange Rate Management, Currency Conversion, Integration with Other Services, Currency Formatting & Display, Security & Audit, and Reporting & Analytics. Based on existing currency functionality across services.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Currency Catalog / Management",
+      "item": [
+        {
+          "name": "Get Supported Currencies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/currencies/supported",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "currencies", "supported"]
+            },
+            "description": "Get list of all supported currencies in the system"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Currency Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/currencies/{{currencyCode}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "currencies", "{{currencyCode}}"]
+            },
+            "description": "Get detailed information about a specific currency"
+          },
+          "response": []
+        },
+        {
+          "name": "Add Supported Currency (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"EUR\",\n  \"name\": \"Euro\",\n  \"symbol\": \"€\",\n  \"decimalPlaces\": 2,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/currencies",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "currencies"]
+            },
+            "description": "Add a new supported currency to the system"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Currency Settings (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symbol\": \"€\",\n  \"decimalPlaces\": 2,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/currencies/{{currencyCode}}",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "currencies", "{{currencyCode}}"]
+            },
+            "description": "Update currency settings and display properties"
+          },
+          "response": []
+        },
+        {
+          "name": "Disable Currency (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": false\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/currencies/{{currencyCode}}/status",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "currencies", "{{currencyCode}}", "status"]
+            },
+            "description": "Enable or disable a currency for use in the system"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Exchange Rate Management",
+      "item": [
+        {
+          "name": "Get Current Exchange Rates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/currencies/exchange-rates?base=USD",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "currencies", "exchange-rates"],
+              "query": [
+                {
+                  "key": "base",
+                  "value": "USD"
+                }
+              ]
+            },
+            "description": "Get current exchange rates for all supported currencies"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Exchange Rate for Currency Pair",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/currencies/exchange-rates/USD/EUR",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "currencies", "exchange-rates", "USD", "EUR"]
+            },
+            "description": "Get exchange rate between two specific currencies"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Exchange Rates (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"baseCurrency\": \"USD\",\n  \"rates\": {\n    \"EUR\": 0.85,\n    \"GBP\": 0.73,\n    \"JPY\": 110.50\n  },\n  \"source\": \"manual\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/currencies/exchange-rates",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "currencies", "exchange-rates"]
+            },
+            "description": "Update exchange rates manually or from external provider"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Exchange Rate History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/currencies/exchange-rates/USD/EUR/history?days=30",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "currencies", "exchange-rates", "USD", "EUR", "history"],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "30"
+                }
+              ]
+            },
+            "description": "Get historical exchange rate data"
+          },
+          "response": []
+        },
+        {
+          "name": "Set Preferred Exchange Rate Provider (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"provider\": \"fixer\",\n  \"apiKey\": \"your-fixer-api-key\",\n  \"updateIntervalMinutes\": 60\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/currencies/exchange-rates/provider",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "currencies", "exchange-rates", "provider"]
+            },
+            "description": "Configure external exchange rate provider"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Currency Conversion",
+      "item": [
+        {
+          "name": "Convert Currency Amount",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100.00,\n  \"fromCurrency\": \"USD\",\n  \"toCurrency\": \"EUR\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/currencies/convert",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "currencies", "convert"]
+            },
+            "description": "Convert an amount from one currency to another"
+          },
+          "response": []
+        },
+        {
+          "name": "Bulk Currency Conversion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"conversions\": [\n    {\n      \"amount\": 100.00,\n      \"fromCurrency\": \"USD\",\n      \"toCurrency\": \"EUR\"\n    },\n    {\n      \"amount\": 50.00,\n      \"fromCurrency\": \"USD\",\n      \"toCurrency\": \"GBP\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/currencies/convert/bulk",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "currencies", "convert", "bulk"]
+            },
+            "description": "Convert multiple amounts at once"
+          },
+          "response": []
+        },
+        {
+          "name": "Convert with Historical Rate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100.00,\n  \"fromCurrency\": \"USD\",\n  \"toCurrency\": \"EUR\",\n  \"date\": \"2024-01-15\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/currencies/convert/historical",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "currencies", "convert", "historical"]
+            },
+            "description": "Convert using historical exchange rates"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Conversion Fee",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/currencies/convert/fees?from=USD&to=EUR&amount=100",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "currencies", "convert", "fees"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "USD"
+                },
+                {
+                  "key": "to",
+                  "value": "EUR"
+                },
+                {
+                  "key": "amount",
+                  "value": "100"
+                }
+              ]
+            },
+            "description": "Calculate conversion fees for a transaction"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Integration with Other Services",
+      "item": [
+        {
+          "name": "Update User Currency Preference",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currency\": \"EUR\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/user-profile/preferences",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "user-profile", "preferences"]
+            },
+            "description": "Update user's preferred currency (integrates with User Profile service)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Order with Currency",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderType\": \"technology\",\n  \"serviceName\": \"Web Development\",\n  \"pricing\": {\n    \"totalAmount\": 2500.00,\n    \"currency\": \"EUR\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/orders",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "orders"]
+            },
+            "description": "Create order with specific currency (integrates with Order service)"
+          },
+          "response": []
+        },
+        {
+          "name": "Wallet Balance in User Currency",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/sso/wallet",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["sso", "wallet"]
+            },
+            "description": "Get wallet balance in user's preferred currency (integrates with Wallet service)"
+          },
+          "response": []
+        },
+        {
+          "name": "Payment with Currency Conversion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100.00,\n  \"currency\": \"EUR\",\n  \"convertToWalletCurrency\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/sso/wallet/top-up",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["sso", "wallet", "top-up"]
+            },
+            "description": "Top up wallet with automatic currency conversion (integrates with Wallet service)"
+          },
+          "response": []
+        },
+        {
+          "name": "Education Course with Currency",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Advanced NestJS\",\n  \"price\": 299.00,\n  \"currency\": \"EUR\",\n  \"categoryId\": \"TECH001\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/education/courses",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["education", "courses"]
+            },
+            "description": "Create education course with pricing in specific currency (integrates with Education service)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Currency Formatting & Display",
+      "item": [
+        {
+          "name": "Format Currency Amount",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 1234.56,\n  \"currency\": \"USD\",\n  \"locale\": \"en-US\",\n  \"format\": \"standard\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/currencies/format",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "currencies", "format"]
+            },
+            "description": "Format currency amount for display"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Currency Display Settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/currencies/display/USD",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "currencies", "display", "USD"]
+            },
+            "description": "Get display settings for a currency (symbol, position, separators)"
+          },
+          "response": []
+        },
+        {
+          "name": "Format for Multiple Locales",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 1234.56,\n  \"currency\": \"EUR\",\n  \"locales\": [\"en-US\", \"de-DE\", \"fr-FR\"]\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/currencies/format/multi-locale",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "currencies", "format", "multi-locale"]
+            },
+            "description": "Format currency for multiple locales"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Currency Display Settings (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symbol\": \"$\",\n  \"symbolPosition\": \"before\",\n  \"decimalSeparator\": \".\",\n  \"thousandsSeparator\": \",\",\n  \"decimalPlaces\": 2\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/currencies/USD/display",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "currencies", "USD", "display"]
+            },
+            "description": "Configure how currency amounts are displayed"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Security & Audit",
+      "item": [
+        {
+          "name": "Log Currency Conversion",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/currencies/audit/conversions?page=1&limit=20",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "currencies", "audit", "conversions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Audit log of all currency conversions performed"
+          },
+          "response": []
+        },
+        {
+          "name": "Log Exchange Rate Changes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/currencies/audit/rates?page=1&limit=20",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "currencies", "audit", "rates"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Audit trail of exchange rate updates"
+          },
+          "response": []
+        },
+        {
+          "name": "Validate Currency Conversion Rate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromCurrency\": \"USD\",\n  \"toCurrency\": \"EUR\",\n  \"amount\": 100.00,\n  \"expectedRate\": 0.85,\n  \"maxDeviation\": 0.05\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/currencies/validate/conversion",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "currencies", "validate", "conversion"]
+            },
+            "description": "Validate currency conversion against expected rates for fraud prevention"
+          },
+          "response": []
+        },
+        {
+          "name": "Currency Security Settings (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maxConversionAmount\": 10000.00,\n  \"requireApprovalForLargeConversions\": true,\n  \"approvedCurrenciesOnly\": true,\n  \"rateChangeAlertThreshold\": 0.10\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/currencies/security/settings",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "currencies", "security", "settings"]
+            },
+            "description": "Configure security settings for currency operations"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reporting & Analytics",
+      "item": [
+        {
+          "name": "Currency Usage Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/currencies/analytics/usage?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "currencies", "analytics", "usage"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get statistics on currency usage across the platform"
+          },
+          "response": []
+        },
+        {
+          "name": "Exchange Rate Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/currencies/analytics/rates?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "currencies", "analytics", "rates"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Analytics on exchange rate fluctuations and trends"
+          },
+          "response": []
+        },
+        {
+          "name": "Currency Conversion Volume Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/currencies/reports/conversions?startDate=2024-01-01&endDate=2024-12-31&groupBy=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "currencies", "reports", "conversions"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                },
+                {
+                  "key": "groupBy",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Report on currency conversion volume and patterns"
+          },
+          "response": []
+        },
+        {
+          "name": "Top Currencies by Usage",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/currencies/analytics/top-currencies?limit=10",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "currencies", "analytics", "top-currencies"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get top currencies by transaction volume and user preference"
+          },
+          "response": []
+        },
+        {
+          "name": "Currency Performance Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/currencies/dashboard?period=month",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "currencies", "dashboard"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Comprehensive dashboard with currency performance metrics"
+          },
+          "response": []
+        },
+        {
+          "name": "Export Currency Reports",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/admin-service/currencies/reports/export?format=pdf&reportType=usage&startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["admin-service", "currencies", "reports", "export"],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "reportType",
+                  "value": "usage"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            },
+            "description": "Export currency reports in various formats"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "gatewayUrl",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "userToken",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "currencyCode",
+      "value": "USD"
+    }
+  ]
+}

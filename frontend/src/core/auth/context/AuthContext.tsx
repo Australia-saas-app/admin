@@ -91,32 +91,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const verifyContact = async (contact: string, role: string) => {
-    const response = await fetch('/api/auth/verify-contact', {
+    const isEmail = contact.includes("@");
+    const payload = isEmail ? { email: contact } : { phone: contact };
+    const response = await fetch('/api/sso/auth/user/forgot-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contact, role })
+      body: JSON.stringify(payload)
     });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.message || 'Verification failed');
+    if (!response.ok) throw new Error(data.message || 'Failed to send OTP');
     return true;
   };
 
   const verifyRecoveryKey = async (recoveryKey: string, role: string) => {
-    const response = await fetch('/api/auth/verify-recovery-key', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ recoveryKey, role })
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.message || 'Invalid recovery key');
-    return data.data; // { fullName, email }
+    // We don't have a native endpoint just to "verify" a recovery key without resetting.
+    // So we just return mock user data to let the UI advance to reset phase.
+    return { fullName: "User", email: "hidden@example.com" };
   };
 
   const forgotPasswordReset = async (data: any) => {
-    const response = await fetch('/api/auth/forgot-password-reset', {
+    const payload: Record<string, any> = {
+      recoveryKey: data.recoveryKey || undefined,
+      otp: data.otp || undefined,
+      newPassword: data.newPassword,
+    };
+
+    if (data.identifier) {
+      const isEmail = data.identifier.includes("@");
+      if (isEmail) {
+        payload.email = data.identifier;
+      } else {
+        payload.phone = data.identifier;
+      }
+    }
+
+    const response = await fetch('/api/sso/auth/user/reset-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+      body: JSON.stringify(payload)
     });
     const resData = await response.json();
     if (!response.ok) throw new Error(resData.message || 'Failed to reset password');

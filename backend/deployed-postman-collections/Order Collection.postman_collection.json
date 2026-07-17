@@ -1,0 +1,441 @@
+{
+  "info": {
+    "_postman_id": "228ef6a9-1eb9-473d-b242-f38a5522f1bf",
+    "name": "Order Business Collection",
+    "description": "Order creation, management, and payment endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{url}}/orders/health",
+              "host": ["{{url}}"],
+              "path": ["api", "orders", "health"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderType\": \"technology\",\n  \"serviceName\": \"Full-stack MVP\",\n  \"clientInfo\": {\n    \"fullName\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"phone\": \"+1-202-555-0112\",\n    \"nationality\": \"US\",\n    \"permanentAddress\": {\n      \"country\": \"United States\",\n      \"state\": \"CA\",\n      \"city\": \"San Francisco\",\n      \"zipCode\": \"94105\",\n      \"address\": \"1 Market St\"\n    }\n  },\n  \"pricing\": {\n    \"totalAmount\": 500,\n    \"currency\": \"USD\"\n  },\n  \"orderDetails\": {\n    \"projectType\": \"Company\",\n    \"priorityLevel\": \"High\",\n    \"expectedEndDate\": \"2025-12-31\"\n  },\n  \"documents\": [\n    {\n      \"fileName\": \"requirements.pdf\",\n      \"fileUrl\": \"https://storage/req.pdf\",\n      \"fileType\": \"pdf\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{url}}/orders",
+              "host": ["{{url}}"],
+              "path": ["api", "orders"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List My Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/orders?page=1&limit=10",
+              "host": ["{{url}}"],
+              "path": ["api", "orders"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Chat Enabled Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/orders/chat-enabled?page=1&limit=10",
+              "host": ["{{url}}"],
+              "path": ["api", "orders", "chat-enabled"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Order",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/orders/{{orderCode}}",
+              "host": ["{{url}}"],
+              "path": ["api", "orders", "{{orderCode}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update My Order",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceName\": \"Updated Service Name\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{url}}/orders/{{orderCode}}",
+              "host": ["{{url}}"],
+              "path": ["api", "orders", "{{orderCode}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Documents to Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documents\": [\n    {\n      \"fileName\": \"additional.pdf\",\n      \"fileUrl\": \"https://storage/additional.pdf\",\n      \"fileType\": \"pdf\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{url}}/orders/{{orderCode}}/documents",
+              "host": ["{{url}}"],
+              "path": ["api", "orders", "{{orderCode}}", "documents"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Public Orders",
+      "item": [
+        {
+          "name": "List Public Real Estate Orders",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{url}}/orders/public/real-estate/list?page=1&limit=10",
+              "host": ["{{url}}"],
+              "path": ["api", "orders", "public", "real-estate", "list"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin Orders",
+      "item": [
+        {
+          "name": "List Admin Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/orders/admin/list?page=1&limit=10&includeAnalytics=true",
+              "host": ["{{url}}"],
+              "path": ["api", "orders", "admin", "list"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "includeAnalytics", "value": "true" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Admin Order",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/orders/admin/{{orderCode}}",
+              "host": ["{{url}}"],
+              "path": ["api", "orders", "admin", "{{orderCode}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Admin Order",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceName\": \"Admin Updated Service Name\"\n}"
+            },
+            "url": {
+              "raw": "{{url}}/orders/admin/{{orderCode}}",
+              "host": ["{{url}}"],
+              "path": ["api", "orders", "admin", "{{orderCode}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Order Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"working\",\n  \"reason\": \"Order approved for processing\"\n}"
+            },
+            "url": {
+              "raw": "{{url}}/orders/admin/{{orderCode}}/status",
+              "host": ["{{url}}"],
+              "path": ["api", "orders", "admin", "{{orderCode}}", "status"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Profit to Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profitAmount\": 100,\n  \"profitPercentage\": 20\n}"
+            },
+            "url": {
+              "raw": "{{url}}/orders/admin/{{orderCode}}/profit",
+              "host": ["{{url}}"],
+              "path": ["api", "orders", "admin", "{{orderCode}}", "profit"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Files to Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"files\": [\n    {\n      \"fileName\": \"deliverable.pdf\",\n      \"fileUrl\": \"https://storage/deliverable.pdf\",\n      \"fileType\": \"pdf\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{url}}/orders/admin/{{orderCode}}/files",
+              "host": ["{{url}}"],
+              "path": ["api", "orders", "admin", "{{orderCode}}", "files"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Payment to Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 250,\n  \"paymentMethod\": \"bank_transfer\",\n  \"referenceNumber\": \"TXN123456\"\n}"
+            },
+            "url": {
+              "raw": "{{url}}/orders/admin/{{orderCode}}/payments",
+              "host": ["{{url}}"],
+              "path": ["api", "orders", "admin", "{{orderCode}}", "payments"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order Payments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/orders/admin/{{orderCode}}/payments",
+              "host": ["{{url}}"],
+              "path": ["api", "orders", "admin", "{{orderCode}}", "payments"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order Status History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/orders/admin/{{orderCode}}/status-history",
+              "host": ["{{url}}"],
+              "path": ["api", "orders", "admin", "{{orderCode}}", "status-history"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Order",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/orders/admin/{{orderCode}}",
+              "host": ["{{url}}"],
+              "path": ["api", "orders", "admin", "{{orderCode}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "url",
+      "value": "http://35.162.205.9:3004"
+    },
+    {
+      "key": "ssoToken",
+      "value": "user_jwt_token"
+    },
+    {
+      "key": "adminToken",
+      "value": "admin_jwt_token"
+    },
+    {
+      "key": "orderCode",
+      "value": "ORD-XXXXXXXX"
+    }
+  ]
+}

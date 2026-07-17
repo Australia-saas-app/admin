@@ -1,0 +1,353 @@
+{
+	"info": {
+		"_postman_id": "blog-api-collection-2024",
+		"name": "Blog Collection",
+		"description": "Blog API endpoints for managing blog posts with title, content, excerpt, category, tags, and photo.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "gatewayUrl",
+			"value": "http://35.162.205.9:3006"
+		},
+		{
+			"key": "platformUrl",
+			"value": "http://35.162.205.9:3006"
+		},
+		{
+			"key": "adminToken",
+			"value": ""
+		},
+		{
+			"key": "blogId",
+			"value": ""
+		}
+	],
+	"item": [
+		{
+			"name": "Public Endpoints",
+			"item": [
+				{
+					"name": "Get All Blog Posts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/blogs?page=1&limit=20",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "blogs"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get all visible blog posts with pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Blog Post by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/blogs/{{blogId}}",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "blogs", "{{blogId}}"]
+						},
+						"description": "Get a specific blog post by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Blog Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/blogs/categories",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "blogs", "categories"]
+						},
+						"description": "Get all available blog categories"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin Endpoints",
+			"item": [
+				{
+					"name": "Get All Blog Posts (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data && jsonData.data.length > 0) {",
+									"        pm.collectionVariables.set('blogId', jsonData.data[0].id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/blogs?page=1&limit=20",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "blogs"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get all blog posts including hidden ones (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Existing Categories (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/blogs/categories",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "blogs", "categories"]
+						},
+						"description": "Get list of all existing blog categories"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Blog Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('blogId', jsonData.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Getting Started with TypeScript",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "# Getting Started with TypeScript\n\nTypeScript is a typed superset of JavaScript that compiles to plain JavaScript...",
+									"type": "text"
+								},
+								{
+									"key": "excerpt",
+									"value": "A comprehensive guide to getting started with TypeScript programming.",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "Technology",
+									"type": "text"
+								},
+								{
+									"key": "tags",
+									"value": "typescript,programming,tutorial",
+									"type": "text"
+								},
+								{
+									"key": "isVisible",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"description": "Select image file to upload"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/blogs",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "blogs"]
+						},
+						"description": "Create a new blog post. Photo is uploaded to blog folder (ID: 716ce28a-760f-4740-ae0b-122daf2e8f2b). Supports: JPG, PNG, GIF, WebP."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Blog Post",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Updated: Getting Started with TypeScript",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "# Updated Content\n\nThis is the updated blog content with more information...",
+									"type": "text"
+								},
+								{
+									"key": "excerpt",
+									"value": "Updated excerpt for the TypeScript guide.",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "Programming",
+									"type": "text"
+								},
+								{
+									"key": "tags",
+									"value": "typescript,javascript,web-development,updated",
+									"type": "text"
+								},
+								{
+									"key": "isVisible",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"description": "Select new image file (optional - only uploads if provided)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/blogs/{{blogId}}",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "blogs", "{{blogId}}"]
+						},
+						"description": "Update blog post. Upload new photo to blog folder (ID: 716ce28a-760f-4740-ae0b-122daf2e8f2b) if attachment should change. All fields are optional."
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Photo to Blog Post",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"description": "Select image file to upload"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/blogs/{{blogId}}/photo",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "blogs", "{{blogId}}", "photo"]
+						},
+						"description": "Upload a photo to file-storage and attach to blog post. The file is uploaded to the blog folder (ID: 716ce28a-760f-4740-ae0b-122daf2e8f2b). Supported formats: JPG, PNG, GIF, WebP."
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle Visibility",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/blogs/{{blogId}}/visibility",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "blogs", "{{blogId}}", "visibility"]
+						},
+						"description": "Toggle blog post visibility (show/hide)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Blog Post",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{gatewayUrl}}/platform-service/admin/blogs/{{blogId}}",
+							"host": ["{{gatewayUrl}}"],
+							"path": ["platform-service", "admin", "blogs", "{{blogId}}"]
+						},
+						"description": "Delete a blog post permanently"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

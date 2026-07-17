@@ -1,0 +1,274 @@
+{
+  "info": {
+    "name": "Vero2 - Visa Travel Service",
+    "_postman_id": "d9f6a1c8-visa-travel-collection",
+    "description": "Visa & Travel Service (Mongo)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Packages",
+      "item": [
+        {
+          "name": "Create Package",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Sample Tour\",\n  \"type\": \"tour\",\n  \"destination\": \"Paris\",\n  \"price\": 1200,\n  \"currency\": \"USD\",\n  \"features\": [\"flight\", \"hotel\"],\n  \"status\": \"visible\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/packages", "host": ["{{baseUrl}}"], "path": ["packages"] }
+          }
+        },
+        {
+          "name": "Update Package",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Tour\",\n  \"status\": \"visible\",\n  \"features\": [\"flight\", \"hotel\", \"guide\"]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/packages/{{packageId}}", "host": ["{{baseUrl}}"], "path": ["packages", "{{packageId}}"] }
+          }
+        },
+        {
+          "name": "List Packages",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/packages", "host": ["{{baseUrl}}"], "path": ["packages"] } }
+        },
+        {
+          "name": "Get Package",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/packages/{{packageId}}", "host": ["{{baseUrl}}"], "path": ["packages", "{{packageId}}"] } }
+        },
+        {
+          "name": "Delete Package",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/packages/{{packageId}}", "host": ["{{baseUrl}}"], "path": ["packages", "{{packageId}}"] } }
+        }
+      ]
+    },
+    {
+      "name": "Applications",
+      "item": [
+        {
+          "name": "Create Application",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user-1\",\n  \"passportNo\": \"P1234567\",\n  \"passportExpiry\": \"2027-01-01\",\n  \"nationality\": \"US\",\n  \"visaType\": \"tourist\",\n  \"destination\": \"France\",\n  \"passengers\": [\"John Doe\"],\n  \"departureDate\": \"2025-12-15\",\n  \"returnDate\": \"2026-01-05\",\n  \"budget\": 1500,\n  \"currency\": \"USD\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/applications", "host": ["{{baseUrl}}"], "path": ["applications"] }
+          }
+        },
+        {
+          "name": "Update Application (draft only)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"travelClass\": \"business\",\n  \"contactEmail\": \"user@example.com\",\n  \"documents\": [\"doc-key-1\"]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/applications/{{applicationId}}", "host": ["{{baseUrl}}"], "path": ["applications", "{{applicationId}}"] }
+          }
+        },
+        {
+          "name": "Submit Application",
+          "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/applications/{{applicationId}}/submit", "host": ["{{baseUrl}}"], "path": ["applications", "{{applicationId}}", "submit"] } }
+        },
+        {
+          "name": "Change Application Status",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"toStatus\": \"processing\",\n  \"note\": \"Admin processing\"\n}" },
+            "url": { "raw": "{{baseUrl}}/applications/{{applicationId}}/status", "host": ["{{baseUrl}}"], "path": ["applications", "{{applicationId}}", "status"] }
+          }
+        },
+        {
+          "name": "Set Application Access",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"chatEnabled\": true,\n  \"callEnabled\": false\n}" },
+            "url": { "raw": "{{baseUrl}}/applications/{{applicationId}}/access", "host": ["{{baseUrl}}"], "path": ["applications", "{{applicationId}}", "access"] }
+          }
+        },
+        {
+          "name": "Set Application Access Scope",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"accessScope\": \"private\"\n}" },
+            "url": { "raw": "{{baseUrl}}/applications/{{applicationId}}/access-scope", "host": ["{{baseUrl}}"], "path": ["applications", "{{applicationId}}", "access-scope"] }
+          }
+        },
+        {
+          "name": "Add Application Document",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"key\": \"doc-key-1\"\n}" },
+            "url": { "raw": "{{baseUrl}}/applications/{{applicationId}}/documents", "host": ["{{baseUrl}}"], "path": ["applications", "{{applicationId}}", "documents"] }
+          }
+        },
+        {
+          "name": "Assign Application Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"adminId\": \"admin-1\"\n}" },
+            "url": { "raw": "{{baseUrl}}/applications/{{applicationId}}/assign", "host": ["{{baseUrl}}"], "path": ["applications", "{{applicationId}}", "assign"] }
+          }
+        },
+        {
+          "name": "Application Timeline",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/applications/{{applicationId}}/timeline", "host": ["{{baseUrl}}"], "path": ["applications", "{{applicationId}}", "timeline"] } }
+        },
+        {
+          "name": "Application Stats Summary",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/applications/stats/summary", "host": ["{{baseUrl}}"], "path": ["applications", "stats", "summary"] } }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user-1\",\n  \"packageId\": \"{{packageId}}\",\n  \"price\": 1200,\n  \"currency\": \"USD\",\n  \"passengers\": [\"John Doe\"],\n  \"startDate\": \"2025-12-15\",\n  \"endDate\": \"2026-01-05\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/bookings", "host": ["{{baseUrl}}"], "path": ["bookings"] }
+          }
+        },
+        {
+          "name": "Update Booking (pending only)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contactEmail\": \"user@example.com\",\n  \"passengers\": [\"John Doe\", \"Jane Doe\"]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/bookings/{{bookingId}}", "host": ["{{baseUrl}}"], "path": ["bookings", "{{bookingId}}"] }
+          }
+        },
+        {
+          "name": "Change Booking Status",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"toStatus\": \"payment\",\n  \"note\": \"Move to payment\"\n}" },
+            "url": { "raw": "{{baseUrl}}/bookings/{{bookingId}}/status", "host": ["{{baseUrl}}"], "path": ["bookings", "{{bookingId}}", "status"] }
+          }
+        },
+        {
+          "name": "Mark Booking Paid",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"amount\": 1200\n}" },
+            "url": { "raw": "{{baseUrl}}/bookings/{{bookingId}}/paid", "host": ["{{baseUrl}}"], "path": ["bookings", "{{bookingId}}", "paid"] }
+          }
+        },
+        {
+          "name": "Refund Booking",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"amount\": 100,\n  \"fee\": 0\n}" },
+            "url": { "raw": "{{baseUrl}}/bookings/{{bookingId}}/refund", "host": ["{{baseUrl}}"], "path": ["bookings", "{{bookingId}}", "refund"] }
+          }
+        },
+        {
+          "name": "Set Booking Access",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"chatEnabled\": true,\n  \"callEnabled\": false\n}" },
+            "url": { "raw": "{{baseUrl}}/bookings/{{bookingId}}/access", "host": ["{{baseUrl}}"], "path": ["bookings", "{{bookingId}}", "access"] }
+          }
+        },
+        {
+          "name": "Set Booking Access Scope",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"accessScope\": \"private\"\n}" },
+            "url": { "raw": "{{baseUrl}}/bookings/{{bookingId}}/access-scope", "host": ["{{baseUrl}}"], "path": ["bookings", "{{bookingId}}", "access-scope"] }
+          }
+        },
+        {
+          "name": "Set Booking Delivery File",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"deliveryFileKey\": \"s3://bucket/path.zip\"\n}" },
+            "url": { "raw": "{{baseUrl}}/bookings/{{bookingId}}/delivery", "host": ["{{baseUrl}}"], "path": ["bookings", "{{bookingId}}", "delivery"] }
+          }
+        },
+        {
+          "name": "Add Booking Document",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"key\": \"doc-key-1\"\n}" },
+            "url": { "raw": "{{baseUrl}}/bookings/{{bookingId}}/documents", "host": ["{{baseUrl}}"], "path": ["bookings", "{{bookingId}}", "documents"] }
+          }
+        },
+        {
+          "name": "Assign Booking Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"adminId\": \"admin-1\"\n}" },
+            "url": { "raw": "{{baseUrl}}/bookings/{{bookingId}}/assign", "host": ["{{baseUrl}}"], "path": ["bookings", "{{bookingId}}", "assign"] }
+          }
+        },
+        {
+          "name": "Add Booking Profit",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"amount\": 50\n}" },
+            "url": { "raw": "{{baseUrl}}/bookings/{{bookingId}}/profit", "host": ["{{baseUrl}}"], "path": ["bookings", "{{bookingId}}", "profit"] }
+          }
+        },
+        {
+          "name": "Booking Timeline",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/bookings/{{bookingId}}/timeline", "host": ["{{baseUrl}}"], "path": ["bookings", "{{bookingId}}", "timeline"] } }
+        },
+        {
+          "name": "Booking Stats Summary",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/bookings/stats/summary", "host": ["{{baseUrl}}"], "path": ["bookings", "stats", "summary"] } }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3017/visa-travel" },
+    { "key": "packageId", "value": "" },
+    { "key": "applicationId", "value": "" },
+    { "key": "bookingId", "value": "" }
+  ]
+}
+

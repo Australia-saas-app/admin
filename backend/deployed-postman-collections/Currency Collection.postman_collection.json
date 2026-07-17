@@ -1,0 +1,546 @@
+{
+  "info": {
+    "_postman_id": "a10631c4-e03b-4bc7-8670-8ab211850c3a",
+    "name": "Currency Collection",
+    "description": "Currency Service API - Currency management, exchange rates, and conversion",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "20143455",
+    "_collection_link": "https://go.postman.co/collection/20143455-a10631c4-e03b-4bc7-8670-8ab211850c3a?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Currencies",
+      "item": [
+        {
+          "name": "Create Currency",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"USD\",\n  \"name\": \"US Dollar\",\n  \"symbol\": \"$\",\n  \"locale\": \"en-US\",\n  \"decimalPlaces\": 2,\n  \"exchangeRateToBase\": 1,\n  \"isBase\": true,\n  \"isCrypto\": false,\n  \"description\": \"United States Dollar\",\n  \"symbolPosition\": \"left\",\n  \"thousandSeparator\": \",\",\n  \"decimalSeparator\": \".\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/currencies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "currencies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Currencies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/currencies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "currencies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active Currencies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/currencies/active",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "currencies",
+                "active"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Base Currency",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/currencies/base",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "currencies",
+                "base"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Currency by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/currencies/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "currencies",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Currency by Code",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/currencies/code/:code",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "currencies",
+                "code",
+                ":code"
+              ],
+              "variable": [
+                {
+                  "key": "code"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Currency",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"US Dollar Updated\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/currencies/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "currencies",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Currency",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/currencies/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "currencies",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Exchange Rates",
+      "item": [
+        {
+          "name": "Create Exchange Rate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromCurrencyCode\": \"USD\",\n  \"toCurrencyCode\": \"EUR\",\n  \"rate\": 0.85,\n  \"effectiveDate\": \"2024-01-01T00:00:00Z\",\n  \"source\": \"manual\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/exchange-rates",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "exchange-rates"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Exchange Rates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/exchange-rates",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "exchange-rates"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Exchange Rate Between Currencies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/exchange-rates/from/:fromCode/to/:toCode",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "exchange-rates",
+                "from",
+                ":fromCode",
+                "to",
+                ":toCode"
+              ],
+              "variable": [
+                {
+                  "key": "fromCode"
+                },
+                {
+                  "key": "toCode"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Rates for Currency",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/exchange-rates/currency/:currencyCode",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "exchange-rates",
+                "currency",
+                ":currencyCode"
+              ],
+              "variable": [
+                {
+                  "key": "currencyCode"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Exchange Rate by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/exchange-rates/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "exchange-rates",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Exchange Rate",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rate\": 0.90\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/exchange-rates/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "exchange-rates",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Exchange Rate",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/exchange-rates/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "exchange-rates",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Conversion",
+      "item": [
+        {
+          "name": "Convert Currency",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromCurrency\": \"USD\",\n  \"toCurrency\": \"EUR\",\n  \"amount\": 100,\n  \"serviceName\": \"payment\",\n  \"referenceId\": \"order-12345\",\n  \"referenceType\": \"order\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/conversion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "conversion"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Conversion History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/conversion/history",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "conversion",
+                "history"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Conversion Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/conversion/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "conversion",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwtToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://35.162.205.9:3011"
+    },
+    {
+      "key": "jwtToken",
+      "value": ""
+    }
+  ]
+}

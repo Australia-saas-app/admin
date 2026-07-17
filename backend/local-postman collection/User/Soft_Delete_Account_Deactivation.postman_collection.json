@@ -1,0 +1,41 @@
+{
+  "info": {
+    "_postman_id": "soft-delete-id",
+    "name": "Soft Delete Account Deactivation - Vero2 Local",
+    "description": "Admin endpoints for user status updates and account deactivation. Updated for local testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Soft Delete / Account Deactivation",
+      "item": [
+        {
+          "name": "Update User Status (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"suspended\",\n  \"reason\": \"Account deactivation requested by user\",\n  \"notes\": \"User requested account deletion\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/auth/admin/users/{{userId}}/status",
+              "host": ["http://localhost:3001"],
+              "path": ["auth", "admin", "users", "{{userId}}", "status"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

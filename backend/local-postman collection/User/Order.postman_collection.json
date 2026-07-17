@@ -1,0 +1,169 @@
+{
+  "info": {
+    "_postman_id": "order-business-id",
+    "name": "Order Business - Vero2 Local",
+    "description": "Order creation, management, and payment endpoints. Updated for local testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Order / Business",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderType\": \"technology\",\n  \"serviceName\": \"Full-stack MVP\",\n  \"clientInfo\": {\n    \"fullName\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"phone\": \"+1-202-555-0112\",\n    \"nationality\": \"US\",\n    \"permanentAddress\": {\n      \"country\": \"United States\",\n      \"state\": \"CA\",\n      \"city\": \"San Francisco\",\n      \"zipCode\": \"94105\",\n      \"address\": \"1 Market St\"\n    }\n  },\n  \"pricing\": {\n    \"totalAmount\": 25000,\n    \"currency\": \"USD\"\n  },\n  \"orderDetails\": {\n    \"projectType\": \"Company\",\n    \"priorityLevel\": \"High\",\n    \"expectedEndDate\": \"2025-12-31\"\n  },\n  \"documents\": [\n    {\n      \"fileName\": \"requirements.pdf\",\n      \"fileUrl\": \"https://storage/req.pdf\",\n      \"fileType\": \"pdf\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{orderBaseUrl}}/orders",
+              "host": ["http://localhost:3011/api"],
+              "path": ["orders"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List My Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{orderBaseUrl}}/orders?page=1&limit=10&includeAnalytics=true",
+              "host": ["http://localhost:3011/api"],
+              "path": ["orders"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "includeAnalytics",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{orderBaseUrl}}/orders/{{orderCode}}",
+              "host": ["http://localhost:3011/api"],
+              "path": ["orders", "{{orderCode}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Payment Card",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cardHolderName\": \"John Doe\",\n  \"cardNumber\": \"4242424242424242\",\n  \"expiryMonth\": \"12\",\n  \"expiryYear\": \"2026\",\n  \"cvv\": \"123\",\n  \"cardType\": \"visa\",\n  \"billingAddress\": \"123 Test Street\",\n  \"billingCity\": \"Test City\",\n  \"billingState\": \"CA\",\n  \"billingZipCode\": \"94105\",\n  \"billingCountry\": \"US\",\n  \"isDefault\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3004/api/payment/wallet/cards",
+              "host": ["http://localhost:3004"],
+              "path": ["api", "payment", "wallet", "cards"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Funds to Wallet",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 5000,\n  \"currency\": \"USD\",\n  \"description\": \"Add funds for testing order payments\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3004/api/payment/wallet/buy",
+              "host": ["http://localhost:3004"],
+              "path": ["api", "payment", "wallet", "buy"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Pay for Order (Wallet)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ssoToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 5000.00,\n  \"description\": \"Payment for order {{orderCode}}\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3004/api/payment/wallet/pay/order/{{orderCode}}",
+              "host": ["http://localhost:3004/api/payment"],
+              "path": ["wallet", "pay", "order", "{{orderCode}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

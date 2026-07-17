@@ -1,0 +1,424 @@
+{
+	"info": {
+		"_postman_id": "509d8a5e-a231-44e0-b51d-613d01abe190",
+		"name": "Chat Messaging - Vero2",
+		"description": "Endpoints for direct messaging between users and businesses (agencies).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "19531119"
+	},
+	"item": [
+		{
+			"name": "Direct Messaging",
+			"item": [
+				{
+					"name": "Search Chat Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{chat_url}}/api/chat/messages/search-users?name=John",
+							"host": [
+								"{{chat_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"messages",
+								"search-users"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "John"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User to Business Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "businessId",
+									"value": "{{agency_id}}",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Hello, I am interested in your services.",
+									"type": "text"
+								},
+								{
+									"key": "attachments",
+									"description": "Optional file attachments",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": "{{chat_url}}/api/chat/messages/user-to-business"
+					},
+					"response": []
+				},
+				{
+					"name": "Business to User Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "userId",
+									"value": "{{user_id}}",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Thank you for reaching out! How can we help you?",
+									"type": "text"
+								},
+								{
+									"key": "attachments",
+									"description": "Optional file attachments",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": "{{chat_url}}/api/chat/messages/business-to-user"
+					},
+					"response": []
+				},
+				{
+					"name": "Soft Delete User to Business Message",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{chat_url}}/api/chat/messages/user-to-business/:id",
+							"host": [
+								"{{chat_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"messages",
+								"user-to-business",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{message_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Soft Delete Business to User Message",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{chat_url}}/api/chat/messages/business-to-user/:id",
+							"host": [
+								"{{chat_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"messages",
+								"business-to-user",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{message_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Conversation Messages",
+			"item": [
+				{
+					"name": "Get Conversation Messages",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{chat_url}}/api/chat/conversations/:conversationId/messages?page=1&limit=50",
+							"host": [
+								"{{chat_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"conversations",
+								":conversationId",
+								"messages"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "50"
+								}
+							],
+							"variable": [
+								{
+									"key": "conversationId",
+									"value": "{{conversation_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Messages",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{chat_url}}/api/chat/conversations/:conversationId/messages/search?query=hello",
+							"host": [
+								"{{chat_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"conversations",
+								":conversationId",
+								"messages",
+								"search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "hello"
+								}
+							],
+							"variable": [
+								{
+									"key": "conversationId",
+									"value": "{{conversation_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Message Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{chat_url}}/api/chat/conversations/:conversationId/messages/stats",
+							"host": [
+								"{{chat_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"conversations",
+								":conversationId",
+								"messages",
+								"stats"
+							],
+							"variable": [
+								{
+									"key": "conversationId",
+									"value": "{{conversation_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Conversations",
+			"item": [
+				{
+					"name": "Get All My Conversations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{chat_url}}/api/chat/conversations?page=1&limit=20",
+							"host": [
+								"{{chat_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"conversations"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Conversation Details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{chat_url}}/api/chat/conversations/:id",
+							"host": [
+								"{{chat_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"conversations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{conversation_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "chat_url",
+			"value": "http://35.162.205.9:3008",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjdjODQ3MGRlZDQ3MTgyMjVjMTRiODk0NjM0ZTdjMDg2In0.eyJzdWIiOiIwMUtLUkdXWDc3REQ1QjkzOE45TkpHOEtTVCIsInVzZXJJZCI6IjAxS0tSR1dYNzdERDVCOTM4TjlOSkc4S1NUIiwiYWNjb3VudFR5cGUiOiJidXNpbmVzcyIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwgb2ZmbGluZV9hY2Nlc3MiLCJzZXNzaW9uSWQiOiJhN2RjY2Q0Ny04OTdiLTRhNDYtOTRmYS01MWY5YWRhOGQwMDAiLCJjbGllbnRJZCI6ImZpcnN0LXBhcnR5LWFwcCIsInJvbGUiOiJidXNpbmVzcyIsImlzcyI6Imh0dHA6Ly9zc28tc2VydmljZTozMDAxL3NzbyIsImF1ZCI6ImZpcnN0LXBhcnR5LWFwcCIsImp0aSI6ImZjNjMzNWExLTk1OTktNDRlZC1iYmQzLTkxMWY3NGNjZWVlZCIsImlhdCI6MTc3NDc2MjY2NiwiZXhwIjoxNzc1MzY3NDY2fQ.EViRGVKyzUDdyoPVmT0xpTWS1SpagwYAbvzmuuG81sS5rK0vvhkJA2HWmQ6r5NjH2a-_5AToCQbV7cfHlI7V12WGrkCqCNQ7ZMncfgu3BR48HiO1tnWGqp6ZOPyBJWF8bBx7FE4pULOW6dyaS1_7rUe2qLjfjb1rRRVxJ1jhmil6dcrAZAhBNiGoUItI_CFrrqCsi0_f6rSrev-4Ft5ovwkNuElZ5SopjIHqyXQoNidlDl0ROOCPJUVcjUkaggNzKB7H1yMPb9jfgtx9CPt1nvsV5T21ksJZCa72HFM9tiHU2XNpTCY0a0g7E77xdRA-9VTjMXriphCni8XPq2_2HQ",
+			"type": "string"
+		},
+		{
+			"key": "agency_id",
+			"value": "01KKRGWX77DD5B938N9NJG8KST",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "01KKRGV8PGN7XKXWFVSW8FYS61",
+			"type": "string"
+		},
+		{
+			"key": "conversation_id",
+			"value": "9295dc78-b2fb-483c-8a93-6812b10df612",
+			"type": "string"
+		},
+		{
+			"key": "message_id",
+			"value": "ENTER_MESSAGE_ID_HERE",
+			"type": "string"
+		}
+	]
+}

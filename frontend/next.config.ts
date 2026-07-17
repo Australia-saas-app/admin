@@ -4,8 +4,12 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
+        source: '/api/sso/:path*',
+        destination: 'http://localhost:3001/sso/:path*',
+      },
+      {
         source: '/api/:path*',
-        destination: 'http://localhost:5000/api/:path*', // Proxy to Backend
+        destination: 'http://localhost:3001/:path*',
       },
     ];
   },

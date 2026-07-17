@@ -1,0 +1,160 @@
+{
+  "info": {
+    "name": "User Service - KYC",
+    "description": "User service KYC endpoints for user and admin",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://35.162.205.9:3013",
+      "type": "default"
+    },
+    {
+      "key": "userToken",
+      "value": "{{USER_TOKEN}}",
+      "type": "default"
+    },
+    {
+      "key": "adminToken",
+      "value": "{{ADMIN_TOKEN}}",
+      "type": "default"
+    }
+  ],
+  "item": [
+    {
+      "name": "User - KYC",
+      "item": [
+        {
+          "name": "Get My KYC",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/user/kyc/me",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "Get KYC Status",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/user/kyc/status",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "Submit KYC",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/user/kyc/submit",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "fullName", "value": "John Doe", "type": "text" },
+                { "key": "dateOfBirth", "value": "1990-01-15", "type": "text" },
+                { "key": "nationality", "value": "USA", "type": "text" },
+                { "key": "identityType", "value": "national_id", "type": "text" },
+                { "key": "identityNumber", "value": "1234567890", "type": "text" },
+                { "key": "country", "value": "USA", "type": "text" },
+                { "key": "state", "value": "CA", "type": "text" },
+                { "key": "city", "value": "San Francisco", "type": "text" },
+                { "key": "zipCode", "value": "94102", "type": "text" },
+                { "key": "permanentAddress", "value": "123 Main St, San Francisco, CA 94102", "type": "text" },
+                { "key": "photo", "type": "file", "src": [] },
+                { "key": "governmentId", "type": "file", "src": [] }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Resubmit KYC",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/user/kyc/resubmit",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "fullName", "value": "John Doe", "type": "text" },
+                { "key": "dateOfBirth", "value": "1990-01-15", "type": "text" },
+                { "key": "nationality", "value": "USA", "type": "text" },
+                { "key": "identityType", "value": "national_id", "type": "text" },
+                { "key": "identityNumber", "value": "1234567890", "type": "text" },
+                { "key": "country", "value": "USA", "type": "text" },
+                { "key": "state", "value": "CA", "type": "text" },
+                { "key": "city", "value": "San Francisco", "type": "text" },
+                { "key": "zipCode", "value": "94102", "type": "text" },
+                { "key": "permanentAddress", "value": "123 Main St, San Francisco, CA 94102", "type": "text" },
+                { "key": "photo", "type": "file", "src": [] },
+                { "key": "governmentId", "type": "file", "src": [] }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin - KYC",
+      "item": [
+        {
+          "name": "Get Pending KYC",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/user/kyc/pending?page=1&limit=10",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "Get KYC By UserId",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/user/kyc/:userId",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "Approve KYC",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/user/kyc/:userId/review",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Reject KYC",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/user/kyc/:userId/review",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"rejected\",\n  \"rejectionReason\": \"Document verification failed\"\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

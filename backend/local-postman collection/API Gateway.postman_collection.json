@@ -1,0 +1,412 @@
+{
+  "info": {
+    "_postman_id": "api-gateway-collection-id",
+    "name": "API Gateway",
+    "description": "Vero2 API Gateway Collection - covers Request Routing, Authentication & Authorization, Load Balancing, Rate Limiting / Throttling, Caching, Request/Response Transformation, Logging & Monitoring, Security / Threat Protection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "API Gateway Request Routing",
+      "item": [
+        {
+          "name": "Test SSO Route",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/sso/.well-known/openid-configuration",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "sso", ".well-known", "openid-configuration"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test User Profile Route",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/user-profile/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "user-profile", "health"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Backend Route",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/backend/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "backend", "health"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Order Route",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/orders/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "orders", "health"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Admin Route",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/admin/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "admin", "health"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Construction Route",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/construction/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "construction", "health"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Commercial Industrial Route",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/commercial-industrial/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "commercial-industrial", "health"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Authentication & Authorization",
+      "item": [
+        {
+          "name": "Login to Get JWT Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  pm.collectionVariables.set('jwtToken', json.access_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {"key": "grant_type", "value": "password"},
+                {"key": "username", "value": "test@example.com"},
+                {"key": "password", "value": "testpassword"},
+                {"key": "client_id", "value": "first-party-app"},
+                {"key": "client_secret", "value": "{{ssoClientSecret}}"}
+              ]
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/sso/token",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["sso", "token"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Unauthorized Access",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/backend/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "backend", "health"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Load Balancing",
+      "item": [
+        {
+          "name": "Multiple Requests to Test Load Balancing",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/backend/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "backend", "health"]
+            },
+            "description": "Run multiple times to test load distribution"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Rate Limiting / Throttling",
+      "item": [
+        {
+          "name": "Test Rate Limit",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/backend/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "backend", "health"]
+            },
+            "description": "Run repeatedly to trigger rate limiting (429 response)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Caching",
+      "item": [
+        {
+          "name": "Test Caching (if enabled)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/backend/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "backend", "health"]
+            },
+            "description": "Check response headers for cache indicators"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Request/Response Transformation",
+      "item": [
+        {
+          "name": "Test Request Transformation",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "X-Custom-Header",
+                "value": "test-value"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/backend/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "backend", "health"]
+            },
+            "description": "Test if headers are transformed or added"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Logging & Monitoring",
+      "item": [
+        {
+          "name": "Kong Admin - List Services",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kongAdminUrl}}/services",
+              "host": ["{{kongAdminUrl}}"],
+              "path": ["services"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Kong Admin - List Routes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kongAdminUrl}}/routes",
+              "host": ["{{kongAdminUrl}}"],
+              "path": ["routes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Kong Admin - Get Metrics (if available)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kongAdminUrl}}/status",
+              "host": ["{{kongAdminUrl}}"],
+              "path": ["status"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Security / Threat Protection",
+      "item": [
+        {
+          "name": "Test CORS",
+          "request": {
+            "method": "OPTIONS",
+            "header": [
+              {
+                "key": "Origin",
+                "value": "http://localhost:3000"
+              },
+              {
+                "key": "Access-Control-Request-Method",
+                "value": "GET"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/backend/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "backend", "health"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Request Size Limit",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"large\": \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/backend/health",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "backend", "health"]
+            },
+            "description": "Test with large payload to check size limits"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "gatewayUrl",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "kongAdminUrl",
+      "value": "http://localhost:8001"
+    },
+    {
+      "key": "jwtToken",
+      "value": ""
+    },
+    {
+      "key": "ssoClientSecret",
+      "value": "replace-with-actual-secret-from-env"
+    }
+  ]
+}

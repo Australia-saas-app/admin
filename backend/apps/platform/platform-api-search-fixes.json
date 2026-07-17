@@ -1,0 +1,323 @@
+{
+  "info": {
+    "name": "Platform API - Admin Endpoints",
+    "description": "Collection for testing Platform Admin APIs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/platform",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Gallery",
+      "item": [
+        {
+          "name": "Get All Galleries (Admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/gallery?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "gallery"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Galleries by Title",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/gallery/search/test",
+              "host": ["{{baseUrl}}"],
+              "path": ["gallery", "search", "test"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notices",
+      "item": [
+        {
+          "name": "Get All Notices (Admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/notices?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "notices"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Notices by Title",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/notices/search/test",
+              "host": ["{{baseUrl}}"],
+              "path": ["notices", "search", "test"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Blogs",
+      "item": [
+        {
+          "name": "Get All Blogs (Admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/blogs?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "blogs"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Blogs by Title",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/blogs/search/test",
+              "host": ["{{baseUrl}}"],
+              "path": ["blogs", "search", "test"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contact Us",
+      "item": [
+        {
+          "name": "Get All Contacts (Admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/contact-us?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "contact-us"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Contacts by Name",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/contact-us/search/test",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "contact-us", "search", "test"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Team",
+      "item": [
+        {
+          "name": "Get All Team Members (Admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/team?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "team"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Departments (Admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/team/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "team", "departments"]
+            }
+          }
+        },
+        {
+          "name": "Get Departments (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/team/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["team", "departments"]
+            }
+          }
+        },
+        {
+          "name": "Search Team by Name",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/team/search/test",
+              "host": ["{{baseUrl}}"],
+              "path": ["team", "search", "test"]
+            }
+          }
+        },
+        {
+          "name": "Create Team Member",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/team",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "team"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"position\": \"Software Engineer\",\n  \"department\": \"Engineering\",\n  \"email\": \"john.doe@example.com\",\n  \"photoUrl\": \"https://example.com/photo.jpg\",\n  \"bio\": \"Experienced developer\",\n  \"linkedinUrl\": \"https://linkedin.com/in/johndoe\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Team Member",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/admin/team/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "team", ":id"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Smith\",\n  \"position\": \"Senior Engineer\",\n  \"department\": \"Engineering\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Toggle Team Member Visibility",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/admin/team/:id/visibility",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "team", ":id", "visibility"]
+            }
+          }
+        },
+        {
+          "name": "Delete Team Member",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/team/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "team", ":id"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Branches",
+      "item": [
+        {
+          "name": "Get All Branches (Admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/branches?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "branches"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Branches by Name",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/branches/search/test",
+              "host": ["{{baseUrl}}"],
+              "path": ["branches", "search", "test"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Company",
+      "item": [
+        {
+          "name": "Get All Companies (Admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/company",
+              "host": ["{{baseUrl}}"],
+              "path": ["company"]
+            }
+          }
+        },
+        {
+          "name": "Search Companies by Name",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/company/search/test",
+              "host": ["{{baseUrl}}"],
+              "path": ["company", "search", "test"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

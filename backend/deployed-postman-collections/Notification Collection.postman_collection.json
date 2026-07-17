@@ -1,0 +1,1170 @@
+{
+  "info": {
+    "_postman_id": "7990b90a-e29d-4791-b40b-d135c80e99a1",
+    "name": "Notification Collection",
+    "description": "Complete API collection for testing the Vero2 Notification Service microservice. Includes all endpoints for notifications, channels, templates, preferences, scheduling, delivery, and logs.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "20143455",
+    "_collection_link": "https://go.postman.co/collection/20143455-7990b90a-e29d-4791-b40b-d135c80e99a1?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Check if the notification service is running and healthy"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get User Notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/notifications?page=1&limit=10&type=order_update&isRead=false",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of notifications per page"
+                },
+                {
+                  "key": "type",
+                  "value": "order_update",
+                  "description": "Filter by notification type"
+                },
+                {
+                  "key": "isRead",
+                  "value": "false",
+                  "description": "Filter by read status"
+                }
+              ]
+            },
+            "description": "Retrieve paginated list of user's notifications with optional filters"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Notification",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data && response.data.id) {",
+                  "        pm.collectionVariables.set('notification_id', response.data.id);",
+                  "        console.log('Notification ID set to:', response.data.id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"order_update\",\n  \"title\": \"Order Shipped\",\n  \"message\": \"Your order #12345 has been shipped and is on its way!\",\n  \"priority\": \"medium\",\n  \"data\": {\n    \"orderId\": \"12345\",\n    \"trackingNumber\": \"TRK123456789\"\n  },\n  \"actions\": {\n    \"track\": {\n      \"label\": \"Track Order\",\n      \"url\": \"https://example.com/track/12345\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notifications",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications"
+              ]
+            },
+            "description": "Create a new notification for the authenticated user"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Notification from Template",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"templateId\": \"{{template_id}}\",\n  \"data\": {\n    \"userName\": \"John Doe\",\n    \"orderId\": \"ORD-12345\",\n    \"amount\": \"$99.99\"\n  },\n  \"userIds\": [\n    \"user_123\",\n    \"user_456\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notifications/generate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "generate"
+              ]
+            },
+            "description": "Generate notifications from a template for multiple users"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notification by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/notifications/{{notification_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "{{notification_id}}"
+              ]
+            },
+            "description": "Retrieve a specific notification by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/notifications/{{notification_id}}/read",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "{{notification_id}}",
+                "read"
+              ]
+            },
+            "description": "Mark a specific notification as read"
+          },
+          "response": []
+        },
+        {
+          "name": "Mark All Notifications as Read",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/notifications/read-all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "read-all"
+              ]
+            },
+            "description": "Mark all user notifications as read"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Notification",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/notifications/{{notification_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "{{notification_id}}"
+              ]
+            },
+            "description": "Delete a specific notification"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notification Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/notifications/stats/summary",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "stats",
+                "summary"
+              ]
+            },
+            "description": "Get user's notification statistics (total, unread, read counts)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Channels",
+      "item": [
+        {
+          "name": "Get All Channels",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/channels",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "channels"
+              ]
+            },
+            "description": "Retrieve all notification channels (email, SMS, push, in-app)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Channel",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data && response.data.id) {",
+                  "        pm.collectionVariables.set('channel_id', response.data.id);",
+                  "        console.log('Channel ID set to:', response.data.id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"email\",\n  \"description\": \"Email notification channel via SendGrid\",\n  \"isActive\": true,\n  \"config\": {\n    \"apiKey\": \"your_sendgrid_api_key\",\n    \"fromEmail\": \"noreply@example.com\",\n    \"fromName\": \"Vero2 Platform\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/channels",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "channels"
+              ]
+            },
+            "description": "Create a new notification channel"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Channel by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/channels/{{channel_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "channels",
+                "{{channel_id}}"
+              ]
+            },
+            "description": "Retrieve a specific channel by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Channel",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated email channel description\",\n  \"config\": {\n    \"apiKey\": \"updated_api_key\",\n    \"fromEmail\": \"noreply@vero2.com\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/channels/{{channel_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "channels",
+                "{{channel_id}}"
+              ]
+            },
+            "description": "Update an existing notification channel"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Channel",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/channels/{{channel_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "channels",
+                "{{channel_id}}"
+              ]
+            },
+            "description": "Delete a notification channel"
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Channel Status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/channels/{{channel_id}}/toggle",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "channels",
+                "{{channel_id}}",
+                "toggle"
+              ]
+            },
+            "description": "Toggle channel active/inactive status"
+          },
+          "response": []
+        },
+        {
+          "name": "Test Channel",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recipient\": \"test@example.com\",\n  \"message\": \"This is a test notification from Vero2\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/channels/test/{{channel_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "channels",
+                "test",
+                "{{channel_id}}"
+              ]
+            },
+            "description": "Send a test notification through a channel"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Templates",
+      "item": [
+        {
+          "name": "Get All Templates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/templates?page=1&limit=10&type=order_confirmation&isActive=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "templates"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "type",
+                  "value": "order_confirmation"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Retrieve all notification templates with optional filters"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Template",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data && response.data.id) {",
+                  "        pm.collectionVariables.set('template_id', response.data.id);",
+                  "        console.log('Template ID set to:', response.data.id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Order Confirmation\",\n  \"type\": \"order_confirmation\",\n  \"description\": \"Template for order confirmation emails\",\n  \"subject\": \"Order Confirmation - Order #{{orderId}}\",\n  \"content\": \"Dear {{userName}},\\n\\nThank you for your order! Your order #{{orderId}} has been confirmed.\\n\\nOrder Details:\\n- Total: {{amount}}\\n- Expected Delivery: {{deliveryDate}}\\n\\nBest regards,\\nVero2 Team\",\n  \"variables\": [\"userName\", \"orderId\", \"amount\", \"deliveryDate\"],\n  \"metadata\": {\n    \"category\": \"e-commerce\",\n    \"priority\": \"high\"\n  },\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/templates",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "templates"
+              ]
+            },
+            "description": "Create a new notification template"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Template by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/templates/{{template_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "templates",
+                "{{template_id}}"
+              ]
+            },
+            "description": "Retrieve a specific template by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Template",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated template description\",\n  \"content\": \"Updated template content with {{userName}} and {{orderId}}\",\n  \"variables\": [\"userName\", \"orderId\", \"newVariable\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/templates/{{template_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "templates",
+                "{{template_id}}"
+              ]
+            },
+            "description": "Update an existing notification template"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Template",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/templates/{{template_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "templates",
+                "{{template_id}}"
+              ]
+            },
+            "description": "Delete a notification template"
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Template Status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/templates/{{template_id}}/toggle",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "templates",
+                "{{template_id}}",
+                "toggle"
+              ]
+            },
+            "description": "Toggle template active/inactive status"
+          },
+          "response": []
+        },
+        {
+          "name": "Preview Template",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userName\": \"John Doe\",\n  \"orderId\": \"ORD-12345\",\n  \"amount\": \"$99.99\",\n  \"deliveryDate\": \"2024-01-15\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/templates/{{template_id}}/preview",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "templates",
+                "{{template_id}}",
+                "preview"
+              ]
+            },
+            "description": "Preview how a template will render with sample data"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Template Types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/templates/types/list",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "templates",
+                "types",
+                "list"
+              ]
+            },
+            "description": "Get list of available template types and existing templates"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Preferences",
+      "item": [
+        {
+          "name": "Get User Preferences",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/preferences",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "preferences"
+              ]
+            },
+            "description": "Get all notification preferences for the authenticated user"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Preferences",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notificationType\": \"order_updates\",\n  \"channels\": {\n    \"email\": true,\n    \"sms\": false,\n    \"push\": true,\n    \"inApp\": true\n  },\n  \"isEnabled\": true,\n  \"schedule\": {\n    \"startTime\": \"09:00\",\n    \"endTime\": \"21:00\",\n    \"daysOfWeek\": [1, 2, 3, 4, 5, 6, 7]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/preferences",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "preferences"
+              ]
+            },
+            "description": "Create notification preferences for a specific type"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Preferences by Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/preferences/order_updates",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "preferences",
+                "order_updates"
+              ]
+            },
+            "description": "Get preferences for a specific notification type"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Preferences by Type",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"channels\": {\n    \"email\": false,\n    \"sms\": true,\n    \"push\": true,\n    \"inApp\": true\n  },\n  \"schedule\": {\n    \"startTime\": \"08:00\",\n    \"endTime\": \"22:00\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/preferences/order_updates",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "preferences",
+                "order_updates"
+              ]
+            },
+            "description": "Update preferences for a specific notification type"
+          },
+          "response": []
+        },
+        {
+          "name": "Update All Preferences",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"preferences\": [\n    {\n      \"notificationType\": \"order_updates\",\n      \"channels\": {\"email\": true, \"sms\": false, \"push\": true, \"inApp\": true},\n      \"isEnabled\": true\n    },\n    {\n      \"notificationType\": \"promotions\",\n      \"channels\": {\"email\": false, \"sms\": false, \"push\": false, \"inApp\": true},\n      \"isEnabled\": false\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/preferences",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "preferences"
+              ]
+            },
+            "description": "Update multiple notification preferences at once"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Preferences by Type",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/preferences/order_updates",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "preferences",
+                "order_updates"
+              ]
+            },
+            "description": "Delete preferences for a specific notification type"
+          },
+          "response": []
+        },
+        {
+          "name": "Bulk Update Preferences",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"updates\": [\n    {\n      \"type\": \"order_updates\",\n      \"preferences\": {\n        \"channels\": {\"email\": true, \"sms\": true}\n      }\n    },\n    {\n      \"type\": \"security\",\n      \"preferences\": {\n        \"channels\": {\"email\": true, \"sms\": true, \"push\": true}\n      }\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/preferences/bulk-update",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "preferences",
+                "bulk-update"
+              ]
+            },
+            "description": "Bulk update multiple notification preferences"
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Preferences to Defaults",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/preferences/reset",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "preferences",
+                "reset"
+              ]
+            },
+            "description": "Reset all preferences to system defaults"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Schedules",
+      "item": [
+        {
+          "name": "Get All Schedules",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/schedules?page=1&limit=10&isActive=true&notificationType=weekly_report",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "schedules"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true"
+                },
+                {
+                  "key": "notificationType",
+                  "value": "weekly_report"
+                }
+              ]
+            },
+            "description": "Get all notification schedules with optional filters"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Schedule",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data && response.data.id) {",
+                  "        pm.collectionVariables.set('schedule_id', response.data.id);",
+                  "        console.log('Schedule ID set to:', response.data.id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Weekly Report\",\n  \"description\": \"Send weekly analytics report every Monday\",\n  \"notificationType\": \"weekly_report\",\n  \"templateData\": {\n    \"reportType\": \"weekly\",\n    \"metrics\": [\"users\", \"orders\", \"revenue\"]\n  },\n  \"targetUsers\": [\"admin_1\", \"admin_2\"],\n  \"cronExpression\": \"0 9 * * 1\",\n  \"channels\": {\n    \"email\": true,\n    \"sms\": false,\n    \"push\": false,\n    \"inApp\": true\n  },\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/schedules",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "schedules"
+              ]
+            },
+            "description": "Create a new notification schedule"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Schedule by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/schedules/{{schedule_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "schedules",
+                "{{schedule_id}}"
+              ]
+            },
+            "description": "Get a specific schedule by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Schedule",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated schedule description\",\n  \"cronExpression\": \"0 10 * * 1\",\n  \"targetUsers\": [\"admin_1\", \"admin_2\", \"admin_3\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/schedules/{{schedule_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "schedules",
+                "{{schedule_id}}"
+              ]
+            },
+            "description": "Update an existing notification schedule"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Schedule",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/schedules/{{schedule_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "schedules",
+                "{{schedule_id}}"
+              ]
+            },
+            "description": "Delete a notification schedule"
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Schedule Status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/schedules/{{schedule_id}}/toggle",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "schedules",
+                "{{schedule_id}}",
+                "toggle"
+              ]
+            },
+            "description": "Toggle schedule active/inactive status"
+          },
+          "response": []
+        },
+        {
+          "name": "Execute Schedule Manually",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/schedules/{{schedule_id}}/execute",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "schedules",
+                "{{schedule_id}}",
+                "execute"
+              ]
+            },
+            "description": "Execute a schedule manually (outside of cron schedule)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Delivery",
+      "item": [
+        {
+          "name": "Send Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"channel\": \"email\",\n  \"recipient\": \"user@example.com\",\n  \"subject\": \"Welcome to Vero2!\",\n  \"message\": \"Welcome to our platform! We're excited to have you.\",\n  \"data\": {\n    \"userName\": \"John Doe\",\n    \"activationLink\": \"https://example.com/activate\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/delivery/send",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "delivery",
+                "send"
+              ]
+            },
+            "description": "Send a notification through a specific channel"
+          },
+          "response": []
+        },
+        {
+          "name": "Bulk Send Notifications",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notifications\": [\n    {\n      \"channel\": \"email\",\n      \"recipient\": \"user1@example.com\",\n      \"subject\": \"Order Update\",\n      \"message\": \"Your order has been shipped!\"\n    },\n    {\n      \"channel\": \"sms\",\n      \"recipient\": \"+1234567890\",\n      \"message\": \"Your order #12345 has shipped. Track at: https://example.com/track\"\n    },\n    {\n      \"channel\": \"push\",\n      \"recipient\": \"device_token_123\",\n      \"message\": \"New message received!\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/delivery/bulk-send",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "delivery",
+                "bulk-send"
+              ]
+            },
+            "description": "Send multiple notifications through different channels"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{JWT_TOKEN}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "requests": {},
+        "exec": [
+          "// Add any pre-request scripts here",
+          "// For example, setting dynamic variables or authentication"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "requests": {},
+        "exec": [
+          "// Add test scripts here",
+          "// For example, validating response status and data",
+          "",
+          "pm.test(\"Status code is 2xx\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "pm.test(\"Response has success\", function () {",
+          "    var jsonData = pm.response.json();",
+          "    pm.expect(jsonData.success).to.eql(true);",
+          "});",
+          "",
+          "pm.test(\"Response time is less than 1000ms\", function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://35.162.205.9:3009/notification-service"
+    },
+    {
+      "key": "user_id",
+      "value": "user_123"
+    },
+    {
+      "key": "notification_id",
+      "value": "notification_123"
+    },
+    {
+      "key": "channel_id",
+      "value": "channel_123"
+    },
+    {
+      "key": "template_id",
+      "value": "template_123"
+    },
+    {
+      "key": "schedule_id",
+      "value": "schedule_123"
+    },
+    {
+      "key": "JWT_TOKEN",
+      "value": ""
+    }
+  ]
+}

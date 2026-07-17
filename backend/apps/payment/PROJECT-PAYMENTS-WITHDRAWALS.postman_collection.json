@@ -1,0 +1,495 @@
+{
+  "info": {
+    "_postman_id": "f5d39d06-f9b3-4dd9-938a-cf2afdb0a8c2",
+    "name": "Payment Service - Project Payments & Withdrawals",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Collection for testing project-based payments, wallet ledger, withdrawal requests, and admin payout actions."
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3004/api/payment"
+    },
+    {
+      "key": "business_token",
+      "value": ""
+    },
+    {
+      "key": "payer_token",
+      "value": ""
+    },
+    {
+      "key": "admin_token",
+      "value": ""
+    },
+    {
+      "key": "business_user_id",
+      "value": ""
+    },
+    {
+      "key": "project_id",
+      "value": "PROJECT_001"
+    },
+    {
+      "key": "milestone_id",
+      "value": "MILESTONE_001"
+    },
+    {
+      "key": "stripe_account_id",
+      "value": "acct_test123"
+    },
+    {
+      "key": "paypal_order_id",
+      "value": ""
+    },
+    {
+      "key": "withdrawal_request_id",
+      "value": ""
+    },
+    {
+      "key": "stripe_payment_intent_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Project Payments",
+      "item": [
+        {
+          "name": "Stripe Checkout (One-time)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "if (json.paymentIntentId) {",
+                  "  pm.collectionVariables.set('stripe_payment_intent_id', json.paymentIntentId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{payer_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessUserId\": \"{{business_user_id}}\",\n  \"amount\": 250.00,\n  \"currency\": \"USD\",\n  \"projectId\": \"{{project_id}}\",\n  \"paymentKind\": \"one_time\",\n  \"description\": \"One-time project payment\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/payments/stripe/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments",
+                "stripe",
+                "checkout"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Stripe Checkout (Milestone)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "if (json.paymentIntentId) {",
+                  "  pm.collectionVariables.set('stripe_payment_intent_id', json.paymentIntentId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{payer_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessUserId\": \"{{business_user_id}}\",\n  \"amount\": 75.00,\n  \"currency\": \"USD\",\n  \"projectId\": \"{{project_id}}\",\n  \"milestoneId\": \"{{milestone_id}}\",\n  \"paymentKind\": \"milestone\",\n  \"description\": \"Milestone payment\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/payments/stripe/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments",
+                "stripe",
+                "checkout"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Stripe Complete Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{payer_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentIntentId\": \"{{stripe_payment_intent_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/payments/stripe/complete",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments",
+                "stripe",
+                "complete"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PayPal Create Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "if (json.paypalOrderId) {",
+                  "  pm.collectionVariables.set('paypal_order_id', json.paypalOrderId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{payer_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessUserId\": \"{{business_user_id}}\",\n  \"amount\": 150.00,\n  \"currency\": \"USD\",\n  \"projectId\": \"{{project_id}}\",\n  \"paymentKind\": \"one_time\",\n  \"description\": \"PayPal project payment\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/payments/paypal/create-order",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments",
+                "paypal",
+                "create-order"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PayPal Capture",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{payer_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paypalOrderId\": \"{{paypal_order_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/payments/paypal/capture",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments",
+                "paypal",
+                "capture"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Business Wallet",
+      "item": [
+        {
+          "name": "Get Wallet",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{business_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/wallet",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "wallet"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Wallet Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{business_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/wallet/transactions?page=1&limit=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "wallet",
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Business Withdrawals",
+      "item": [
+        {
+          "name": "Create Withdrawal Request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "if (json.id) {",
+                  "  pm.collectionVariables.set('withdrawal_request_id', json.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{business_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50.00,\n  \"stripeAccountId\": \"{{stripe_account_id}}\",\n  \"currency\": \"USD\",\n  \"note\": \"Weekly payout request\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/withdrawals/request",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "withdrawals",
+                "request"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get My Withdrawal Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{business_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/withdrawals/my",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "withdrawals",
+                "my"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Withdrawals",
+      "item": [
+        {
+          "name": "Get All Withdrawal Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/withdrawals",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "withdrawals"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pay Withdrawal Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Approved and paid\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/withdrawals/{{withdrawal_request_id}}/pay",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "withdrawals",
+                "{{withdrawal_request_id}}",
+                "pay"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reject Withdrawal Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Validation failed\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/withdrawals/{{withdrawal_request_id}}/reject",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "withdrawals",
+                "{{withdrawal_request_id}}",
+                "reject"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,139 @@
+{
+  "info": {
+    "_postman_id": "activation-id",
+    "name": "Activation - Vero2 Local",
+    "description": "User activation endpoints including registration, OTP verification, login, and password reset. Updated for local testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Activation",
+      "item": [
+        {
+          "name": "User Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"accountType\": \"user\",\n  \"currency\": \"USD\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/user/register",
+              "host": ["http://localhost:3001/sso"],
+              "path": ["auth", "user", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Registration OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/user/verify-otp",
+              "host": ["http://localhost:3001/sso"],
+              "path": ["auth", "user", "verify-otp"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User Login (Get SSO Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  pm.collectionVariables.set('ssoToken', json.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"deviceId\": \"postman-device\",\n  \"deviceName\": \"Postman Client\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/user/login",
+              "host": ["http://localhost:3001/sso"],
+              "path": ["auth", "user", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/user/forgot-password",
+              "host": ["http://localhost:3001/sso"],
+              "path": ["auth", "user", "forgot-password"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"otp\": \"123456\",\n  \"newPassword\": \"NewSecurePass123!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/sso/auth/user/reset-password",
+              "host": ["http://localhost:3001/sso"],
+              "path": ["auth", "user", "reset-password"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

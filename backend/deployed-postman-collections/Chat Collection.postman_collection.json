@@ -1,0 +1,1029 @@
+{
+  "info": {
+    "_postman_id": "8555db0f-cfc0-4a1e-bf0b-1f54ecdaad08",
+    "name": "Chat Collection",
+    "description": "Comprehensive chat and messaging system covering Messaging, Conversation Management, Message Storage, User Presence/Status, Integration with Other Services, Security & Privacy, and Notifications/Push. Uses JWT tokens for authentication across multiple services.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "20143455",
+    "_collection_link": "https://go.postman.co/collection/20143455-8555db0f-cfc0-4a1e-bf0b-1f54ecdaad08?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Messaging",
+      "item": [
+        {
+          "name": "Send Text Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"hello\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/conversations/{{conversationId}}/messages",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "conversations",
+                "{{conversationId}}",
+                "messages"
+              ]
+            },
+            "description": "Send a text message in a conversation"
+          },
+          "response": []
+        },
+        {
+          "name": "Upload File Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/C:/Users/faizan javed/Downloads/logo.png"
+                },
+                {
+                  "key": "caption",
+                  "value": "Please review this document",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/conversations/{{conversationId}}/messages/file",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "conversations",
+                "{{conversationId}}",
+                "messages",
+                "file"
+              ]
+            },
+            "description": "Upload a file as a message"
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Voice Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "voice",
+                  "type": "file",
+                  "src": "/C:/Users/faizan javed/Downloads/notifi-tone.wav"
+                },
+                {
+                  "key": "caption",
+                  "value": "Voice message",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/conversations/{{conversationId}}/messages/voice",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "conversations",
+                "{{conversationId}}",
+                "messages",
+                "voice"
+              ]
+            },
+            "description": "Upload a voice message"
+          },
+          "response": []
+        },
+        {
+          "name": "Log Call Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"callDuration\": 120,\n  \"status\": \"completed\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/conversations/{{conversationId}}/messages/call",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "conversations",
+                "{{conversationId}}",
+                "messages",
+                "call"
+              ]
+            },
+            "description": "Log a call event as a message"
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Message as Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/conversations/{{conversationId}}/messages/{{messageId}}/read",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "conversations",
+                "{{conversationId}}",
+                "messages",
+                "{{messageId}}",
+                "read"
+              ]
+            },
+            "description": "Mark a specific message as read"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Message",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/conversations/{{conversationId}}/messages/{{messageId}}",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "conversations",
+                "{{conversationId}}",
+                "messages",
+                "{{messageId}}"
+              ]
+            },
+            "description": "Delete a message from conversation"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Conversation Management",
+      "item": [
+        {
+          "name": "Create Live Chat Conversation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"topic\": \"Technical Support\",\n    \"messageEnabled\": true,\n    \"callEnabled\": true,\n    \"fileUploadEnabled\": true,\n    \"voiceUploadEnabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/live/conversations",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "live",
+                "conversations"
+              ]
+            },
+            "description": "Create a new live chat conversation"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Order Chat Conversation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"orderId\": \"{{orderCode}}\",\n    \"messageEnabled\": true,\n    \"callEnabled\": true,\n    \"fileUploadEnabled\": true,\n    \"voiceUploadEnabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/order/conversations",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "order",
+                "conversations"
+              ]
+            },
+            "description": "Create a chat conversation for a specific order"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Live Chat Conversations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/live/conversations?page=1&limit=20",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "live",
+                "conversations"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get user's live chat conversations"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order Chat Conversations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/order/conversations?page=1&limit=20",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "order",
+                "conversations"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get user's order chat conversations"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Conversation Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/conversations/{{conversationId}}",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "conversations",
+                "{{conversationId}}"
+              ]
+            },
+            "description": "Get detailed information about a specific conversation"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Conversation by Order ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/order/conversations/{{orderCode}}",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "order",
+                "conversations",
+                "{{orderCode}}"
+              ]
+            },
+            "description": "Get chat conversation for a specific order"
+          },
+          "response": []
+        },
+        {
+          "name": "Close Conversation",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/conversations/{{conversationId}}",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "conversations",
+                "{{conversationId}}"
+              ]
+            },
+            "description": "Close/end a conversation"
+          },
+          "response": []
+        },
+        {
+          "name": "Submit Conversation Rating",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": \"yes\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/live/conversations/{{conversationId}}/rating",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "live",
+                "conversations",
+                "{{conversationId}}",
+                "rating"
+              ]
+            },
+            "description": "Submit rating for a live chat conversation"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Message Storage",
+      "item": [
+        {
+          "name": "Get Messages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/conversations/{{conversationId}}/messages?page=1&limit=50",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "conversations",
+                "{{conversationId}}",
+                "messages"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "before",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "after",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Retrieve paginated messages from a conversation with date filtering"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Message History with Filters",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/conversations/{{conversationId}}/messages?page=1&limit=25",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "conversations",
+                "{{conversationId}}",
+                "messages"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "25"
+                },
+                {
+                  "key": "messageType",
+                  "value": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "senderType",
+                  "value": "user",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get filtered message history by type and sender"
+          },
+          "response": []
+        },
+        {
+          "name": "Search Messages in Conversation",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/conversations/{{conversationId}}/messages/search?query=hello&page=1&limit=20",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "conversations",
+                "{{conversationId}}",
+                "messages",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "hello"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Search through message history in a conversation"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Message Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/conversations/{{conversationId}}/messages/stats?startDate=2024-01-01&endDate=2026-12-31",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "conversations",
+                "{{conversationId}}",
+                "messages",
+                "stats"
+              ],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-12-31"
+                }
+              ]
+            },
+            "description": "Get message statistics for a conversation"
+          },
+          "response": []
+        },
+        {
+          "name": "Export Conversation Messages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/conversations/{{conversationId}}/messages/export?format=json&startDate=2024-01-01&endDate=2026-12-31",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "conversations",
+                "{{conversationId}}",
+                "messages",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "json"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-12-31"
+                }
+              ]
+            },
+            "description": "Export conversation messages in various formats"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Presence / Status",
+      "item": [
+        {
+          "name": "Get Online Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/presence/online",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "presence",
+                "online"
+              ]
+            },
+            "description": "Get list of currently online users"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Presence Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/presence/status/{{userId}}",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "presence",
+                "status",
+                "{{userId}}"
+              ]
+            },
+            "description": "Check if a specific user is online"
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"away\",\n  \"customMessage\": \"Be back in 5 minutes\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/presence/status",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "presence",
+                "status"
+              ]
+            },
+            "description": "Update user's presence status (online, away, busy, invisible)"
+          },
+          "response": []
+        },
+        {
+          "name": "Set User Online (Manual)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/presence/online",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "presence",
+                "online"
+              ]
+            },
+            "description": "Manually set user as online (usually handled by WebSocket)"
+          },
+          "response": []
+        },
+        {
+          "name": "Set User Offline (Manual)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/presence/online",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "presence",
+                "online"
+              ]
+            },
+            "description": "Manually set user as offline (usually handled by WebSocket)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Presence Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/presence/stats",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "presence",
+                "stats"
+              ]
+            },
+            "description": "Get presence statistics for admin dashboard"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Integration with Other Services",
+      "item": [
+        {
+          "name": "Validate Order Status for Chat",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/validate/order/{{orderCode}}",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "validate",
+                "order",
+                "{{orderCode}}"
+              ]
+            },
+            "description": "Validate if order allows chat (integrates with Order service)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Chat-Enabled Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/chat/orders/enabled?page=1&limit=10",
+              "host": [
+                "{{gatewayUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "orders",
+                "enabled"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get orders that have chat enabled (integrates with Order service)"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "gatewayUrl",
+      "value": "http://35.162.205.9:3008"
+    },
+    {
+      "key": "userToken",
+      "value": ""
+    },
+    {
+      "key": "businessToken",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "conversationId",
+      "value": ""
+    },
+    {
+      "key": "messageId",
+      "value": ""
+    },
+    {
+      "key": "orderCode",
+      "value": ""
+    },
+    {
+      "key": "agencyId",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "notificationId",
+      "value": ""
+    },
+    {
+      "key": "encryptionEnabled",
+      "value": "true"
+    },
+    {
+      "key": "encryptionType",
+      "value": "AES256"
+    }
+  ]
+}
