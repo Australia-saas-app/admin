@@ -27,4 +27,4 @@ COPY package.json ./
 COPY package-lock.json ./
 USER app
 EXPOSE 3001
-CMD ["node", "dist/main.js"]
+CMD ["npm", "run", "start:prod"]
