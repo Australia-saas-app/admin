@@ -50,8 +50,14 @@ export function LoginForm({ onToggleForm, onForgotPassword }: LoginFormProps) {
     setIsLoading(true);
     try {
       const isEmail = data.email.includes('@');
+      
+      let accountType = "user";
+      if (selectedRole === "business") accountType = "business";
+      if (selectedRole === "affiliate") accountType = "agency";
+
       const payload = {
         password: data.password,
+        accountType,
         ...(isEmail ? { email: data.email } : { phone: data.email }),
       };
 
@@ -72,6 +78,9 @@ export function LoginForm({ onToggleForm, onForgotPassword }: LoginFormProps) {
         if (response.status === 403 && resData.error) {
           // Status Guard Triggered
           const status = resData.error.toUpperCase();
+          if (status === 'ACCOUNT_TYPE_MISMATCH') {
+            throw new Error(resData.message || "Account not found for the selected role. Please check the active tab.");
+          }
           let description = "Your account is not active.";
           if (status === 'PENDING') description = "Your account is currently under review.";
           else if (status === 'SUSPEND') description = "Your account has been temporarily suspended.";

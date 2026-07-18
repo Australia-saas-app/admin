@@ -118,10 +118,10 @@ export function Navbar({ onSignUp, showGetStarted = true }: NavbarProps) {
                     {/* Name + role visible on desktop only */}
                     <div className="hidden sm:flex flex-col items-start text-left">
                       <span className="text-xs sm:text-sm font-bold text-slate-800 leading-tight max-w-[90px] truncate">
-                        {user.name || "User"}
+                        {user.fullName || user.name || "User"}
                       </span>
                       <span className="text-[10px] text-slate-500 capitalize leading-tight">
-                        {user.roles?.[0] || "User"}
+                        {user.accountType || user.roles?.[0] || "User"}
                       </span>
                     </div>
                     <ChevronDown className={`w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600 transition-transform ${profileOpen ? "rotate-180" : ""}`} />
@@ -141,7 +141,7 @@ export function Navbar({ onSignUp, showGetStarted = true }: NavbarProps) {
                             className="w-9 h-9 rounded-full object-cover border border-slate-200 shrink-0"
                           />
                           <div className="min-w-0">
-                            <div className="text-sm font-bold text-slate-800 truncate">{user.name || "User"}</div>
+                            <div className="text-sm font-bold text-slate-800 truncate">{user.fullName || user.name || "User"}</div>
                             <div className="text-xs text-slate-500 truncate">{user.email || "user@example.com"}</div>
                           </div>
                         </div>

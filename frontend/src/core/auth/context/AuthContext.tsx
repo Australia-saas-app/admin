@@ -14,6 +14,8 @@ interface AuthState {
   isAuthenticated: boolean;
   user: {
     name: string;
+    fullName?: string;
+    accountType?: string;
     email: string;
     roles: UserRole[];
   } | null;
@@ -30,7 +32,7 @@ const AuthContext = createContext<AuthState | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<{ name: string; email: string; roles: UserRole[] } | null>(null);
+  const [user, setUser] = useState<{ name: string; fullName?: string; accountType?: string; email: string; roles: UserRole[] } | null>(null);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -56,11 +58,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const login = async (userData: any, token: string) => {
-    const normalized = { 
-      name: userData.fullName || userData.name || "User", 
-      email: userData.email || userData.phone || "", 
-      roles: [userData.role as UserRole] 
-    };
+    const { roles = [], name = 'User', email = '', fullName = '', accountType = 'user' } = userData;
+    const parsedRoles = Array.isArray(roles) ? roles.filter((r: any) => ["customer", "rider", "agency"].includes(r)) : [];
+      
+    const normalized = { name, email, fullName, accountType, roles: parsedRoles };
     setUser(normalized);
     setIsAuthenticated(true);
     localStorage.setItem("auth_user", JSON.stringify(normalized));
@@ -104,9 +105,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const verifyRecoveryKey = async (recoveryKey: string, role: string) => {
-    // We don't have a native endpoint just to "verify" a recovery key without resetting.
-    // So we just return mock user data to let the UI advance to reset phase.
-    return { fullName: "User", email: "hidden@example.com" };
+    try {
+      const response = await fetch('/api/sso/auth/verify-recovery-key', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recoveryKey })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Invalid recovery key');
+      
+      return { fullName: data.data.fullName, email: data.data.email };
+    } catch (error: any) {
+      throw new Error(error.message || 'Failed to verify recovery key');
+    }
   };
 
   const forgotPasswordReset = async (data: any) => {

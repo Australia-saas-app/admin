@@ -381,6 +381,23 @@ export class AuthService {
       );
     }
 
+    if (loginDto.accountType) {
+      const user = await this.userRepository.findOne({
+        where: [
+          ...(normalizedEmail ? [{ email: normalizedEmail }] : []),
+          ...(normalizedPhone ? [{ phone: normalizedPhone }] : []),
+        ],
+      });
+
+      if (user && user.accountType && user.accountType.toLowerCase() !== loginDto.accountType.toLowerCase()) {
+        throw new ForbiddenException({
+          success: false,
+          error: 'ACCOUNT_TYPE_MISMATCH',
+          message: `Account not found for the selected role. Please check the active tab.`,
+        });
+      }
+    }
+
     const tokenRequest: TokenRequestDto = {
       grant_type: 'password',
       username: normalizedEmail || normalizedPhone,
@@ -640,6 +657,23 @@ export class AuthService {
       data: {
         userId: user.userId,
       },
+    };
+  }
+
+  async verifyRecoveryKey(recoveryKey: string) {
+    if (!recoveryKey) {
+      throw new BadRequestException('Recovery key is required');
+    }
+    const user = await this.userRepository.findOne({ where: { recoveryKey } });
+    if (!user) {
+      throw new BadRequestException('Invalid recovery key');
+    }
+    return {
+      success: true,
+      data: {
+        fullName: user.fullName,
+        email: user.email || user.phone,
+      }
     };
   }
 

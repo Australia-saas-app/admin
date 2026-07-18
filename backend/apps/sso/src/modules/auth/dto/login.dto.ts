@@ -36,6 +36,10 @@ export class LoginDto {
   @IsOptional()
   @IsString()
   scope?: string;
+
+  @IsOptional()
+  @IsString()
+  accountType?: string;
 }
 
 

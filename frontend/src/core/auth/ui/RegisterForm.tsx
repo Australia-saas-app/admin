@@ -240,9 +240,9 @@ export function RegisterForm({ onToggleForm, onSuccess, initialRole = "user", is
     setIsLoading(true);
 
     try {
-      let accountType = "USER";
-      if (selectedRole === "business") accountType = "BUSINESS";
-      if (selectedRole === "affiliate") accountType = "AGENCY";
+      let accountType = "user";
+      if (selectedRole === "business") accountType = "business";
+      if (selectedRole === "affiliate") accountType = "agency";
 
       const isEmail = contact.includes("@");
       const payload = {
@@ -462,7 +462,7 @@ export function RegisterForm({ onToggleForm, onSuccess, initialRole = "user", is
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type={showPassword ? "text" : "password"}
-                  placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó"
+                  placeholder="••••••••"
                   className="w-full h-10 pl-9 pr-10 bg-white border border-slate-200 rounded-md focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 text-slate-900 outline-none"
                   value={password}
                   onChange={(e) => { setPassword(e.target.value); }}
@@ -477,10 +477,10 @@ export function RegisterForm({ onToggleForm, onSuccess, initialRole = "user", is
                 </button>
               </div>
               <div className="text-[10px] text-slate-500 mt-1 flex flex-wrap gap-x-2">
-                <span className={password.length >= 8 ? "text-emerald-600" : ""}>ΓÇó 8+ chars</span>
-                <span className={/[A-Z]/.test(password) ? "text-emerald-600" : ""}>ΓÇó 1 uppercase</span>
-                <span className={/\d/.test(password) ? "text-emerald-600" : ""}>ΓÇó 1 number</span>
-                <span className={/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password) ? "text-emerald-600" : ""}>ΓÇó 1 special</span>
+                <span className={password.length >= 8 ? "text-emerald-600" : ""}>• 8+ chars</span>
+                <span className={/[A-Z]/.test(password) ? "text-emerald-600" : ""}>• 1 uppercase</span>
+                <span className={/\d/.test(password) ? "text-emerald-600" : ""}>• 1 number</span>
+                <span className={/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password) ? "text-emerald-600" : ""}>• 1 special</span>
               </div>
             </div>
 

@@ -105,6 +105,11 @@ export class AuthController {
     return this.authService.verifyPassword(verifyPasswordDto);
   }
 
+  @Post('verify-recovery-key')
+  verifyRecoveryKey(@Body() body: { recoveryKey: string }) {
+    return this.authService.verifyRecoveryKey(body.recoveryKey);
+  }
+
   @Post('user/complete-profile')
   @UseGuards(JwtAuthGuard)
   completeProfile(

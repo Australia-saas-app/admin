@@ -193,8 +193,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
 
             {/* Profile Avatar */}
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center font-bold text-white shadow-md cursor-pointer">
-              {user?.email ? user.email.charAt(0).toUpperCase() : "U"}
+            <div className="flex items-center gap-3 bg-slate-100 rounded-full py-1.5 pl-1.5 pr-4 border border-slate-200 cursor-pointer hover:bg-slate-200 transition-colors">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center font-bold text-white shadow-sm text-sm">
+                {user?.fullName ? user.fullName.charAt(0).toUpperCase() : (user?.email ? user.email.charAt(0).toUpperCase() : "U")}
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold text-slate-800 leading-none">
+                  {user?.fullName || user?.email?.split('@')[0] || "User"}
+                </span>
+                <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider mt-0.5">
+                  {user?.accountType || "USER"}
+                </span>
+              </div>
             </div>
           </div>
         </header>
