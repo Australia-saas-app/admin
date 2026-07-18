@@ -10,6 +10,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - BACKEND_URL=http://saas_backend:3001
     container_name: saas_frontend
     ports:
       - "8000:3000"
@@ -28,12 +30,14 @@ services:
     build:
       context: ./admin
       dockerfile: Dockerfile
+      args:
+        - BACKEND_URL=http://saas_backend:3001
     container_name: saas_admin
     ports:
       - "8001:3001"
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=/api
+      - NEXT_PUBLIC_API_URL=/admin/api
       - BACKEND_URL=http://saas_backend:3001
     restart: always
     networks:
