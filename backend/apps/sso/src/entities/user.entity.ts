@@ -103,7 +103,7 @@ export class User {
   @PrimaryColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 26, unique: true })
+  @Column({ type: 'varchar', length: 26, unique: true, nullable: true })
   userId: string;
 
   @Column({
