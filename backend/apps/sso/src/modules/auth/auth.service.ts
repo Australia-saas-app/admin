@@ -845,13 +845,13 @@ export class AuthService {
         stats[key] = { total: 0 };
         
         const qb = this.userRepository.createQueryBuilder('user')
-          .where('LOWER(user.accountType) = LOWER(:type)', { type });
+          .where('user.accountType = :type', { type: type.toLowerCase() });
         
         stats[key]['total'] = await qb.getCount();
 
         for (const [statusKey, statusVal] of Object.entries(statusMap)) {
           const sqb = this.userRepository.createQueryBuilder('user')
-            .where('LOWER(user.accountType) = LOWER(:type)', { type })
+            .where('user.accountType = :type', { type: type.toLowerCase() })
             .andWhere('user.status = :status', { status: statusVal });
           
           stats[key][statusKey] = await sqb.getCount();
@@ -879,13 +879,13 @@ export class AuthService {
       if (query.search) {
         const like = `%${query.search.toLowerCase()}%`;
         qb.andWhere(
-          '(LOWER(user.userId) LIKE :like OR LOWER(user.fullName) LIKE :like OR LOWER(user.email) LIKE :like OR LOWER(user.phone) LIKE :like)',
+          '(LOWER(CAST(user.userId AS text)) LIKE :like OR LOWER(CAST(user.fullName AS text)) LIKE :like OR LOWER(CAST(user.email AS text)) LIKE :like OR LOWER(CAST(user.phone AS text)) LIKE :like)',
           { like },
         );
       }
 
       if (query.accountType) {
-        qb.andWhere('LOWER(user.accountType) = LOWER(:accountType)', { accountType: query.accountType });
+        qb.andWhere('user.accountType = :accountType', { accountType: query.accountType.toLowerCase() });
       }
 
       if (query.status) {
@@ -942,7 +942,7 @@ export class AuthService {
         if (query.search) {
           const like = `%${query.search.toLowerCase()}%`;
           statusQb.andWhere(
-            '(LOWER(user.userId) LIKE :like OR LOWER(user.fullName) LIKE :like OR LOWER(user.email) LIKE :like OR LOWER(user.phone) LIKE :like)',
+            '(LOWER(CAST(user.userId AS text)) LIKE :like OR LOWER(CAST(user.fullName AS text)) LIKE :like OR LOWER(CAST(user.email AS text)) LIKE :like OR LOWER(CAST(user.phone AS text)) LIKE :like)',
             { like },
           );
         }
@@ -961,11 +961,11 @@ export class AuthService {
         if (query.search) {
           const like = `%${query.search.toLowerCase()}%`;
           typeQb.andWhere(
-            '(LOWER(user.userId) LIKE :like OR LOWER(user.fullName) LIKE :like OR LOWER(user.email) LIKE :like OR LOWER(user.phone) LIKE :like)',
+            '(LOWER(CAST(user.userId AS text)) LIKE :like OR LOWER(CAST(user.fullName AS text)) LIKE :like OR LOWER(CAST(user.email AS text)) LIKE :like OR LOWER(CAST(user.phone AS text)) LIKE :like)',
             { like },
           );
         }
-        typeQb.andWhere('LOWER(user.accountType) = LOWER(:accountType)', { accountType });
+        typeQb.andWhere('user.accountType = :accountType', { accountType });
         accountTypeCounts[accountType] = await typeQb.getCount();
       }
 
