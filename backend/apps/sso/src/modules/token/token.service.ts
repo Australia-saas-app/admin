@@ -93,8 +93,6 @@ export class TokenService {
       });
     }
 
-    this.ensureUserIsAllowed(user);
-
     const isValidPassword = await user.comparePassword(dto.password!);
     if (!isValidPassword) {
       throw new UnauthorizedException({
@@ -102,6 +100,8 @@ export class TokenService {
         error_description: 'Invalid credentials',
       });
     }
+
+    this.ensureUserIsAllowed(user);
 
     if (user.twoFactorEnabled) {
       await this.ensureValidOtp(user, dto.otp);

@@ -100,15 +100,12 @@ const DashboardPageLayout: React.FC = () => {
         });
         if (response.ok) {
           const resData = await response.json();
-          const types = resData.data?.analytics?.accountTypes || [];
-          const userObj = types.find((t:any) => t.accountType === 'user');
-          const businessObj = types.find((t:any) => t.accountType === 'business');
-          const affiliateObj = types.find((t:any) => t.accountType === 'affiliate');
+          const types = resData.data?.analytics?.accountTypes || {};
           setStats({
-            totalUsers: resData.data?.analytics?.totalUsers || 0,
-            userCount: userObj ? Number(userObj.count) : 0,
-            businessCount: businessObj ? Number(businessObj.count) : 0,
-            affiliateCount: affiliateObj ? Number(affiliateObj.count) : 0,
+            totalUsers: resData.data?.analytics?.all || 0,
+            userCount: types.user ? Number(types.user) : 0,
+            businessCount: types.business ? Number(types.business) : 0,
+            affiliateCount: types.agency ? Number(types.agency) : 0,
           });
         }
       } catch (e) {}

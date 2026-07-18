@@ -195,12 +195,7 @@ export class AuthService {
       );
     }
 
-    if (accountType === AccountType.AGENCY) {
-      if (!registerDto.agencyInfo || !registerDto.agencyInfo.agencyName) {
-        throw new BadRequestException(
-          'Agency name is required for agency accounts',
-        );
-      }
+    if (accountType === AccountType.AGENCY && registerDto.agencyInfo?.agencyName) {
       try {
         const existingAgency = await this.userRepository
           .createQueryBuilder('user')
@@ -221,13 +216,7 @@ export class AuthService {
       }
     }
 
-    if (accountType === AccountType.BUSINESS) {
-      if (!registerDto.businessInfo || !registerDto.businessInfo.businessName) {
-        throw new BadRequestException(
-          'Business name is required for business accounts',
-        );
-      }
-    }
+    // Business info is collected during onboarding, no strict check here.
 
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
 
@@ -845,13 +834,13 @@ export class AuthService {
         stats[key] = { total: 0 };
         
         const qb = this.userRepository.createQueryBuilder('user')
-          .where('user.accountType = :type', { type });
+          .where('LOWER(user.accountType) = LOWER(:type)', { type });
         
         stats[key]['total'] = await qb.getCount();
 
         for (const [statusKey, statusVal] of Object.entries(statusMap)) {
           const sqb = this.userRepository.createQueryBuilder('user')
-            .where('user.accountType = :type', { type })
+            .where('LOWER(user.accountType) = LOWER(:type)', { type })
             .andWhere('user.status = :status', { status: statusVal });
           
           stats[key][statusKey] = await sqb.getCount();
@@ -885,7 +874,7 @@ export class AuthService {
       }
 
       if (query.accountType) {
-        qb.andWhere('user.accountType = :accountType', { accountType: query.accountType });
+        qb.andWhere('LOWER(user.accountType) = LOWER(:accountType)', { accountType: query.accountType });
       }
 
       if (query.status) {
@@ -965,7 +954,7 @@ export class AuthService {
             { like },
           );
         }
-        typeQb.andWhere('user.accountType = :accountType', { accountType });
+        typeQb.andWhere('LOWER(user.accountType) = LOWER(:accountType)', { accountType });
         accountTypeCounts[accountType] = await typeQb.getCount();
       }
 
