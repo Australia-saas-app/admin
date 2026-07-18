@@ -114,29 +114,30 @@ services:
     networks:
       - saas_network
 
-  saas_zookeeper:
-    image: confluentinc/cp-zookeeper:latest
-    container_name: saas_zookeeper
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    restart: always
-    networks:
-      - saas_network
+#   saas_zookeeper:
+#     image: confluentinc/cp-zookeeper:latest
+#     container_name: saas_zookeeper
+#     environment:
+#       ZOOKEEPER_CLIENT_PORT: 2181
+#       ZOOKEEPER_TICK_TIME: 2000
+#     restart: always
+#     networks:
+#       - saas_network
+# 
+#   saas_kafka:
+#     image: confluentinc/cp-kafka:latest
+#     container_name: saas_kafka
+#     depends_on:
+#       - saas_zookeeper
+#     environment:
+#       KAFKA_BROKER_ID: 1
+#       KAFKA_ZOOKEEPER_CONNECT: saas_zookeeper:2181
+#       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://saas_kafka:9092
+#       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#     restart: always
+#     networks:
+#       - saas_network
 
-  saas_kafka:
-    image: confluentinc/cp-kafka:latest
-    container_name: saas_kafka
-    depends_on:
-      - saas_zookeeper
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: saas_zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://saas_kafka:9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    restart: always
-    networks:
-      - saas_network
 
 volumes:
   postgres_data:
