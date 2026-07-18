@@ -12,6 +12,7 @@ services:
       dockerfile: Dockerfile
       args:
         - BACKEND_URL=http://saas_backend:3001
+        - NEXT_PUBLIC_API_URL=/api
     container_name: saas_frontend
     ports:
       - "8000:3000"
@@ -32,6 +33,7 @@ services:
       dockerfile: Dockerfile
       args:
         - BACKEND_URL=http://saas_backend:3001
+        - NEXT_PUBLIC_API_URL=/admin/api
     container_name: saas_admin
     ports:
       - "8001:3001"

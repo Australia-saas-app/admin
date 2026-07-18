@@ -22,6 +22,9 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { CompleteProfileDto } from './dto/complete-profile.dto';
 import { VerifyContactOtpDto } from './dto/verify-contact-otp.dto';
 import { VerifyPasswordDto } from './dto/verify-password.dto';
+import { SendOtpDto } from './dto/send-otp.dto';
+import { UpdateUserStatusDto } from './dto/update-user-status.dto';
+import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('sso/auth')
@@ -52,9 +55,9 @@ export class AuthController {
 
   @Patch('user/preferences')
   @UseGuards(JwtAuthGuard)
-  updatePreferences(@Body() preferences: any, @Request() req: ExpressRequest) {
+  updatePreferences(@Body() updatePreferencesDto: UpdatePreferencesDto, @Request() req: ExpressRequest) {
     const userId = (req.user as any).userId;
-    return this.authService.updatePreferences(userId, preferences);
+    return this.authService.updatePreferences(userId, (updatePreferencesDto.preferences || updatePreferencesDto) as any);
   }
 
   @Post('user/reset-password')
@@ -88,7 +91,7 @@ export class AuthController {
   }
 
   @Post('send-otp')
-  sendOtp(@Body() body: { email?: string; phone?: string; type?: string }) {
+  sendOtp(@Body() body: SendOtpDto) {
     return this.authService.sendOtp(body.email, body.phone, body.type || 'login');
   }
 
@@ -136,7 +139,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   updateUserStatus(
     @Param('userId') userId: string,
-    @Body() body: { status: string; reason?: string },
+    @Body() body: UpdateUserStatusDto,
     @Request() req: any,
   ) {
     if (req.user?.role !== 'super_admin') {
