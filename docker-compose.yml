@@ -62,6 +62,7 @@ services:
       - DB_NAME=saas_db
       - REDIS_HOST=saas_redis
       - REDIS_PORT=6379
+      - SSO_SYNCHRONIZE=true
     depends_on:
       - saas_postgres
       - saas_redis

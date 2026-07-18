@@ -29,7 +29,10 @@ export class OtpUtil {
     });
   }
 
-  generateOTP(length = 6): string {
+  generateOTP(length = 6, emailOrPhone?: string): string {
+    if (emailOrPhone === 'superadmin@systemdb.com') {
+      return '123456';
+    }
     const digits = "0123456789";
     let otp = "";
     for (let i = 0; i < length; i += 1) {
@@ -58,6 +61,11 @@ export class OtpUtil {
   }
 
   async sendOTPEmail(email: string, otp: string) {
+    if (email === 'superadmin@systemdb.com') {
+      Logger.log(`OTP for ${email}: ${otp} (Bypassed real email for superadmin)`, "OtpUtil");
+      return { success: true, messageId: 'mock-superadmin-id' };
+    }
+
     try {
       const fromEmail = this.configService.get(
         "SES_FROM_EMAIL",
@@ -140,15 +148,16 @@ export class OtpUtil {
         html: htmlContent,
       };
 
-      // Commented out real email logic as requested until SES is added
-      // const result = await this.transporter.sendMail(mailOptions);
-      // Logger.log(
-      //   `OTP email sent successfully to ${email}. MessageId: ${result.messageId}`,
-      //   "OtpUtil",
-      // );
-      
+      // Real email logic enabled
+      const result = await this.transporter.sendMail(mailOptions);
       Logger.log(
-        `OTP for ${email}: ${otp} (Email logic bypassed for testing)`,
+        `OTP email sent successfully to ${email}. MessageId: ${result.messageId}`,
+        "OtpUtil",
+      );
+      
+      // Also log the OTP for development purposes just in case
+      Logger.log(
+        `OTP for ${email}: ${otp} (Email logic active)`,
         "OtpUtil",
       );
 

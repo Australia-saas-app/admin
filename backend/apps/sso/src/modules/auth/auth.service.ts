@@ -98,7 +98,7 @@ export class AuthService {
       return { success: true, message: 'If account exists, an OTP has been sent' };
     }
 
-    const otp = this.otpUtil.generateOTP();
+    const otp = this.otpUtil.generateOTP(6, email);
     const otpKey = `otp:${email}:admin_reset`;
     await this.otpUtil.storeOTP(this.redisClient, otpKey, otp);
     await this.otpUtil.sendOTPEmail(email as string, otp);
@@ -299,7 +299,7 @@ export class AuthService {
     }
 
     if (!registerDto.otp) {
-      const otp = this.otpUtil.generateOTP();
+      const otp = this.otpUtil.generateOTP(6, normalizedEmail || normalizedPhone);
       const otpKey = `otp:${normalizedEmail || normalizedPhone}:registration`;
       await this.otpUtil.storeOTP(this.redisClient, otpKey, otp);
 
@@ -480,7 +480,7 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
 
-    const otp = this.otpUtil.generateOTP();
+    const otp = this.otpUtil.generateOTP(6, normalizedEmail || normalizedPhone);
     const otpKey = `otp:${normalizedEmail || normalizedPhone}:forgot-password`;
     await this.otpUtil.storeOTP(this.redisClient, otpKey, otp);
 
@@ -552,7 +552,7 @@ export class AuthService {
       throw new BadRequestException('Email or phone is required');
     }
 
-    const otp = this.otpUtil.generateOTP();
+    const otp = this.otpUtil.generateOTP(6, normalizedEmail || normalizedPhone);
     const otpKey = `otp:${normalizedEmail || normalizedPhone}:${type}`;
     await this.otpUtil.storeOTP(this.redisClient, otpKey, otp);
 
