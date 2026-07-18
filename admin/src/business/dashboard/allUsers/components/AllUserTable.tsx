@@ -109,7 +109,7 @@ const AllUserTable: React.FC = () => {
                 if (!active) return
 
                 let filtered = (resData.data.users || resData.data || []).map((u: any) => ({
-                    userId: u.id,
+                    userId: u.userId || u.id,
                     fullName: u.fullName || u.email,
                     email: u.email || u.phone,
                     currency: u.currency,
@@ -263,7 +263,7 @@ const AllUserTable: React.FC = () => {
                             items.map((u, idx) => (
                                 <TableRow key={u.userId}>
                                     <TableColumn>
-                                        #{u.userId.slice(0,5)}
+                                        #{(u.userId || '').slice(0,5)}
                                     </TableColumn>
                                     <TableColumn>
                                         {u.totalProject || 0}

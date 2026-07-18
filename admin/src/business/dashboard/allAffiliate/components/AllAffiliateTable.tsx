@@ -80,7 +80,7 @@ const AllAffiliateTable: React.FC = () => {
     const fetchAffiliates = async () => {
       setIsFetching(true)
       try {
-        const response = await fetch('/api/sso/auth/admin/users?accountType=affiliate', {
+        const response = await fetch('/api/sso/auth/admin/users?accountType=agency', {
           headers: { 'Authorization': `Bearer ${token}` }
         })
         if (!response.ok) throw new Error('Failed to fetch')
@@ -89,8 +89,8 @@ const AllAffiliateTable: React.FC = () => {
         if (!active) return
 
         let filtered = (resData.data.users || resData.data || []).map((u: any) => ({
-          userId: u.id,
-          affiliateId: u.id.slice(0,5),
+          userId: u.userId || u.id,
+          affiliateId: (u.userId || u.id || '').slice(0,5),
           fullName: u.fullName || 'Unknown',
           email: u.email || '-',
           industryType: u.industryType || 'NA',

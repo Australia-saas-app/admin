@@ -815,6 +815,53 @@ export class AuthService {
     };
   }
 
+  async getAdminStats() {
+    try {
+      const stats: Record<string, any> = {};
+
+      const accountTypes = [
+        { type: AccountType.USER, key: 'user' },
+        { type: AccountType.AGENCY, key: 'affiliate' },
+        { type: AccountType.BUSINESS, key: 'business' },
+      ];
+
+      const statusMap = {
+        ACTIVE: UserStatus.ACTIVE,
+        SUSPEND: UserStatus.SUSPENDED,
+        BLOCK: UserStatus.BLOCKED,
+        DORMANT: UserStatus.DORMANT,
+        CLOSED: UserStatus.CLOSED,
+        PENDING: UserStatus.PENDING,
+        INACTIVE: UserStatus.INACTIVE,
+      };
+
+      for (const { type, key } of accountTypes) {
+        stats[key] = { total: 0 };
+        
+        const qb = this.userRepository.createQueryBuilder('user')
+          .where('user.accountType = :type', { type });
+        
+        stats[key]['total'] = await qb.getCount();
+
+        for (const [statusKey, statusVal] of Object.entries(statusMap)) {
+          const sqb = this.userRepository.createQueryBuilder('user')
+            .where('user.accountType = :type', { type })
+            .andWhere('user.status = :status', { status: statusVal });
+          
+          stats[key][statusKey] = await sqb.getCount();
+        }
+      }
+
+      return {
+        success: true,
+        data: stats,
+      };
+    } catch (error) {
+      console.error('Error in getAdminStats:', error);
+      throw new BadRequestException('Failed to fetch admin stats');
+    }
+  }
+
   async getUsers(query: any) {
     try {
       const page = query.page && query.page > 0 ? query.page : 1;
@@ -952,6 +999,7 @@ export class AuthService {
   }
 
   async updateUserStatus(userId: string, status: string, reason: string, adminEmail: string | undefined) {
+    status = status.toLowerCase();
     const user = await this.userRepository.findOne({ where: { userId } });
     if (!user) {
       throw new NotFoundException('User not found');

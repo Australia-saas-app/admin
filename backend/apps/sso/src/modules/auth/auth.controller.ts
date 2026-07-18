@@ -140,6 +140,15 @@ export class AuthController {
     return this.authService.getUserDetails(userId);
   }
 
+  @Get('admin/stats')
+  @UseGuards(JwtAuthGuard)
+  async getAdminStats(@Request() req: any) {
+    if (req.user?.role !== 'super_admin') {
+      throw new ForbiddenException('Admin access required');
+    }
+    return this.authService.getAdminStats();
+  }
+
   @Patch('admin/users/:userId/status')
   @UseGuards(JwtAuthGuard)
   updateUserStatus(
