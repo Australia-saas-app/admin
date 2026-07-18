@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(req: NextRequest, { params }: { params: { path: string[] } }) {
+export async function POST(req: NextRequest, props: { params: Promise<{ path: string[] }> }) {
+  const params = await props.params;
   const pathString = params.path.join('/');
   const backendUrl = process.env.BACKEND_URL || 'http://saas-backend:3001';
   const targetUrl = `${backendUrl}/sso/${pathString}`;
@@ -24,7 +25,6 @@ export async function POST(req: NextRequest, { params }: { params: { path: strin
     try {
       jsonData = JSON.parse(textData);
     } catch {
-      // Not JSON, return as text but wrap in JSON so the client doesn't choke
       return NextResponse.json({
         statusCode: res.status,
         message: `Backend returned non-JSON response: ${textData.substring(0, 200)}`
@@ -36,15 +36,15 @@ export async function POST(req: NextRequest, { params }: { params: { path: strin
   } catch (error: any) {
     console.error('[PROXY ERROR]', error);
     
-    // Return EXACTLY what the internal Node.js error was as JSON so the UI displays it!
     return NextResponse.json({
       statusCode: 502,
       message: `[NextJS Proxy Error] Failed to connect to ${targetUrl}. Reason: ${error.message}. Code: ${error.code}`
-    }, { status: 502 }); // Use 502 Bad Gateway to differentiate from 500 Internal Server Error
+    }, { status: 502 });
   }
 }
 
-export async function GET(req: NextRequest, { params }: { params: { path: string[] } }) {
+export async function GET(req: NextRequest, props: { params: Promise<{ path: string[] }> }) {
+  const params = await props.params;
   const pathString = params.path.join('/');
   const backendUrl = process.env.BACKEND_URL || 'http://saas-backend:3001';
   const targetUrl = `${backendUrl}/sso/${pathString}`;
