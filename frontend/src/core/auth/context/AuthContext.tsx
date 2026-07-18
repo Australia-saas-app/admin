@@ -58,7 +58,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const login = async (userData: any, token: string) => {
-    const { roles = [], name = 'User', email = '', fullName = '', accountType = 'user' } = userData;
+    const u = userData.user || userData;
+    const { roles = [], name = 'User', email = '', fullName = '', accountType = 'user' } = u;
     const parsedRoles = Array.isArray(roles) ? roles.filter((r: any) => ["customer", "rider", "agency"].includes(r)) : [];
       
     const normalized = { name, email, fullName, accountType, roles: parsedRoles };

@@ -30,23 +30,7 @@ type BackendUser = {
     profit?: number
 }
 
-// ---------------------------------------------------------
-// DUMMY DATA: Replaces the failing backend axios call
-// ---------------------------------------------------------
-const dummyUsersData: BackendUser[] = [
-  { userId: "1", fullName: "Emma Thompson", email: "emma.t@example.com", currency: "USD", status: "active", createdAt: "2026-06-15T10:30:00Z" },
-  { userId: "2", fullName: "Liam O'Connor", email: "liam.oc@example.com", currency: "EUR", status: "pending", createdAt: "2026-06-18T14:20:00Z" },
-  { userId: "3", fullName: "Sophia Martinez", email: "smartinez@example.com", currency: "USD", status: "active", createdAt: "2026-06-20T09:15:00Z" },
-  { userId: "4", fullName: "Noah Williams", email: "noah.w@example.com", currency: "GBP", status: "suspend", createdAt: "2026-06-22T16:45:00Z" },
-  { userId: "5", fullName: "Olivia Chen", email: "olivia.chen@example.com", currency: "JPY", status: "active", createdAt: "2026-06-25T11:10:00Z" },
-  { userId: "6", fullName: "William Davis", email: "will.davis@example.com", currency: "USD", status: "dormant", createdAt: "2026-06-28T08:05:00Z" },
-  { userId: "7", fullName: "Ava Taylor", email: "ava.t@example.com", currency: "EUR", status: "active", createdAt: "2026-07-01T13:40:00Z" },
-  { userId: "8", fullName: "James Anderson", email: "j.anderson@example.com", currency: "GBP", status: "pending", createdAt: "2026-07-02T15:25:00Z" },
-  { userId: "9", fullName: "Isabella Thomas", email: "isa.thomas@example.com", currency: "USD", status: "active", createdAt: "2026-07-03T10:50:00Z" },
-  { userId: "10", fullName: "Benjamin Jackson", email: "ben.jackson@example.com", currency: "USD", status: "closed", createdAt: "2026-07-04T09:30:00Z" },
-  { userId: "11", fullName: "Mia White", email: "mia.white@example.com", currency: "EUR", status: "active", createdAt: "2026-07-05T14:15:00Z" },
-  { userId: "12", fullName: "Lucas Harris", email: "lucas.h@example.com", currency: "JPY", status: "pending", createdAt: "2026-07-05T16:00:00Z" },
-]
+
 
 const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {

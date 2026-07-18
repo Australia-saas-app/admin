@@ -121,7 +121,7 @@ export function Navbar({ onSignUp, showGetStarted = true }: NavbarProps) {
                         {user.fullName || user.name || "User"}
                       </span>
                       <span className="text-[10px] text-slate-500 capitalize leading-tight">
-                        {user.accountType || user.roles?.[0] || "User"}
+                        {user.accountType === "agency" ? "Affiliate" : user.accountType || user.roles?.[0] || "User"}
                       </span>
                     </div>
                     <ChevronDown className={`w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600 transition-transform ${profileOpen ? "rotate-180" : ""}`} />

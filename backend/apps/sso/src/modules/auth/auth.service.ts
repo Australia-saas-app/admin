@@ -59,6 +59,13 @@ export class AuthService {
     return phone ? phone.trim() : undefined;
   }
 
+  private async findUserByAnyId(idStr: string) {
+    if (/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(idStr)) {
+      return this.userRepository.findOne({ where: { id: idStr } });
+    }
+    return this.userRepository.findOne({ where: { userId: idStr } });
+  }
+
   async adminLogin(loginDto: LoginDto) {
     const email = this.normalizeEmail(loginDto.email);
     const admin = await this.adminRepository.findOne({ where: { email } });
@@ -676,7 +683,7 @@ export class AuthService {
   
 
   async deleteUser(userId: string) {
-    const user = await this.userRepository.findOne({ where: { userId } });
+    const user = await this.findUserByAnyId(userId);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -685,9 +692,7 @@ export class AuthService {
   }
 
   async getCurrentUser(userId: string) {
-    const user = await this.userRepository.findOne({
-      where: { userId },
-    });
+    const user = await this.findUserByAnyId(userId);
 
     if (!user) {
       throw new NotFoundException('User not found');
@@ -709,7 +714,7 @@ export class AuthService {
   }
 
   async completeProfile(userId: string, dto: CompleteProfileDto) {
-    const user = await this.userRepository.findOne({ where: { userId } });
+    const user = await this.findUserByAnyId(userId);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -992,7 +997,7 @@ export class AuthService {
   }
 
   async getUserDetails(userId: string) {
-    const user = await this.userRepository.findOne({ where: { userId } });
+    const user = await this.findUserByAnyId(userId);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -1006,7 +1011,7 @@ export class AuthService {
 
   async updateUserStatus(userId: string, status: string, reason: string, adminEmail: string | undefined) {
     status = status.toLowerCase();
-    const user = await this.userRepository.findOne({ where: { userId } });
+    const user = await this.findUserByAnyId(userId);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -1047,7 +1052,7 @@ export class AuthService {
   }
 
   async updatePreferences(userId: string, preferences: Partial<User['preferences']>) {
-    const user = await this.userRepository.findOne({ where: { userId } });
+    const user = await this.findUserByAnyId(userId);
     if (!user) {
       throw new NotFoundException('User not found');
     }
