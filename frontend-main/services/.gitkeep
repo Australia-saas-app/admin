@@ -1,0 +1,2 @@
+# Placeholder so the directory is tracked in git and available for Docker builds.
+# Shared service packages can be added under this folder later.

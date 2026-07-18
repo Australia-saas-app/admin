@@ -1,0 +1,42 @@
+[
+  {
+    "id": "registered-test-example-com-1783937861776",
+    "contact": "test@example.com",
+    "password": "12345678",
+    "accountType": "user",
+    "role": "USER",
+    "fullName": "Test Test",
+    "currency": "USD",
+    "createdAt": "2026-07-13T10:17:41.777Z"
+  },
+  {
+    "id": "registered-test-gmail-com-1783870323745",
+    "contact": "test@gmail.com",
+    "password": "12345678",
+    "accountType": "user",
+    "role": "USER",
+    "fullName": "Test Test",
+    "currency": "USD",
+    "createdAt": "2026-07-12T15:32:03.745Z"
+  },
+  {
+    "id": "registered-business-demo-com-1783926310800",
+    "contact": "business@demo.com",
+    "password": "demo123456",
+    "accountType": "business",
+    "role": "SELLER",
+    "fullName": "Test Business",
+    "currency": "USD",
+    "createdAt": "2026-07-13T07:05:10.800Z"
+  },
+  {
+    "id": "registered-boaz-gmail-com-1783940816136",
+    "contact": "boaz@gmail.com",
+    "password": "12345678",
+    "accountType": "user",
+    "role": "USER",
+    "fullName": "Boaz Test",
+    "currency": "USD",
+    "createdAt": "2026-07-13T11:06:56.136Z"
+  }
+]

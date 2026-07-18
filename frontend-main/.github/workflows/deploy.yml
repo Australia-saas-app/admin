@@ -1,0 +1,174 @@
+name: Deploy – Production
+
+# On every push to main:
+#   1) Build & push the web Docker image to GHCR
+#   2) (Optional) SSH into the GCP VM and run scripts/deploy-vm.sh
+#
+# Admin is a separate repository.
+# SSH deploy is OPT-IN: set repository variable ENABLE_SSH_DEPLOY=true
+# and the secrets listed in docs/DEPLOYMENT-GCP-VM.md § CI/CD.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deployment environment"
+        required: true
+        default: "production"
+        type: choice
+        options: [production, staging]
+      skip_ssh:
+        description: "Skip SSH deploy (images only)"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  NEXT_PUBLIC_BACKEND_URL: http://localhost:3006
+  NEXT_PUBLIC_SITE_URL: http://localhost:3000
+  NEXT_PUBLIC_ADMIN_URL: http://localhost:3001
+  NEXT_PUBLIC_APP_NAME: System DB
+
+jobs:
+  build-image:
+    name: Build & Push Docker Images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve public env (secrets/vars override defaults)
+        run: |
+          echo "NEXT_PUBLIC_BACKEND_URL=${BACKEND:-http://localhost:3006}" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_SITE_URL=${SITE:-http://localhost:3000}" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_ADMIN_URL=${ADMIN:-http://localhost:3001}" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_APP_NAME=${NAME:-System DB}" >> "$GITHUB_ENV"
+          echo "Resolved SITE_URL=$SITE ADMIN_URL=$ADMIN BACKEND=$BACKEND"
+        env:
+          BACKEND: ${{ secrets.NEXT_PUBLIC_BACKEND_URL }}
+          SITE: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+          ADMIN: ${{ vars.NEXT_PUBLIC_ADMIN_URL }}
+          NAME: ${{ vars.APP_NAME }}
+
+      - name: Set lowercase image name
+        run: echo "IMAGE_NAME=${REGISTRY}/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+        env:
+          REGISTRY: ${{ env.REGISTRY }}
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (web)
+        id: meta-web
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}-web
+          tags: |
+            type=sha,prefix=sha-
+            type=ref,event=branch
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push web image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta-web.outputs.tags }}
+          labels: ${{ steps.meta-web.outputs.labels }}
+          build-args: |
+            APP_DIR=web
+            FILTER_PACKAGE=system-db
+            PORT=3000
+            NEXT_PUBLIC_BACKEND_URL=${{ env.NEXT_PUBLIC_BACKEND_URL }}
+            NEXT_PUBLIC_SITE_URL=${{ env.NEXT_PUBLIC_SITE_URL }}
+            NEXT_PUBLIC_ADMIN_URL=${{ env.NEXT_PUBLIC_ADMIN_URL }}
+            NEXT_PUBLIC_APP_NAME=${{ env.NEXT_PUBLIC_APP_NAME }}
+            NEXT_PUBLIC_APP_ENV=production
+          provenance: false
+          sbom: false
+          cache-from: type=gha,scope=frontend-web-docker
+          cache-to: type=gha,mode=max,scope=frontend-web-docker
+
+  deploy:
+    name: Deploy to GCP VM (${{ inputs.environment || 'production' }})
+    runs-on: ubuntu-latest
+    needs: [build-image]
+    environment: ${{ inputs.environment || 'production' }}
+    if: ${{ vars.ENABLE_SSH_DEPLOY == 'true' && inputs.skip_ssh != true }}
+    steps:
+      - name: Require SSH deploy secrets
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+        run: |
+          missing=0
+          for name in DEPLOY_HOST DEPLOY_USER DEPLOY_SSH_KEY DEPLOY_PATH; do
+            eval "val=\$$name"
+            if [ -z "$val" ]; then
+              echo "::error::$name is required for SSH deploy"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "See docs/DEPLOYMENT-GCP-VM.md § CI/CD for the full checklist."
+            exit 1
+          fi
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ vars.DEPLOY_SSH_PORT || 22 }}
+          command_timeout: 45m
+          script_stop: true
+          script: |
+            set -euo pipefail
+            DEPLOY_DIR="${{ vars.DEPLOY_PATH }}"
+            cd "$DEPLOY_DIR"
+            chmod +x scripts/deploy-vm.sh
+            bash scripts/deploy-vm.sh
+
+      - name: External health check
+        env:
+          DEPLOY_URL: ${{ secrets.DEPLOY_URL }}
+        run: |
+          sleep 5
+          if [ -n "${DEPLOY_URL:-}" ]; then
+            echo "Checking web: $DEPLOY_URL/api/health"
+            curl --fail --retry 5 --retry-delay 5 "${DEPLOY_URL}/api/health"
+          else
+            echo "DEPLOY_URL not set — skipping external web health check"
+          fi
+
+  deploy-skipped:
+    name: SSH deploy skipped (set ENABLE_SSH_DEPLOY)
+    runs-on: ubuntu-latest
+    needs: [build-image]
+    if: ${{ vars.ENABLE_SSH_DEPLOY != 'true' || inputs.skip_ssh == true }}
+    steps:
+      - name: Reminder
+        run: |
+          echo "Web image was published to GHCR."
+          echo "SSH deploy to the GCP VM did not run."
+          echo "To enable: set repo variable ENABLE_SSH_DEPLOY=true and secrets in docs/DEPLOYMENT-GCP-VM.md"
+          echo "Admin is deployed from its own repository."

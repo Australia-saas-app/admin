@@ -1,0 +1,16 @@
+import dynamic from "next/dynamic"
+
+const ProfileLayout = dynamic(
+  () => import("@/src/modules/dashboard/user/components/ProfileLayout"),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center py-20 text-sm text-gray-500">
+        Loading profile...
+      </div>
+    ),
+  }
+)
+
+export default function UserLogPage() {
+  return <ProfileLayout />
+}

@@ -1,0 +1,208 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { CreditCard } from "lucide-react";
+import { toast } from "sonner";
+import AppModal from "./AppModal";
+import { Button } from "@/src/components/ui/button";
+import {
+  PAYMENT_METHOD_OPTIONS,
+  PAYMENT_METHOD_FIELDS,
+  buildDefaultLabel,
+  buildPaymentMethodSummary,
+  sanitizePaymentDetails,
+  validatePaymentDetails,
+  type PaymentMethodType,
+} from "@/src/shared/lib/payment-method-config";
+import { savePaymentMethod, type SavedPaymentMethod } from "@/src/shared/lib/payment-methods-store";
+
+export { PAYMENT_METHOD_OPTIONS, type PaymentMethodType };
+export type { SavedPaymentMethod };
+export { readPaymentMethods, savePaymentMethod } from "@/src/shared/lib/payment-methods-store";
+
+interface PaymentMethodModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSaved?: (method: SavedPaymentMethod) => void;
+}
+
+function emptyDetails(type: PaymentMethodType): Record<string, string> {
+  return Object.fromEntries(PAYMENT_METHOD_FIELDS[type].map((f) => [f.key, ""]));
+}
+
+export default function PaymentMethodModal({ open, onClose, onSaved }: PaymentMethodModalProps) {
+  const [type, setType] = useState<PaymentMethodType>(PAYMENT_METHOD_OPTIONS[0]);
+  const [details, setDetails] = useState<Record<string, string>>(() =>
+    emptyDetails(PAYMENT_METHOD_OPTIONS[0])
+  );
+  const [label, setLabel] = useState("");
+  const [useCustomLabel, setUseCustomLabel] = useState(false);
+  const [isDefault, setIsDefault] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+
+  const fields = PAYMENT_METHOD_FIELDS[type];
+
+  useEffect(() => {
+    if (!open) {
+      setType(PAYMENT_METHOD_OPTIONS[0]);
+      setDetails(emptyDetails(PAYMENT_METHOD_OPTIONS[0]));
+      setLabel("");
+      setUseCustomLabel(false);
+      setIsDefault(true);
+      setSubmitting(false);
+    }
+  }, [open]);
+
+  const autoLabel = useMemo(() => buildDefaultLabel(type, details), [type, details]);
+
+  const handleTypeChange = (nextType: PaymentMethodType) => {
+    setType(nextType);
+    setDetails(emptyDetails(nextType));
+    if (!useCustomLabel) setLabel("");
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const error = validatePaymentDetails(type, details);
+    if (error) {
+      toast.error(error);
+      return;
+    }
+
+    const sanitized = sanitizePaymentDetails(type, details);
+    const summary = buildPaymentMethodSummary(type, sanitized);
+    const finalLabel = (useCustomLabel ? label : autoLabel).trim() || autoLabel;
+
+    setSubmitting(true);
+    await new Promise((r) => setTimeout(r, 400));
+    const saved = savePaymentMethod({
+      type,
+      label: finalLabel,
+      summary,
+      details: sanitized,
+      isDefault,
+    });
+    setSubmitting(false);
+    toast.success(`${type} payout method saved.`);
+    onSaved?.(saved);
+    onClose();
+  };
+
+  return (
+    <AppModal
+      open={open}
+      onClose={onClose}
+      title={`Add ${type} payout method`}
+      description="Enter the details required for this payment provider. Fields change based on the method you select."
+      size="md"
+    >
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">Payment method</label>
+          <select
+            value={type}
+            onChange={(e) => handleTypeChange(e.target.value as PaymentMethodType)}
+            className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10"
+          >
+            {PAYMENT_METHOD_OPTIONS.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="rounded-lg border border-primary/15 bg-[#eef2f8]/60 px-3 py-2.5 text-xs text-primary/90">
+          {type === "PayPal" && "Withdrawals will be sent to your PayPal email address."}
+          {type === "Bank Transfer" &&
+            "Provide your bank details exactly as they appear on your account."}
+          {type === "Stripe" && "Link the Stripe account that should receive platform payouts."}
+          {type === "Wise" && "Use the email and currency tied to your Wise recipient profile."}
+          {type === "Payoneer" && "Enter the Payoneer email registered for receiving payments."}
+          {type === "Credit / Debit Card" &&
+            "Cards are for paying in only. Withdrawals require PayPal, bank transfer, Stripe, Wise, or Payoneer."}
+        </div>
+
+        {fields.map((field) => (
+          <div key={field.key}>
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">
+              {field.label}
+              {field.required && <span className="text-red-500"> *</span>}
+            </label>
+            {field.type === "select" ? (
+              <select
+                value={details[field.key] || ""}
+                onChange={(e) => setDetails((prev) => ({ ...prev, [field.key]: e.target.value }))}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10"
+              >
+                <option value="">Select…</option>
+                {(field.options || []).map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type={field.type === "email" ? "email" : field.type === "month" ? "month" : "text"}
+                value={details[field.key] || ""}
+                onChange={(e) => setDetails((prev) => ({ ...prev, [field.key]: e.target.value }))}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10"
+                placeholder={field.placeholder}
+                maxLength={field.maxLength}
+              />
+            )}
+            {field.helpText && <p className="mt-1 text-xs text-gray-500">{field.helpText}</p>}
+          </div>
+        ))}
+
+        <div>
+          <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-gray-700">
+            <input
+              type="checkbox"
+              checked={useCustomLabel}
+              onChange={(e) => {
+                setUseCustomLabel(e.target.checked);
+                if (!e.target.checked) setLabel("");
+              }}
+              className="rounded border-gray-300"
+            />
+            Use a custom display name
+          </label>
+          {useCustomLabel ? (
+            <input
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              className="mt-1.5 w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10"
+              placeholder="e.g. Primary PayPal"
+            />
+          ) : (
+            <p className="mt-1.5 rounded-lg border border-gray-100 bg-gray-50 px-3 py-2 text-sm text-gray-700">
+              {autoLabel}
+            </p>
+          )}
+        </div>
+
+        <label className="flex items-center gap-2 text-sm text-gray-700">
+          <input
+            type="checkbox"
+            checked={isDefault}
+            onChange={(e) => setIsDefault(e.target.checked)}
+            className="rounded border-gray-300"
+          />
+          Set as default payout method
+        </label>
+
+        <div className="flex justify-end gap-2 pt-2">
+          <Button type="button" variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" disabled={submitting} className="bg-primary hover:bg-primary/90">
+            <CreditCard className="mr-2 h-4 w-4" />
+            {submitting ? "Saving…" : `Save ${type}`}
+          </Button>
+        </div>
+      </form>
+    </AppModal>
+  );
+}

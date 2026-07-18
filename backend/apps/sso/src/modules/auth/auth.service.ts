@@ -1068,5 +1068,37 @@ export class AuthService {
       data: user.preferences,
     };
   }
+
+  async changePassword(email: string, oldPassword?: string, newPassword?: string) {
+    if (!newPassword || !oldPassword) {
+      throw new BadRequestException('Both old and new passwords are required');
+    }
+
+    const normalizedEmail = this.normalizeEmail(email);
+    if (!normalizedEmail) throw new BadRequestException('Email is required');
+
+    let user: any = await this.adminRepository.findOne({ where: { email: normalizedEmail } });
+    if (!user) {
+      user = await this.userRepository.findOne({ where: { email: normalizedEmail } });
+    }
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Incorrect old password');
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    if (user.role) {
+      await this.adminRepository.save(user);
+    } else {
+      await this.userRepository.save(user);
+    }
+
+    return { success: true, message: 'Password updated successfully' };
+  }
 }
 

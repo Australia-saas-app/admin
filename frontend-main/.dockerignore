@@ -1,0 +1,37 @@
+# Dependencies — never send host node_modules into the build context
+node_modules
+**/node_modules
+**/.pnpm-store
+.pnpm-store
+
+# Next.js / Turbo build output
+.next
+**/.next
+.turbo
+**/.turbo
+.open-next
+**/.open-next
+
+# Git and CI
+.git
+.github
+
+# Local env, editor, and runtime demo data
+.env*
+!.env.example
+.vscode
+.cursor
+data
+**/data/registered-users.json
+
+# Docs and tests
+coverage
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# Docker / deploy configs (not needed inside image)
+docker-compose.yml
+docker-compose.prod.yml
+nginx

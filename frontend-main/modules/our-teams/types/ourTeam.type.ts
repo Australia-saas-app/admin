@@ -1,0 +1,23 @@
+export type OurTeam = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  position: string;
+  department: string;
+  branchId: string | null;
+  employeeId: string;
+  salary: string;
+  hireDate: string | null;
+  bio: string;
+  photoUrl: string | null;
+  linkedinUrl: string;
+  isVisible: boolean;
+  displayOrder: number;
+  managerId: string | null;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  branch: string | null;
+  manager: string | null;
+};

@@ -1,0 +1,75 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/src/modules": ["../../modules/index"],
+      "@/src/modules/*": ["../../modules/*"],
+      "@/src/shared": ["../../shared/index"],
+      "@/src/shared/*": ["../../shared/*"],
+      "@/src/lib": ["../../shared/lib/index"],
+      "@/src/lib/*": ["../../shared/lib/*"],
+      "@/src/components": ["../../shared/components/index"],
+      "@/src/components/*": ["../../shared/components/*"],
+      "@/src/hooks": ["../../shared/hooks/index"],
+      "@/src/hooks/*": ["../../shared/hooks/*"],
+      "@/src/utils": ["../../shared/utils/index"],
+      "@/src/utils/*": ["../../shared/utils/*"],
+      "@/src/types": ["../../shared/types/index"],
+      "@/src/types/*": ["../../shared/types/*"],
+      "@/src/constants": ["../../shared/constants/index"],
+      "@/src/constants/*": ["../../shared/constants/*"],
+      "@/src/config": ["../../shared/config/index"],
+      "@/src/config/*": ["../../shared/config/*"],
+      "@/src/helpers": ["../../shared/helpers/index"],
+      "@/src/helpers/*": ["../../shared/helpers/*"],
+      "@/src/validators": ["../../shared/validators/index"],
+      "@/src/validators/*": ["../../shared/validators/*"],
+      "@/src/server": ["../../shared/server/index"],
+      "@/src/server/*": ["../../shared/server/*"],
+      "@/src/context": ["../../shared/context/index"],
+      "@/src/context/*": ["../../shared/context/*"],
+      "@/src/schema": ["../../shared/schema/index"],
+      "@/src/schema/*": ["../../shared/schema/*"],
+      "@/src": ["../../index"],
+      "@/src/*": ["../../*"],
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "../../modules/**/*.ts",
+    "../../modules/**/*.tsx",
+    "../../shared/**/*.ts",
+    "../../shared/**/*.tsx",
+    "../../services/**/*.ts",
+    "../../services/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

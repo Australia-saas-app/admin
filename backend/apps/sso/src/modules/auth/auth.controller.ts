@@ -172,6 +172,12 @@ export class AuthController {
     return this.authService.updateUserStatus(userId, body.status, body.reason || 'Status changed', (req.user as any).email);
   }
 
+  @Patch('change-password')
+  async changePassword(
+    @Body() body: any,
+  ) {
+    return this.authService.changePassword(body.email, body.oldPassword, body.newPassword);
+  }
 }
 
 

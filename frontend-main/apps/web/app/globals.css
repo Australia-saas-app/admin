@@ -1,0 +1,422 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@source "../../../modules";
+@source "../../../shared";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-base-100: var(--base-100);
+  --color-base-200: var(--base-200);
+  --color-base-300: var(--base-300);
+  --color-base-400: var(--base-400);
+  --color-accent: var(--accent);
+  --color-approved: var(--approved);
+  --color-pending: var(--pending);
+  --color-review: var(--review);
+  --color-canceled: var(--canceled);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: #f9faff;
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: #2c65f6;
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: #2c65f6;
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: #065f81;
+  --base-100: #f4f7ff;
+  --base-200: #77a0bc;
+  --base-300: #b1d2e3;
+  --base-400: #e0f4ff;
+  --approved: linear-gradient(180deg, #10ae1d 0%, #07480c 100%);
+  --pending: linear-gradient(180deg, #8aff93 0%, #539958 100%);
+  --review: linear-gradient(180deg, #fbff00 0%, #c5c812 100%);
+  --canceled: linear-gradient(180deg, #ff0000 0%, #990000 100%);
+
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+:root {
+  --New-Blue-Blue-800: #4174f7;
+  --Blue-Blue-800: #154fe4;
+  --Blue-Blue-700-Product: #2c65f6;
+  --Blue-Blue-400: #80a3fa;
+  --Blue-Blue-100: #f4f7ff;
+  --Blue-Blue-50: #f9faff;
+  --Grey-Grey-800: #2f3d58;
+  --Grey-Grey-700: #455c83;
+  --Grey-Grey-600: #586c8f;
+  --Grey-Grey-400: #a2afc6;
+  --Basic-White: #ffffff;
+  --AI-LP-Error-Border: #e9a30d;
+  --AI-LP-Error-Text: #be8200;
+}
+
+.dark {
+  --background: oklch(0.16 0.02 260);
+  --foreground: oklch(0.97 0.01 260);
+  --card: oklch(0.21 0.02 260);
+  --card-foreground: oklch(0.97 0.01 260);
+  --popover: oklch(0.21 0.02 260);
+  --popover-foreground: oklch(0.97 0.01 260);
+  --primary: #5b8af8;
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.28 0.03 260);
+  --secondary-foreground: oklch(0.97 0.01 260);
+  --muted: oklch(0.26 0.02 260);
+  --muted-foreground: oklch(0.72 0.02 260);
+  --accent: #3d90b5;
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.65 0.2 22);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.55 0.08 260);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.18 0.02 260);
+  --sidebar-foreground: oklch(0.97 0.01 260);
+  --sidebar-primary: #5b8af8;
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.26 0.02 260);
+  --sidebar-accent-foreground: oklch(0.97 0.01 260);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: oklch(0.55 0.08 260);
+
+  --base-100: oklch(0.18 0.02 260);
+  --base-200: oklch(0.42 0.04 240);
+  --base-300: oklch(0.35 0.04 240);
+  --base-400: oklch(0.28 0.03 250);
+
+  /* Brand CSS vars used in inline styles / older components */
+  --Basic-White: oklch(0.21 0.02 260);
+  --Blue-Blue-50: oklch(0.18 0.02 260);
+  --Blue-Blue-100: oklch(0.22 0.03 260);
+  --Grey-Grey-800: oklch(0.92 0.01 260);
+  --Grey-Grey-700: oklch(0.85 0.01 260);
+  --Grey-Grey-600: oklch(0.75 0.01 260);
+  --Grey-Grey-400: oklch(0.55 0.02 260);
+
+  /*
+   * Remap Tailwind gray/slate/zinc/neutral scales so bg-gray-*, text-gray-*, etc.
+   * follow dark theme. Keep --color-white as pure white so text-white on buttons
+   * stays correct; white card surfaces are handled below.
+   */
+  --color-gray-50: oklch(0.2 0.02 260);
+  --color-gray-100: oklch(0.24 0.02 260);
+  --color-gray-200: oklch(0.3 0.02 260);
+  --color-gray-300: oklch(0.38 0.02 260);
+  --color-gray-400: oklch(0.55 0.02 260);
+  --color-gray-500: oklch(0.68 0.02 260);
+  --color-gray-600: oklch(0.78 0.01 260);
+  --color-gray-700: oklch(0.86 0.01 260);
+  --color-gray-800: oklch(0.92 0.01 260);
+  --color-gray-900: oklch(0.97 0.01 260);
+  --color-gray-950: oklch(0.99 0 0);
+
+  --color-slate-50: oklch(0.2 0.02 260);
+  --color-slate-100: oklch(0.24 0.02 260);
+  --color-slate-200: oklch(0.3 0.02 260);
+  --color-slate-300: oklch(0.38 0.02 260);
+  --color-slate-400: oklch(0.55 0.02 260);
+  --color-slate-500: oklch(0.68 0.02 260);
+  --color-slate-600: oklch(0.78 0.01 260);
+  --color-slate-700: oklch(0.86 0.01 260);
+  --color-slate-800: oklch(0.92 0.01 260);
+  --color-slate-900: oklch(0.97 0.01 260);
+  --color-slate-950: oklch(0.99 0 0);
+
+  --color-neutral-50: oklch(0.2 0.01 260);
+  --color-neutral-100: oklch(0.24 0.01 260);
+  --color-neutral-200: oklch(0.3 0.01 260);
+  --color-neutral-300: oklch(0.38 0.01 260);
+  --color-neutral-400: oklch(0.55 0.01 260);
+  --color-neutral-500: oklch(0.68 0.01 260);
+  --color-neutral-600: oklch(0.78 0.01 260);
+  --color-neutral-700: oklch(0.86 0.01 260);
+  --color-neutral-800: oklch(0.92 0.01 260);
+  --color-neutral-900: oklch(0.97 0.01 260);
+
+  --color-zinc-50: oklch(0.2 0.01 260);
+  --color-zinc-100: oklch(0.24 0.01 260);
+  --color-zinc-200: oklch(0.3 0.01 260);
+  --color-zinc-300: oklch(0.38 0.01 260);
+  --color-zinc-400: oklch(0.55 0.01 260);
+  --color-zinc-500: oklch(0.68 0.01 260);
+  --color-zinc-600: oklch(0.78 0.01 260);
+  --color-zinc-700: oklch(0.86 0.01 260);
+  --color-zinc-800: oklch(0.92 0.01 260);
+  --color-zinc-900: oklch(0.97 0.01 260);
+
+  --color-stone-50: oklch(0.2 0.01 80);
+  --color-stone-100: oklch(0.24 0.01 80);
+  --color-stone-200: oklch(0.3 0.01 80);
+  --color-stone-800: oklch(0.92 0.01 80);
+  --color-stone-900: oklch(0.97 0.01 80);
+}
+
+/* White surface utilities → card color in dark mode (keep text-white intact) */
+.dark
+  :is(
+    .bg-white,
+    .bg-white\/95,
+    .bg-white\/90,
+    .bg-white\/80,
+    .bg-white\/70,
+    .bg-white\/60,
+    .bg-white\/50
+  ) {
+  background-color: var(--card) !important;
+}
+.dark :is(.from-white, .via-white, .to-white) {
+  --tw-gradient-from: var(--card) var(--tw-gradient-from-position);
+  --tw-gradient-to: var(--card) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-from), var(--tw-gradient-to));
+}
+
+/* Common light-only hex utilities used on public pages → theme tokens in dark mode */
+.dark
+  :is(
+    .text-\[\#0F172A\],
+    .text-\[\#1E293B\],
+    .text-\[\#13393A\],
+    .text-\[\#123b3b\],
+    .text-\[\#334155\]
+  ) {
+  color: var(--foreground) !important;
+}
+.dark :is(.text-\[\#64748B\], .text-\[\#94A3B8\], .text-\[\#475569\], .text-\[\#CBD5E1\]) {
+  color: var(--muted-foreground) !important;
+}
+.dark
+  :is(
+    .bg-\[\#F7F9FC\],
+    .bg-\[\#F0F9F7\],
+    .bg-\[\#eaf6f0\],
+    .bg-\[\#EEF2F7\],
+    .bg-\[\#F3FBF5\],
+    .bg-\[\#FFF8F0\],
+    .bg-\[\#F3F7FF\]
+  ) {
+  background-color: var(--card) !important;
+}
+.dark
+  :is(
+    .border-\[\#E8ECF1\],
+    .border-\[\#CBD5E1\],
+    .border-\[\#D7EBE5\],
+    .border-\[\#E0E7FF\],
+    .border-\[\#E9D5FF\],
+    .border-\[\#BBF7D0\],
+    .border-\[\#D8F0DF\],
+    .border-\[\#FDE7C8\],
+    .border-\[\#D6E4FF\]
+  ) {
+  border-color: var(--border) !important;
+}
+.dark :is(.divide-\[\#F1F5F9\] > :not([hidden]) ~ :not([hidden])) {
+  border-color: var(--border) !important;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html,
+  body {
+    @apply bg-background text-foreground;
+    /* allow the document to grow and scroll when content exceeds the viewport */
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+  #__next {
+    /* ensure the next root can grow with content */
+    min-height: 100%;
+  }
+}
+
+/* Custom class in your CSS */
+.bg-approved {
+  background: linear-gradient(180deg, #10ae1d 0%, #07480c 100%);
+  color: white;
+}
+
+.bg-pending {
+  background: linear-gradient(180deg, #8aff93 0%, #539958 100%);
+  color: white;
+}
+
+.bg-review {
+  background: linear-gradient(180deg, #fbff00 0%, #c5c812 100%);
+  color: white;
+}
+
+.bg-canceled {
+  background: linear-gradient(180deg, #ff0000 0%, #990000 100%);
+  color: white;
+}
+
+/* Prevent layout overflow but allow horizontal scrolling when needed (tables, wide content) */
+html,
+body {
+  max-width: 100%;
+  /* allow horizontal scrolling when child content requires it */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure all containers respect viewport */
+.container,
+.mx-auto,
+.w-full {
+  max-width: 100%;
+}
+
+/* Force table containers to be responsive */
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Theme-aware scrollbar styling */
+:root {
+  /* default (light) scrollbar colors */
+  --scrollbar-track: var(--base-400);
+  --scrollbar-thumb: var(--primary);
+  --scrollbar-thumb-hover: var(--accent);
+  --scrollbar-width: 12px;
+}
+
+.dark {
+  /* dark mode overrides so scrollbar matches dark theme */
+  --scrollbar-track: oklch(0.205 0 0 / 20%);
+  --scrollbar-thumb: var(--primary);
+  --scrollbar-thumb-hover: var(--accent);
+}
+
+/* Apply to all scrollable elements. Uses WebKit & Firefox compatible rules. */
+* {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); /* Firefox */
+}
+
+/* WebKit browsers */
+*::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 999px;
+  border: 3px solid transparent; /* gives thumb some breathing room */
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+/* ---------------------------------------------------------------------------
+ * Fluid motion utilities for public pages
+ * ------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Reveal utilities kept as no-ops — scroll-linked fade/scale made sections look
+   soft/blurred while partially in view. Prefer crisp, fully opaque content. */
+.reveal,
+.reveal-scroll,
+.reveal-delay-1,
+.reveal-delay-2,
+.reveal-delay-3 {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+/* Card hover lift */
+.card-lift {
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease;
+}
+
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px -12px color-mix(in oklab, var(--primary) 24%, transparent);
+}
