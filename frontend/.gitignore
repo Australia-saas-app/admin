@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+**/node_modules/
 /.pnp
 .pnp.*
 .yarn/*
@@ -12,10 +13,19 @@
 
 # testing
 /coverage
+/playwright-report/
+/test-results/
+/blob-report/
+/lighthouse-reports/
 
 # next.js
 /.next/
+**/.next/
 /out/
+
+# turbo
+.turbo/
+**/.turbo/
 
 # production
 /build
@@ -23,6 +33,7 @@
 # misc
 .DS_Store
 *.pem
+/data/
 
 # debug
 npm-debug.log*
@@ -31,7 +42,6 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
-.env*
 
 # vercel
 .vercel
@@ -39,3 +49,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# OpenNext
+.open-next
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
