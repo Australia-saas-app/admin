@@ -26,6 +26,14 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://kong:8000/api/v1/:path*',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

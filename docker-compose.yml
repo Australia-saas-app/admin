@@ -16,6 +16,7 @@ services:
       KONG_PROXY_ERROR_LOG: /dev/stderr
       KONG_ADMIN_ERROR_LOG: /dev/stderr
       KONG_ADMIN_LISTEN: 0.0.0.0:8001
+      FORCE_RECREATE: "1"
     ports:
       - "8000:8000"
       - "8002:8001" # Admin API exposed on 8002 to avoid conflict with saas-admin on 8001
