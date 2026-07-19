@@ -115,9 +115,7 @@ export function ForgotPasswordVerifyPage({
               onChange={handleCodeChange}
               length={6}
             />
-          </div>
-          {error && <p className="mt-3 text-sm text-red-600 dark:text-red-500 text-center font-medium">{error}</p>}
-        </div>
+          </div>        </div>
 
         <Button
           type="submit"

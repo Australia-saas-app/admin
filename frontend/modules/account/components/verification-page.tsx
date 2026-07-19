@@ -100,9 +100,7 @@ export function VerificationPage({ email = "", onSuccess }: VerificationPageProp
             onChange={handleCodeChange}
             length={6}
             disabled={isVerifying}
-          />
-          {error && <p className="mt-3 text-center text-sm font-medium text-red-600 dark:text-red-500">{error}</p>}
-        </div>
+          />        </div>
 
         <div className="text-center">
           <button

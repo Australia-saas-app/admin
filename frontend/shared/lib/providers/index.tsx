@@ -60,7 +60,7 @@ export function Providers({ children }: ProvidersProps) {
           <LocaleProvider>
             <NotificationProvider>
               <Toaster 
-                position="top-center" 
+                position="top-right" 
                 duration={5000}
                 toastOptions={{
                   classNames: {

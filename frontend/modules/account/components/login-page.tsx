@@ -146,12 +146,6 @@ export function LoginPage({
             </button>
           </div>
 
-          {displayError && (
-            <Alert tone="danger" title="Sign-in failed">
-              {displayError}
-            </Alert>
-          )}
-
           <FormActions
             submitLabel={isSubmitting ? "Signing in..." : "Sign in"}
             showCancel={false}
