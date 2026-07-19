@@ -75,10 +75,6 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // @ts-ignore
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
 
   // Production-only: keeps `next dev` free of the "Experiments (use with caution)" banner.
   ...(isDev
@@ -87,6 +83,8 @@ const nextConfig: NextConfig = {
         experimental: {
           optimizeCss: true,
           optimizePackageImports: ["lucide-react", "recharts", "framer-motion", "date-fns"],
+          cpus: 1,
+          memoryBasedWorkersCount: true,
         },
       }),
 
