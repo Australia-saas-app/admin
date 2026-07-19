@@ -79,7 +79,7 @@ export function ForgotPasswordPage({ onBackToLogin, onNext, onSuccess }: ForgotP
   const handleVerifyEmail = async (data: z.infer<typeof emailSchema>) => {
     setIsSubmitting(true)
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/admin/api';
       const res = await fetch(`${apiUrl}/sso/auth/admin/forgot-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -106,7 +106,7 @@ export function ForgotPasswordPage({ onBackToLogin, onNext, onSuccess }: ForgotP
   const handleResetPassword = async (data: z.infer<typeof passwordSchema>) => {
     setIsSubmitting(true)
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/admin/api';
       const res = await fetch(`${apiUrl}/sso/auth/admin/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

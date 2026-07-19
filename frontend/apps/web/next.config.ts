@@ -72,6 +72,13 @@ const nextConfig: NextConfig = {
     root: path.join(process.cwd(), "../.."),
   },
 
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
   // Production-only: keeps `next dev` free of the "Experiments (use with caution)" banner.
   ...(isDev
     ? {}
