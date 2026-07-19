@@ -16,14 +16,20 @@ jobs:
 
       - name: Deploy to GCP Server
         uses: appleboy/ssh-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           command_timeout: 30m
+          envs: GITHUB_TOKEN
           script: |
             # Navigate to the project directory
             cd ${{ secrets.PROJECT_PATH }}
+            
+            # Set the remote URL to authenticate with GitHub using the automatically provided Action token
+            git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
             
             # Make sure deploy script is executable
             chmod +x deploy.sh
