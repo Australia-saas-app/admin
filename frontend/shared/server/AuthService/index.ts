@@ -147,6 +147,16 @@ export const registerUser = async (userData: FieldValues) => {
       delete payload["subBusinessCategoryId"];
     }
     if ("confirmPassword" in payload) delete payload["confirmPassword"];
+    if ("rememberMe" in payload) delete payload["rememberMe"];
+    if ("termsAccepted" in payload) delete payload["termsAccepted"];
+    if ("contact" in payload) {
+      if (typeof payload["contact"] === "string" && payload["contact"].includes("@")) {
+         payload["email"] = payload["contact"];
+      } else if (typeof payload["contact"] === "string") {
+         payload["phone"] = payload["contact"];
+      }
+      delete payload["contact"];
+    }
 
     const { data } = await axiosInstance.post("/sso/auth/user/register", payload);
 
@@ -267,10 +277,13 @@ export const loginUser = async (userData: FieldValues) => {
 
 
   try {
-    const loginPayload = {
+    const loginPayload: Record<string, any> = {
       ...userData,
       email: normalizeContact(identifier).includes("@") ? normalizeContact(identifier) : identifier,
     };
+    delete loginPayload.rememberMe;
+    delete loginPayload.contact;
+    delete loginPayload.identifier;
     const { data } = await axiosInstance.post("/sso/auth/user/login", loginPayload, {
       timeout: AUTH_REQUEST_TIMEOUT,
     });
