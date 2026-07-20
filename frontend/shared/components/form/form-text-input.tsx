@@ -40,7 +40,7 @@ export function FormTextInput<T extends FieldValues>({
                     ? field.value
                     : ""
                 }
-                className={`bg-white text-slate-900 placeholder:text-slate-500 border-0 ${isPasswordField ? 'pr-10' : ''}`}
+                className={`bg-background text-foreground border border-input ${isPasswordField ? 'pr-10' : ''}`}
               />
               {isPasswordField && (
                 <button

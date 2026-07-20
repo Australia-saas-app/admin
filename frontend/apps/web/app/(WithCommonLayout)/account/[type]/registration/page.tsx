@@ -18,20 +18,23 @@ export default function RegistrationPageRoute() {
   }, [accountType])
 
   const handleNext = async (data: Record<string, unknown>) => {
-    // Call backend to create pending account and send OTP
-    const isEmail = typeof data.contact === "string" && data.contact.includes("@");
+    const contactVal = typeof data.email === "string" ? data.email.trim() : (typeof data.contact === "string" ? data.contact.trim() : "");
+    const isEmail = contactVal.includes("@");
+    
     const payload = {
       ...data,
       accountType,
-      email: data.email || (isEmail ? data.contact : undefined),
-      phone: data.phone || (!isEmail && data.contact ? data.contact : undefined),
+      email: isEmail ? contactVal : undefined,
+      phone: !isEmail ? contactVal : undefined,
     };
     
-    await registerUser(payload);
+    const res = await registerUser(payload);
     
-    // Progressive signup: verify contact first; full profile happens after login.
-    saveSignupDraft(accountType, data)
-    router.push(`/account/${accountType}/verification`)
+    if (res && !res.success) {
+      throw new Error(res.message || "Registration failed");
+    }
+    
+    router.push(`/account/${accountType}/login`)
   }
 
   const handleAccountTypeChange = (newType: AccountType) => {

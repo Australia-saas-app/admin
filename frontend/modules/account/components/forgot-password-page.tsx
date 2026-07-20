@@ -96,8 +96,13 @@ export function ForgotPasswordPage({ onBackToLogin }: ForgotPasswordPageProps) {
 
   const handleVerifyOtp = async (code: string) => {
     setIsSubmitting(true);
-    const email = form.getValues("inputValue");
-    const res = await verifyRegistrationOtp({ email, otp: code, type: "admin_reset" });
+    const emailVal = form.getValues("inputValue").trim();
+    const isEmail = emailVal.includes("@");
+    const payload = isEmail 
+      ? { email: emailVal, otp: code, type: "admin_reset" }
+      : { phone: emailVal, otp: code, type: "admin_reset" };
+      
+    const res = await verifyRegistrationOtp(payload);
     setIsSubmitting(false);
     
     if (res?.success) {
@@ -132,7 +137,12 @@ export function ForgotPasswordPage({ onBackToLogin }: ForgotPasswordPageProps) {
     if (view === 'backup') {
       payload.recoveryKey = form.getValues("inputValue");
     } else {
-      payload.email = form.getValues("inputValue");
+      const emailVal = form.getValues("inputValue").trim();
+      if (emailVal.includes("@")) {
+        payload.email = emailVal;
+      } else {
+        payload.phone = emailVal;
+      }
       payload.otp = otp;
     }
     
@@ -258,7 +268,19 @@ export function ForgotPasswordPage({ onBackToLogin }: ForgotPasswordPageProps) {
 
           {step === 2 && view !== 'backup' && (
             <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-              <label className="mb-1.5 block text-sm font-medium text-foreground text-center sm:text-left">Verification Code</label>
+              <div className="mb-4 flex items-center justify-between">
+                <button type="button" onClick={() => { setStep(1); setOtp(""); setOtpVerified(false); }} className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                  <ArrowLeft className="h-4 w-4" /> Back
+                </button>
+              </div>
+
+              <div className="mb-5 text-center sm:text-left">
+                <label className="mb-1 block text-sm font-medium text-foreground">Verification Code</label>
+                <p className="text-sm text-muted-foreground">
+                  Sent to <span className="font-semibold text-foreground">{form.getValues("inputValue")?.toString()}</span>
+                </p>
+              </div>
+
               {!form.getValues("inputValue")?.includes("@") && (
                 <p className="text-xs text-muted-foreground mb-3 text-center sm:text-left text-orange-500/80">Use OTP 234567 right now, real Message OTP is not implemented</p>
               )}

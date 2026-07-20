@@ -16,7 +16,7 @@ import { AuthShell } from "./auth-shell";
 import { AccountTypeTabs } from "./account-type-tabs";
 import { OtpInput } from "./OtpInput";
 import { useSendRegistrationOtp, useVerifyRegistrationOtp } from "@/src/shared/hooks/auth.hook";
-import { CheckCircle2, Copy, Check, XCircle } from "lucide-react";
+import { CheckCircle2, Copy, Check, XCircle, ArrowLeft } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import Modal from "@/src/components/ui/modal";
 import { toast } from "sonner";
@@ -66,7 +66,7 @@ const SIGNUP_HINTS: Record<SignupPageProps["accountType"], string> = {
 export function SignupPage({ accountType, onNext, onAccountTypeChange }: SignupPageProps) {
   const [submitErrors, setSubmitErrors] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [otp, setOtp] = useState("");
   const [timeLeft, setTimeLeft] = useState(179);
@@ -137,27 +137,27 @@ export function SignupPage({ accountType, onNext, onAccountTypeChange }: SignupP
   const handleContinueToOtp = async () => {
     const isValid = await form.trigger(["fullName", "currency", "email"]);
     if (!isValid) return;
-    
+
     setSubmitErrors(null);
     try {
       const emailVal = (form.getValues("email") as string).trim();
       const isPhone = /^[0-9+\-\s()]+$/.test(emailVal);
       const isEmail = emailVal.includes("@");
-      
+
       if (!isEmail && !isPhone) {
-        toast.error("email format is not correct");
+        toast.error("Email format is not correct");
         return;
       }
-      
+
       const payload = isEmail ? { email: emailVal, type: "registration" } : { phone: emailVal, type: "registration" };
       await sendOtp(payload);
-      
+
       if (isEmail) {
         toast.success("OTP sent successfully");
       } else {
         toast.success("Dummy OTP sent successfully");
       }
-      
+
       setStep(2);
       setTimeLeft(179);
     } catch (err) {
@@ -169,7 +169,13 @@ export function SignupPage({ accountType, onNext, onAccountTypeChange }: SignupP
     if (code.length !== 6) return;
     setSubmitErrors(null);
     try {
-      await verifyOtp({ email: form.getValues("email") as string, otp: code, type: "registration" });
+      const emailVal = (form.getValues("email") as string).trim();
+      const isEmail = emailVal.includes("@");
+      const payload = isEmail
+        ? { email: emailVal, otp: code, type: "registration" }
+        : { phone: emailVal, otp: code, type: "registration" };
+
+      await verifyOtp(payload);
       setOtpVerified(true);
       setTimeout(() => setStep(3), 1000); // Small delay to show green tick before moving to step 3
     } catch (err) {
@@ -185,15 +191,15 @@ export function SignupPage({ accountType, onNext, onAccountTypeChange }: SignupP
       const emailVal = (form.getValues("email") as string).trim();
       const isPhone = /^[0-9+\-\s()]+$/.test(emailVal);
       const isEmail = emailVal.includes("@");
-      
+
       if (!isEmail && !isPhone) {
         toast.error("email format is not correct");
         return;
       }
-      
+
       const payload = isEmail ? { email: emailVal, type: "registration" } : { phone: emailVal, type: "registration" };
       await sendOtp(payload);
-      
+
       if (isEmail) {
         toast.success("OTP sent successfully");
       } else {
@@ -250,7 +256,6 @@ export function SignupPage({ accountType, onNext, onAccountTypeChange }: SignupP
       const payload = { ...data, otp, recoveryKey: generatedKey };
       await Promise.resolve(onNext(payload));
       toast.success("Account created successfully!");
-      clearSignupDraft(accountType);
     } catch (err) {
       setSubmitErrors(err instanceof Error ? err.message : "Sign up failed. Please try again.");
     } finally {
@@ -339,7 +344,21 @@ export function SignupPage({ accountType, onNext, onAccountTypeChange }: SignupP
 
               {step >= 2 && (
                 <div className="pt-2 relative animate-in fade-in slide-in-from-top-2 duration-500">
-                  <label className="mb-1.5 block text-sm font-medium text-foreground text-center sm:text-left">Verification Code</label>
+                  {step === 2 && (
+                    <div className="mb-4 flex items-center justify-between">
+                      <button type="button" onClick={() => { setStep(1); setOtp(""); setOtpVerified(false); }} className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                        <ArrowLeft className="h-4 w-4" /> Back
+                      </button>
+                    </div>
+                  )}
+                  
+                  <div className="mb-5 text-center sm:text-left">
+                    <label className="mb-1 block text-sm font-medium text-foreground">Verification Code</label>
+                    <p className="text-sm text-muted-foreground">
+                      Sent to <span className="font-semibold text-foreground">{form.getValues("email")?.toString()}</span>
+                    </p>
+                  </div>
+                  
                   {!form.getValues("email")?.toString().includes("@") && (
                     <p className="text-xs text-muted-foreground mb-3 text-center sm:text-left text-orange-500/80">Use OTP 234567 right now, real Message OTP is not implemented</p>
                   )}
