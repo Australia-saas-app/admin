@@ -299,6 +299,36 @@
   }
 }
 
+/* Make Sonner toasts slide from right to left instead of top to bottom */
+[data-sonner-toaster][data-y-position="top"] [data-sonner-toast][data-mounted="true"] {
+  animation: slideFromRight 0.35s cubic-bezier(0.21, 1.02, 0.73, 1) forwards !important;
+}
+[data-sonner-toaster][data-y-position="top"] [data-sonner-toast][data-removed="true"] {
+  animation: slideToRight 0.35s cubic-bezier(0.06, 0.71, 0.55, 1) forwards !important;
+}
+
+@keyframes slideFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideToRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
 /* Custom class in your CSS */
 .bg-approved {
   background: linear-gradient(180deg, #10ae1d 0%, #07480c 100%);

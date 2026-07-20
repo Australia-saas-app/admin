@@ -111,14 +111,19 @@ export function parseApiError(error: unknown, fallback = "An unexpected error oc
 
   const err = error as RawError;
 
-  const baseMessage = err?.response?.data?.message || err?.message || fallback;
+  let baseMessage = err?.response?.data?.message || err?.message || fallback;
+  if (Array.isArray(baseMessage)) {
+    baseMessage = baseMessage.join(", ");
+  } else if (typeof baseMessage !== "string") {
+    baseMessage = String(baseMessage);
+  }
 
   const fieldErrors = err?.response?.data?.errorSources
     ?.filter((e) => e.message)
     .map((e) => (e.path ? `${e.path}: ${e.message}` : e.message!))
     .join(", ");
 
-  return fieldErrors ? `${baseMessage} – ${fieldErrors}` : baseMessage;
+  return fieldErrors ? `${baseMessage} – ${fieldErrors}` : (baseMessage as string);
 }
 
 /**

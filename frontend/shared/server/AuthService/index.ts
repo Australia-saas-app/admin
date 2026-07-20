@@ -152,8 +152,9 @@ export const registerUser = async (userData: FieldValues) => {
 
     return data;
   } catch (error: unknown) {
-    const message = parseApiError(error, "Registration failed");
-    logger.warn("API registration failed", { reason: message });
+    console.error("registerUser Error:", error);
+    const message = parseApiError(error, AUTH_MESSAGES.loginFailed);
+    logger.warn("Registration failed", { reason: message });
     return { success: false, message };
   }
 };
@@ -286,6 +287,7 @@ export const loginUser = async (userData: FieldValues) => {
         : AUTH_MESSAGES.invalidCredentials
     };
   } catch (error: unknown) {
+    console.error("loginUser Error:", error);
     const axiosError = error as any;
     if (axiosError?.response?.status === 403) {
       const errCode = axiosError.response.data?.error;
@@ -366,13 +368,15 @@ export const requestPasswordReset = async (payload: { email: string }) => {
     });
     return data;
   } catch (error: unknown) {
+    console.error("requestPasswordReset Error:", error);
     if (isNetworkOrTimeoutError(error)) {
       return {
         success: true,
         message: "If an account exists, a reset code has been sent.",
       };
     }
-    throw new Error(parseApiError(error, AUTH_MESSAGES.resetFailed));
+    const message = parseApiError(error, AUTH_MESSAGES.resetFailed);
+    return { success: false, message };
   }
 };
 
