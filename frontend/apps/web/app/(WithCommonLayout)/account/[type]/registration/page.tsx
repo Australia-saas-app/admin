@@ -19,12 +19,12 @@ export default function RegistrationPageRoute() {
 
   const handleNext = async (data: Record<string, unknown>) => {
     // Call backend to create pending account and send OTP
-    const isEmail = String(data.contact).includes("@");
+    const isEmail = typeof data.contact === "string" && data.contact.includes("@");
     const payload = {
       ...data,
       accountType,
-      email: isEmail ? data.contact : undefined,
-      phone: !isEmail ? data.contact : undefined,
+      email: data.email || (isEmail ? data.contact : undefined),
+      phone: data.phone || (!isEmail && data.contact ? data.contact : undefined),
     };
     
     await registerUser(payload);

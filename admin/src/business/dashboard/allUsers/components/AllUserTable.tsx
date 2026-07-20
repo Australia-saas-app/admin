@@ -95,7 +95,8 @@ const AllUserTable: React.FC = () => {
                 let filtered = (resData.data.users || resData.data || []).map((u: any) => ({
                     userId: u.userId || u.id,
                     fullName: u.fullName || u.email,
-                    email: u.email || u.phone,
+                    email: u.email,
+                    phone: u.phone,
                     currency: u.currency,
                     status: u.status,
                     createdAt: u.createdAt,

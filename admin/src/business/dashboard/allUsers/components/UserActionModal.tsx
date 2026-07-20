@@ -7,6 +7,7 @@ interface BackendUser {
   userId: string;
   fullName?: string;
   email?: string;
+  phone?: string;
   role?: string;
   status?: string;
   createdAt?: string;
@@ -111,7 +112,7 @@ export function UserActionModal({ user, isOpen, onClose, onStatusUpdate, onDelet
             </div>
             <div className="flex-1 min-w-0">
               <div className="font-bold text-slate-900 truncate">{user.fullName || "Unknown"}</div>
-              <div className="text-sm text-slate-500 truncate">{user.email || "No Email"}</div>
+              <div className="text-sm text-slate-500 truncate">{user.email || user.phone || "No Email/Phone"}</div>
               {user.createdAt && (
                 <div className="text-xs text-slate-400 mt-1 font-medium">
                   Joined: {new Date(user.createdAt).toLocaleDateString("en-GB", {

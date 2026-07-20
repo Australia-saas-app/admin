@@ -177,7 +177,7 @@ export const sendRegistrationOtp = async (payload: { email?: string; phone?: str
     const { data } = await axiosInstance.post("/sso/auth/send-otp", payload);
     return data;
   } catch (error: unknown) {
-    throw new Error(parseApiError(error, "Failed to send OTP"));
+    return { success: false, message: parseApiError(error, "Failed to send OTP") };
   }
 };
 
@@ -186,7 +186,7 @@ export const verifyRegistrationOtp = async (payload: { email?: string; phone?: s
     const { data } = await axiosInstance.post("/sso/auth/verify-otp/generic", payload);
     return data;
   } catch (error: unknown) {
-    throw new Error(parseApiError(error, "Failed to verify OTP"));
+    return { success: false, message: parseApiError(error, "Failed to verify OTP") };
   }
 };
 
@@ -422,5 +422,23 @@ export const confirmPasswordReset = async (password: string, token: string) => {
       throw new Error(AUTH_MESSAGES.passwordResetFailed);
     }
     throw new Error(parseApiError(error, AUTH_MESSAGES.passwordResetFailed));
+  }
+};
+
+export const verifyRecoveryKey = async (recoveryKey: string) => {
+  try {
+    const { data } = await axiosInstance.post("/sso/auth/verify-recovery-key", { recoveryKey });
+    return data;
+  } catch (error: unknown) {
+    return { success: false, message: parseApiError(error, "Failed to verify recovery key") };
+  }
+};
+
+export const resetUserPassword = async (payload: { email?: string; phone?: string; otp?: string; recoveryKey?: string; newPassword: string }) => {
+  try {
+    const { data } = await axiosInstance.post("/sso/auth/user/reset-password", payload);
+    return data;
+  } catch (error: unknown) {
+    return { success: false, message: parseApiError(error, "Failed to reset password") };
   }
 };

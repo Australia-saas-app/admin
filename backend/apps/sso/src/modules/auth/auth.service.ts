@@ -570,6 +570,16 @@ export class AuthService {
       throw new BadRequestException('Email or phone is required');
     }
 
+    if (type === 'admin_reset' || type === 'password_reset') {
+      if (normalizedEmail) {
+        const user = await this.userRepository.findOne({ where: { email: normalizedEmail } });
+        if (!user) throw new BadRequestException('Email not Exists');
+      } else if (normalizedPhone) {
+        const user = await this.userRepository.findOne({ where: { phone: normalizedPhone } });
+        if (!user) throw new BadRequestException('Phone No not exists');
+      }
+    }
+
     const otp = this.otpUtil.generateOTP(6, normalizedEmail || normalizedPhone);
     const otpKey = `otp:${normalizedEmail || normalizedPhone}:${type}`;
     await this.otpUtil.storeOTP(this.redisClient, otpKey, otp);
@@ -675,7 +685,9 @@ export class AuthService {
       success: true,
       data: {
         fullName: user.fullName,
-        email: user.email || user.phone,
+        email: user.email,
+        phone: user.phone,
+        accountType: user.accountType,
       }
     };
   }

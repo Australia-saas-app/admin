@@ -184,14 +184,18 @@ export const useLogout = () => {
 export const useSendRegistrationOtp = () => {
     return useMutation<{ success: boolean; message?: string }, Error, { email?: string; phone?: string; type?: string }>({
         mutationKey: ["SEND_REGISTRATION_OTP"],
-        mutationFn: async (payload) => await sendRegistrationOtp(payload),
+        mutationFn: async (payload) => {
+            const res = await sendRegistrationOtp(payload);
+            if (!res?.success) throw new Error(res?.message || "Failed to send OTP");
+            return res;
+        },
         onSuccess: () => {
             // Toast will be handled by the component or we can add it here.
             // Based on user prompt: "toast shows OTP send to email"
             toast.success("OTP sent successfully");
         },
         onError: (error) => {
-            toast.error(parseApiError(error, "Failed to send OTP"));
+            toast.error(error.message || "Failed to send OTP");
         }
     });
 };
@@ -199,12 +203,16 @@ export const useSendRegistrationOtp = () => {
 export const useVerifyRegistrationOtp = () => {
     return useMutation<{ success: boolean; message?: string }, Error, { email?: string; phone?: string; otp: string; type?: string }>({
         mutationKey: ["VERIFY_REGISTRATION_OTP"],
-        mutationFn: async (payload) => await verifyRegistrationOtp(payload),
+        mutationFn: async (payload) => {
+            const res = await verifyRegistrationOtp(payload);
+            if (!res?.success) throw new Error(res?.message || "Failed to verify OTP");
+            return res;
+        },
         onSuccess: () => {
             // Success logic handled by component (showing tick mark)
         },
         onError: (error) => {
-            toast.error(parseApiError(error, "Failed to verify OTP"));
+            toast.error(error.message || "Failed to verify OTP");
         }
     });
 };

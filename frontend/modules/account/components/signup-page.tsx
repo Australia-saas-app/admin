@@ -142,7 +142,24 @@ export function SignupPage({ accountType, onNext, onAccountTypeChange }: SignupP
     
     setSubmitErrors(null);
     try {
-      await sendOtp({ email: form.getValues("email") as string, type: "registration" });
+      const emailVal = (form.getValues("email") as string).trim();
+      const isPhone = /^[0-9+\-\s()]+$/.test(emailVal);
+      const isEmail = emailVal.includes("@");
+      
+      if (!isEmail && !isPhone) {
+        toast.error("email format is not correct");
+        return;
+      }
+      
+      const payload = isEmail ? { email: emailVal, type: "registration" } : { phone: emailVal, type: "registration" };
+      await sendOtp(payload);
+      
+      if (isEmail) {
+        toast.success("OTP sent successfully");
+      } else {
+        toast.success("Dummy OTP sent successfully");
+      }
+      
       setStep(2);
       setTimeLeft(179);
     } catch (err) {
@@ -167,7 +184,23 @@ export function SignupPage({ accountType, onNext, onAccountTypeChange }: SignupP
   const handleResendOtp = async () => {
     setSubmitErrors(null);
     try {
-      await sendOtp({ email: form.getValues("email") as string, type: "registration" });
+      const emailVal = (form.getValues("email") as string).trim();
+      const isPhone = /^[0-9+\-\s()]+$/.test(emailVal);
+      const isEmail = emailVal.includes("@");
+      
+      if (!isEmail && !isPhone) {
+        toast.error("email format is not correct");
+        return;
+      }
+      
+      const payload = isEmail ? { email: emailVal, type: "registration" } : { phone: emailVal, type: "registration" };
+      await sendOtp(payload);
+      
+      if (isEmail) {
+        toast.success("OTP sent successfully");
+      } else {
+        toast.success("Dummy OTP sent successfully");
+      }
       setTimeLeft(179);
     } catch (err) {
       setSubmitErrors(err instanceof Error ? err.message : "Failed to resend OTP.");
@@ -187,12 +220,27 @@ export function SignupPage({ accountType, onNext, onAccountTypeChange }: SignupP
     setGeneratedKey(key);
   };
 
-  const handleCopy = () => {
-    if (generatedKey) {
-      navigator.clipboard.writeText(generatedKey);
+  const handleCopy = async () => {
+    if (!generatedKey) return;
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(generatedKey);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = generatedKey;
+        textArea.style.position = "absolute";
+        textArea.style.left = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        textArea.remove();
+      }
       setCopied(true);
       toast.success("Key copied to clipboard!");
       setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.error("Failed to copy key");
     }
   };
 
@@ -349,126 +397,152 @@ export function SignupPage({ accountType, onNext, onAccountTypeChange }: SignupP
               )}
             </div>
           )}
-
-          {/* STEP 3 & ONWARDS: Password and Terms */}
-          {step >= 3 && (
-            <div className="animate-in fade-in slide-in-from-top-4 duration-500 space-y-4 pt-2">
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">Password</label>
-                <FormTextInput
-                  control={form.control}
-                  name="password"
-                  type="password"
-                  placeholder="Minimum 8 characters"
-                />
+          <div className="relative w-full">
+            <div className={`space-y-6 transition-all duration-300 ${step === 4 ? "blur-[3px] pointer-events-none opacity-40 select-none" : ""}`}>
+              <div className="mb-2">
+                <h3 className="hidden text-xl font-bold tracking-tight text-foreground lg:block">
+                  {SIGNUP_TITLES[accountType]}
+                </h3>
+                <p className="hidden text-sm text-muted-foreground lg:block">{SIGNUP_HINTS[accountType]}</p>
               </div>
 
-              <div className="rounded-lg bg-muted/50 p-3">
-                <p className="text-xs font-medium text-foreground mb-2">Password requirements:</p>
-                <div className="flex flex-wrap gap-x-4 gap-y-2">
-                  {passwordRequirements.map((req, i) => (
-                    <div key={i} className="flex items-center gap-1.5 text-xs">
-                      {req.met ? (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-500" />
-                      ) : (
-                        <XCircle className="w-3.5 h-3.5 text-muted-foreground" />
-                      )}
-                      <span className={req.met ? "text-emerald-600 dark:text-emerald-500 font-medium" : "text-muted-foreground"}>
-                        {req.label}
-                      </span>
-                    </div>
-                  ))}
+              {onAccountTypeChange && step === 1 && (
+                <AccountTypeTabs value={accountType} onChange={onAccountTypeChange} />
+              )}
+
+              {submitErrors && (
+                <div role="alert" className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400">
+                  {submitErrors}
                 </div>
-              </div>
+              )}
 
-              <FormCheckbox
-                control={form.control}
-                name="agreeToTerms"
-                label="I agree to the Terms of Service, Privacy Policy, and Cookies Policy"
-              />
+              {step === 1 && (
+                <div className="space-y-4">
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium text-foreground">Full name</label>
+                    <FormTextInput control={form.control} name="fullName" placeholder="John Smith" />
+                  </div>
+                  {accountType === "user" && (
+                    <div>
+                      <label className="mb-1.5 block text-sm font-medium text-foreground">Preferred currency</label>
+                      <select {...form.register("currency")} disabled={step > 1} className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all disabled:opacity-50">
+                        <option value="USD">USD — US Dollar</option>
+                        <option value="INR">INR — Indian Rupee</option>
+                        <option value="EUR">EUR — Euro</option>
+                        <option value="GBP">GBP — British Pound</option>
+                      </select>
+                    </div>
+                  )}
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium text-foreground">Email or phone</label>
+                    <FormTextInput control={form.control} name="email" placeholder="you@company.com or phone" />
+                  </div>
+                  <Button type="button" onClick={handleContinueToOtp} disabled={isSendingOtp} className="w-full bg-primary hover:bg-primary/90 mt-6" size="lg">
+                    {isSendingOtp ? "Sending OTP..." : "Continue"}
+                  </Button>
+                </div>
+              )}
 
-              {step === 3 && (
-                <Button
-                  type="button"
-                  onClick={handleCreate}
-                  disabled={!agreeValue || !passwordRequirements.every(r => r.met)}
-                  className="w-full bg-primary hover:bg-primary/90 mt-6"
-                  size="lg"
-                >
-                  Create
-                </Button>
+              {step >= 2 && (
+                <div className="pt-2 relative animate-in fade-in slide-in-from-top-2 duration-500">
+                  <label className="mb-1.5 block text-sm font-medium text-foreground text-center sm:text-left">Verification Code</label>
+                  {!form.getValues("email")?.toString().includes("@") && (
+                    <p className="text-xs text-muted-foreground mb-3 text-center sm:text-left text-orange-500/80">Use OTP 234567 right now, real Message OTP is not implemented</p>
+                  )}
+                  <div className="relative">
+                    <OtpInput value={otp} onChange={(val) => { setOtp(val); if (val.length === 6) handleVerifyOtp(val); }} length={6} disabled={isVerifyingOtp || otpVerified || step > 2} />
+                    {otpVerified && (
+                      <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50 backdrop-blur-[2px] rounded-xl overflow-hidden">
+                        <div className="flex items-center gap-2 px-4 py-2 border-[3px] border-emerald-600 dark:border-emerald-500 rounded-lg text-emerald-600 dark:text-emerald-500 font-black tracking-widest uppercase transform -rotate-[12deg] animate-in zoom-in duration-500 bg-white/95 dark:bg-[#1c1c1e]/95 shadow-xl backdrop-blur-sm">
+                          <CheckCircle2 className="w-5 h-5" strokeWidth={3} />
+                          <span className="text-lg mt-0.5">Verified</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {step === 2 && !otpVerified && (
+                    <div className="mt-3 text-center">
+                      <button type="button" disabled={timeLeft > 0 || isSendingOtp || isVerifyingOtp} onClick={handleResendOtp} className="text-sm font-medium text-primary hover:underline disabled:cursor-not-allowed disabled:text-muted-foreground transition-colors">
+                        {timeLeft > 0 ? `Resend code in ${formatTime(timeLeft)}` : "Resend code"}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {step >= 3 && (
+                <div className="animate-in fade-in slide-in-from-top-4 duration-500 space-y-4 pt-2">
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium text-foreground">Password</label>
+                    <FormTextInput control={form.control} name="password" type="password" placeholder="Minimum 8 characters" />
+                  </div>
+                  <div className="rounded-lg bg-muted/50 p-3">
+                    <p className="text-xs font-medium text-foreground mb-2">Password requirements:</p>
+                    <div className="flex flex-wrap gap-x-4 gap-y-2">
+                      {passwordRequirements.map((req, i) => (
+                        <div key={i} className="flex items-center gap-1.5 text-xs">
+                          {req.met ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-500" /> : <XCircle className="w-3.5 h-3.5 text-muted-foreground" />}
+                          <span className={req.met ? "text-emerald-600 dark:text-emerald-500 font-medium" : "text-muted-foreground"}>{req.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <FormCheckbox control={form.control} name="agreeToTerms" label="I agree to the Terms of Service, Privacy Policy, and Cookies Policy" />
+                  {step === 3 && (
+                    <Button type="button" onClick={handleCreate} disabled={!agreeValue || !passwordRequirements.every(r => r.met)} className="w-full bg-primary hover:bg-primary/90 mt-6" size="lg">
+                      Create
+                    </Button>
+                  )}
+                </div>
+              )}
+
+              {step < 4 && (
+                <p className="text-center text-sm text-muted-foreground mt-6">
+                  Already have an account?{" "}
+                  <Link href={`/account/${accountType}/login`} className="font-semibold text-primary hover:underline">Sign in</Link>
+                </p>
               )}
             </div>
-          )}
 
-          {/* STEP 4: Generate Key (Modal) */}
-          <Modal
-            isOpen={step === 4}
-            onClose={() => {}} // User must click a button to proceed
-            title="Account Ready"
-            size="md"
-            closeOnOverlayClick={false}
-            showCloseButton={false}
-          >
-            <div className="text-center space-y-4">
-              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 text-left space-y-2 mb-4">
-                <p className="text-sm font-medium text-foreground">
-                  <span className="font-bold text-primary">Note:</span> Generating a Recovery Key is <span className="font-semibold">optional but highly recommended</span>.
-                </p>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  If you ever lose access to your email or phone number, this Recovery Key will be the <strong>only way</strong> to safely regain access to your account and funds.
-                </p>
-              </div>
-
-              {!generatedKey ? (
-                <Button type="button" variant="outline" onClick={handleGenerateKey} className="w-full border-primary/20 hover:bg-primary/5">
-                  Generate Recovery Key
-                </Button>
-              ) : (
-                <div className="space-y-3">
-                  <label className="text-sm font-medium text-foreground block text-left">Your Recovery Key</label>
-                  <div className="flex items-center gap-2">
-                    <input 
-                      type="text" 
-                      readOnly 
-                      value={generatedKey} 
-                      className="flex-1 rounded-lg border border-border bg-muted/50 px-3 py-2 text-sm text-foreground font-mono focus:outline-none"
-                    />
-                    <Button type="button" size="icon" variant="outline" onClick={handleCopy} className="shrink-0">
-                      {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-muted-foreground" />}
+            {step === 4 && (
+              <div className="absolute inset-0 z-50 flex items-center justify-center p-4">
+                <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 text-center shadow-[0_8px_30px_rgba(0,0,0,0.12)] bg-card/95 backdrop-blur animate-in fade-in zoom-in-95 duration-300">
+                  <h4 className="text-xl font-bold text-foreground mb-4">Account Ready</h4>
+                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 text-left space-y-2 mb-4">
+                    <p className="text-sm font-medium text-foreground">
+                      <span className="font-bold text-primary">Note:</span> Generating a Recovery Key is <span className="font-semibold">optional but highly recommended</span>.
+                    </p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      If you ever lose access to your email or phone number, this Recovery Key will be the <strong>only way</strong> to safely regain access to your account and funds.
+                    </p>
+                  </div>
+                  {!generatedKey ? (
+                    <Button type="button" variant="outline" onClick={handleGenerateKey} className="w-full border-primary/20 hover:bg-primary/5">
+                      Generate Recovery Key
+                    </Button>
+                  ) : (
+                    <div className="space-y-3">
+                      <label className="text-sm font-medium text-foreground block text-left">Your Recovery Key</label>
+                      <div className="flex items-center gap-2">
+                        <input type="text" readOnly value={generatedKey} className="flex-1 rounded-lg border border-border bg-muted/50 px-3 py-2 text-sm text-foreground font-mono focus:outline-none" />
+                        <Button type="button" size="icon" variant="outline" onClick={handleCopy} className="shrink-0">
+                          {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-muted-foreground" />}
+                        </Button>
+                      </div>
+                      <p className="text-xs text-amber-600 dark:text-amber-500 font-medium text-left">
+                        Copy this key and store it securely. It will not be shown again!
+                      </p>
+                    </div>
+                  )}
+                  <div className="pt-4">
+                    <Button type="button" onClick={handleSubmitFinal} disabled={isSubmitting} className="w-full bg-primary hover:bg-primary/90" size="lg">
+                      {isSubmitting ? "Creating Account..." : (!generatedKey ? "Skip & Create Account" : "Submit & Create Account")}
                     </Button>
                   </div>
-                  <p className="text-xs text-amber-600 dark:text-amber-500 font-medium text-left">
-                    Copy this key and store it securely. It will not be shown again!
-                  </p>
                 </div>
-              )}
-
-              <div className="pt-2">
-                <Button
-                  type="button"
-                  onClick={handleSubmitFinal}
-                  disabled={isSubmitting}
-                  className="w-full bg-primary hover:bg-primary/90"
-                  size="lg"
-                >
-                  {isSubmitting ? "Creating Account..." : (!generatedKey ? "Skip & Create Account" : "Submit & Create Account")}
-                </Button>
               </div>
-            </div>
-          </Modal>
-
-          {step < 4 && (
-            <p className="text-center text-sm text-muted-foreground mt-6">
-              Already have an account?{" "}
-              <Link
-                href={`/account/${accountType}/login`}
-                className="font-semibold text-primary hover:underline"
-              >
-                Sign in
-              </Link>
-            </p>
-          )}
+            )}
+          </div>
         </form>
       </Form>
     </AuthShell>

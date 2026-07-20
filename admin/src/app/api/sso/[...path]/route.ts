@@ -23,6 +23,7 @@ async function handleProxy(req: NextRequest, props: { params: Promise<{ path: st
     const init: RequestInit = {
       method: req.method,
       headers,
+      cache: 'no-store',
     };
 
     if (req.method !== 'GET' && req.method !== 'HEAD') {
