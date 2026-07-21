@@ -351,14 +351,14 @@ export function SignupPage({ accountType, onNext, onAccountTypeChange }: SignupP
                       </button>
                     </div>
                   )}
-                  
+
                   <div className="mb-5 text-center sm:text-left">
                     <label className="mb-1 block text-sm font-medium text-foreground">Verification Code</label>
                     <p className="text-sm text-muted-foreground">
                       Sent to <span className="font-semibold text-foreground">{form.getValues("email")?.toString()}</span>
                     </p>
                   </div>
-                  
+
                   {!form.getValues("email")?.toString().includes("@") && (
                     <p className="text-xs text-muted-foreground mb-3 text-center sm:text-left text-orange-500/80">Use OTP 234567 right now, real Message OTP is not implemented</p>
                   )}

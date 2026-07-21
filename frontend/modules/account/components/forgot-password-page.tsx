@@ -76,7 +76,7 @@ export function ForgotPasswordPage({ onBackToLogin }: ForgotPasswordPageProps) {
       return;
     }
     
-    const payload = isEmail ? { email: val, type: "admin_reset" } : { phone: val, type: "admin_reset" };
+    const payload = isEmail ? { email: val, type: "forgot-password" } : { phone: val, type: "forgot-password" };
     const res = await sendRegistrationOtp(payload);
     
     setIsSubmitting(false);
@@ -99,8 +99,8 @@ export function ForgotPasswordPage({ onBackToLogin }: ForgotPasswordPageProps) {
     const emailVal = form.getValues("inputValue").trim();
     const isEmail = emailVal.includes("@");
     const payload = isEmail 
-      ? { email: emailVal, otp: code, type: "admin_reset" }
-      : { phone: emailVal, otp: code, type: "admin_reset" };
+      ? { email: emailVal, otp: code, type: "forgot-password" }
+      : { phone: emailVal, otp: code, type: "forgot-password" };
       
     const res = await verifyRegistrationOtp(payload);
     setIsSubmitting(false);
@@ -313,20 +313,14 @@ export function ForgotPasswordPage({ onBackToLogin }: ForgotPasswordPageProps) {
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-foreground">New Password</label>
                 <div className="relative">
-                  <FormTextInput control={form.control} name="password" type={showPassword ? "text" : "password"} placeholder="Minimum 8 characters" />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-2.5 text-muted-foreground hover:text-foreground">
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
+                  <FormTextInput control={form.control} name="password" type="password" placeholder="Minimum 8 characters" />
                 </div>
               </div>
 
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-foreground">Confirm Password</label>
                 <div className="relative">
-                  <FormTextInput control={form.control} name="confirmPassword" type={showConfirmPassword ? "text" : "password"} placeholder="Confirm password" />
-                  <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-2.5 text-muted-foreground hover:text-foreground">
-                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
+                  <FormTextInput control={form.control} name="confirmPassword" type="password" placeholder="Confirm password" />
                 </div>
               </div>
 

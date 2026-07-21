@@ -152,13 +152,17 @@ export const registerUser = async (userData: FieldValues) => {
     if ("confirmPassword" in payload) delete payload["confirmPassword"];
     if ("rememberMe" in payload) delete payload["rememberMe"];
     if ("termsAccepted" in payload) delete payload["termsAccepted"];
+    if ("agreeToTerms" in payload) delete payload["agreeToTerms"];
     if ("contact" in payload) {
       if (typeof payload["contact"] === "string" && payload["contact"].includes("@")) {
-         payload["email"] = payload["contact"];
+        payload["email"] = payload["contact"];
       } else if (typeof payload["contact"] === "string") {
-         payload["phone"] = payload["contact"];
+        payload["phone"] = payload["contact"];
       }
       delete payload["contact"];
+    }
+    if (payload["accountType"] === "affiliate") {
+      payload["accountType"] = "agency";
     }
 
     const { data } = await axiosInstance.post("/sso/auth/user/register", payload);
@@ -199,7 +203,7 @@ export const verifyOtpAndLogin = async (payload: { email?: string; phone?: strin
       otp: payload.otp,
     };
     const { data: verifyData } = await axiosInstance.post("/sso/auth/user/verify-otp", verifyPayload);
-    
+
     if (!verifyData?.success) {
       return { success: false, message: verifyData?.message || "OTP verification failed" };
     }
@@ -221,7 +225,7 @@ export const verifyOtpAndLogin = async (payload: { email?: string; phone?: strin
         return loginData;
       }
     }
-    
+
     return verifyData;
   } catch (error: unknown) {
     const message = parseApiError(error, "Verification failed");
@@ -241,7 +245,7 @@ export const changeRegisteredPassword = async (input: {
   if (input.newPassword.length < 8) {
     throw new Error("New password must be at least 8 characters");
   }
-  
+
   try {
     const { data } = await axiosInstance.patch("/sso/auth/change-password", {
       email: input.email,
@@ -287,6 +291,9 @@ export const loginUser = async (userData: FieldValues) => {
     delete loginPayload.rememberMe;
     delete loginPayload.contact;
     delete loginPayload.identifier;
+    if (loginPayload.accountType === "affiliate") {
+      loginPayload.accountType = "agency";
+    }
     const { data } = await axiosInstance.post("/sso/auth/user/login", loginPayload, {
       timeout: AUTH_REQUEST_TIMEOUT,
     });
@@ -341,22 +348,22 @@ export const getCurrentUser = async () => {
     while (payload.length % 4 !== 0) payload += "=";
     const json = Buffer.from(payload, "base64").toString("utf8");
     const parsed = JSON.parse(json) as IDecodedToken;
-    
+
     // Merge full name and email from the "user" cookie
     const userCookie = cookieStore.get("user")?.value;
     if (userCookie) {
       try {
         const userObj = JSON.parse(userCookie);
         return { ...parsed, ...userObj };
-      } catch {}
+      } catch { }
     }
-    
+
     // Note: do NOT log token payload – it may contain PII
     return parsed;
   } catch {
     try {
       cookieStore.delete("accessToken");
-    } catch {}
+    } catch { }
     return null;
   }
 };

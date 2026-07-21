@@ -122,7 +122,7 @@ export class AuthService {
       throw new BadRequestException('Invalid email');
     }
     const otpKey = `otp:${email}:admin_reset`;
-    
+
     const isValid = await this.otpUtil.verifyOTP(this.redisClient, otpKey, dto.otp as string);
     if (!isValid) {
       throw new BadRequestException('Invalid or expired OTP');
@@ -549,7 +549,7 @@ export class AuthService {
     }
 
     const newHashedPassword = await bcrypt.hash(resetPasswordDto.newPassword, 10);
-    
+
     await this.userRepository.update(user.id, {
       password: newHashedPassword,
       twoFactorEnabled: false,
@@ -692,7 +692,7 @@ export class AuthService {
     };
   }
 
-  
+
 
   async deleteUser(userId: string) {
     const user = await this.findUserByAnyId(userId);
@@ -860,17 +860,17 @@ export class AuthService {
 
       for (const { type, key } of accountTypes) {
         stats[key] = { total: 0 };
-        
+
         const qb = this.userRepository.createQueryBuilder('user')
           .where('user.accountType = :type', { type: type.toLowerCase() });
-        
+
         stats[key]['total'] = await qb.getCount();
 
         for (const [statusKey, statusVal] of Object.entries(statusMap)) {
           const sqb = this.userRepository.createQueryBuilder('user')
             .where('user.accountType = :type', { type: type.toLowerCase() })
             .andWhere('user.status = :status', { status: statusVal });
-          
+
           stats[key][statusKey] = await sqb.getCount();
         }
       }
