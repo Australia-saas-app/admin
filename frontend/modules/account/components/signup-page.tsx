@@ -309,11 +309,7 @@ export function SignupPage({ accountType, onNext, onAccountTypeChange }: SignupP
                 <AccountTypeTabs value={accountType} onChange={onAccountTypeChange} />
               )}
 
-              {submitErrors && (
-                <div role="alert" className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400">
-                  {submitErrors}
-                </div>
-              )}
+
 
               {step === 1 && (
                 <div className="space-y-4">

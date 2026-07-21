@@ -121,6 +121,17 @@ export const useUserLogin = (redirectUrl?: string | null) => {
             router.push(redirectTo);
         },
         onError: (error) => {
+            try {
+                const parsed = JSON.parse(error.message);
+                if (parsed.type === "STATUS_ERROR") {
+                    const statusStr = String(parsed.status);
+                    const formattedStatus = statusStr.charAt(0).toUpperCase() + statusStr.slice(1);
+                    toast.error(`Account is ${formattedStatus}`);
+                    return;
+                }
+            } catch {
+                // Ignore parse error, fallback to default error handler
+            }
             toast.error(getLoginErrorMessage(error));
         }
     })

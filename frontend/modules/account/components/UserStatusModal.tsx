@@ -1,6 +1,7 @@
 "use client";
 
-import { X, AlertCircle, Clock, ShieldAlert, Ban, PowerOff } from "lucide-react";
+import type React from "react";
+import { AlertCircle, Clock, ShieldAlert, Ban, PowerOff } from "lucide-react";
 
 export type UserStatus = "pending" | "suspended" | "dormant" | "blocked" | "closed";
 
@@ -48,7 +49,10 @@ export function UserStatusModal({ status, onClose }: UserStatusModalProps) {
   const content = STATUS_CONTENT[status];
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60">
+    <div className="absolute inset-0 z-50 flex items-center justify-center p-4 rounded-2xl overflow-hidden">
+      {/* Blurred backdrop within the card */}
+      <div className="absolute inset-0 bg-card/80 backdrop-blur-sm rounded-2xl" />
+
       {/* Background click to close */}
       <button
         type="button"
@@ -56,46 +60,34 @@ export function UserStatusModal({ status, onClose }: UserStatusModalProps) {
         aria-label="Close dialog"
         onClick={onClose}
       />
-      
+
       <div
         role="dialog"
         aria-modal="true"
-        className="relative flex w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white dark:bg-card shadow-2xl ring-1 ring-black/5 dark:ring-white/10 animate-in fade-in zoom-in-95 duration-200"
+        className="relative w-full max-w-md rounded-2xl border border-border bg-card p-6 text-center shadow-[0_8px_30px_rgba(0,0,0,0.12)] bg-card/95 backdrop-blur animate-in fade-in zoom-in-95 duration-300"
       >
-        <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border/50 bg-slate-50/50 dark:bg-slate-900/50 px-5 py-4">
-          <div className="flex min-w-0 items-start gap-3">
-            <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${content.color}`}>
-              {content.icon}
-            </div>
-            <div className="min-w-0 pt-1">
-              <h2 className="text-lg font-bold tracking-tight text-foreground">
-                {content.title}
-              </h2>
-            </div>
+        {/* Icon + Title */}
+        <div className="flex flex-col items-center gap-3 mb-4">
+          <div className={`flex h-12 w-12 items-center justify-center rounded-full ${content.color}`}>
+            {content.icon}
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="shrink-0 rounded-full p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-            aria-label="Close"
-          >
-            <X className="h-5 w-5" />
-          </button>
+          <h4 className="text-xl font-bold text-foreground">{content.title}</h4>
         </div>
 
-        <div className="px-6 py-6 text-sm text-muted-foreground leading-relaxed">
+        {/* Description */}
+        <p className="text-sm text-muted-foreground leading-relaxed mb-6">
           {content.description}
-        </div>
+        </p>
 
-        <div className="border-t border-border/50 bg-slate-50/50 dark:bg-slate-900/50 px-6 py-4 flex justify-end">
-          <button
-            onClick={onClose}
-            className="rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-all"
-          >
-            Acknowledge
-          </button>
-        </div>
+        {/* Action */}
+        <button
+          onClick={onClose}
+          className="w-full rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-all"
+        >
+          Acknowledge
+        </button>
       </div>
     </div>
   );
 }
+

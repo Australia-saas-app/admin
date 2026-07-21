@@ -109,7 +109,7 @@ export function AuthShell({
               <h2 className="text-2xl font-bold tracking-tight text-foreground">{title}</h2>
               <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
             </div>
-            <div className="flex min-h-[520px] flex-col justify-center rounded-2xl border border-border bg-card p-6 shadow-[0_4px_20px_rgba(15,23,42,0.04)] sm:p-10">
+            <div className="relative flex min-h-[520px] flex-col justify-center rounded-2xl border border-border bg-card p-6 shadow-[0_4px_20px_rgba(15,23,42,0.04)] sm:p-10">
               {children}
             </div>
             {footer && (
