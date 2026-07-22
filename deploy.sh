@@ -1,7 +1,11 @@
 #!/bin/bash
 set -e # Exit immediately if a command exits with a non-zero status.
 
-echo "🚀 Starting Deployment Process..."
+echo "🚀 Starting Fast Deployment Process..."
+
+# Enable Docker BuildKit & CLI Build for high performance layer caching
+export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
 
 # 1. Force pull latest code from GitHub (overwriting any local changes)
 echo "📥 Pulling latest code from GitHub..."
@@ -12,12 +16,12 @@ git reset --hard origin/main
 echo "🧹 Cleaning up old Docker dangling images..."
 docker image prune -f || true
 
-# 3. Start the new containers (and build them one at a time to save RAM)
+# 3. Start the new containers with BuildKit parallel cached builds
 echo "✅ Building and starting new containers..."
-COMPOSE_PARALLEL_LIMIT=1 docker compose up -d --build --remove-orphans
+docker compose up -d --build --remove-orphans
 
-# 5. Clean up unused Docker images to free up disk space
+# 4. Clean up unused Docker images to free up disk space
 echo "🧹 Cleaning up old images..."
-docker image prune -f
+docker image prune -f || true
 
-echo "🎉 Deployment completely successfully! Your app is now running the latest code."
+echo "🎉 Deployment completed successfully! Your app is now running the latest code."
