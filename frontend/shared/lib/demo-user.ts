@@ -80,25 +80,32 @@ function registeredDisplayCode(id: string): string {
 }
 
 export function getDisplayUserId(user: IUser | IDecodedToken | null): string {
-  const demoType = resolveDemoAccountType(user)
-  if (demoType) {
-    const demoKey = `demo-${demoType}`
-    return DEMO_DISPLAY_IDS[demoKey] ?? demoKey
+  if (!user) return "USR-01";
+  
+  if ("userId" in user && user.userId && (
+    String(user.userId).startsWith("USR-") || String(user.userId).startsWith("AFF-") || String(user.userId).startsWith("BSN-") || String(user.userId).startsWith("ADM-")
+  )) {
+    return String(user.userId);
   }
 
-  const id = getUserIdFromAuthUser(user)
-  if (!id) return "—"
-  if (DEMO_DISPLAY_IDS[id]) return DEMO_DISPLAY_IDS[id]
-
-  if (id.startsWith("registered-")) {
-    return registeredDisplayCode(id)
+  const rawId = getUserIdFromAuthUser(user) || "";
+  if (rawId.startsWith("USR-") || rawId.startsWith("AFF-") || rawId.startsWith("BSN-") || rawId.startsWith("ADM-")) {
+    return rawId;
   }
 
-  if (looksLikeEmail(id)) {
-    return registeredDisplayCode(`registered-${id}`)
+  const role = String(user.accountType ?? user.role ?? "").toLowerCase();
+  let prefix = "USR-";
+  if (role.includes("agency") || role.includes("affiliate")) prefix = "AFF-";
+  else if (role.includes("business") || role.includes("seller")) prefix = "BSN-";
+
+  const digits = rawId.replace(/\D/g, "");
+  let numStr = "01";
+  if (digits) {
+    const val = parseInt(digits.slice(-4), 10) || 1;
+    numStr = val < 10 ? `0${val}` : `${val}`;
   }
 
-  return id.length > 16 ? `${id.slice(0, 16)}…` : id
+  return `${prefix}${numStr}`;
 }
 
 export function getAffiliateReferralCode(user: IUser | IDecodedToken | null): string {

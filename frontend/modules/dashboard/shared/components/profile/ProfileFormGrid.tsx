@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Check, ChevronDown, User, ShieldCheck } from "lucide-react";
 import { useUser } from "@/src/context/user.provider";
 import { useProfileDisplay } from "../../hooks/use-profile-display";
-import { ALL_COUNTRIES, CURRENCY_LIST } from "@/src/shared/constants/countries";
+import { ALL_COUNTRIES, ALL_NATIONALITIES, CURRENCY_LIST } from "@/src/shared/constants/countries";
 import { markProfileComplete, type ProfileAccountType } from "@/src/shared/lib/profile-completion";
 import { accountTypeFromRole } from "@/src/shared/lib/verification-access";
 import { completeUserProfile } from "@/src/shared/server/AuthService";
@@ -121,26 +121,21 @@ export default function ProfileFormGrid() {
 
       toast.success("Profile Updated");
 
-      // 5. Redirect user to their respective dashboard & enable sidebar
+      // Stay on the profile page
       setTimeout(() => {
-        const dest = `/${accountType}/dashboard`;
-        router.push(dest);
-        if (typeof window !== "undefined") {
-          window.location.href = dest;
-        }
-      }, 500);
+        setIsSubmitting(false);
+      }, 300);
     } catch (err: any) {
       toast.error(err?.message || "Failed to update profile.");
-    } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleUpdate} className="p-6 md:p-8 space-y-8">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
+    <form onSubmit={handleUpdate} className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-8">
         {/* 1. Full Name (Read-only) */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 min-w-0">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
             <span>Full Name</span>
             <span className="text-[10px] text-muted-foreground/70 normal-case font-normal">(Non-editable)</span>
@@ -150,38 +145,38 @@ export default function ProfileFormGrid() {
             value={fullName}
             readOnly
             disabled
-            className="w-full rounded-lg border border-border bg-muted/60 px-3.5 py-2.5 text-sm font-medium text-foreground cursor-not-allowed opacity-90"
+            className="w-full rounded-lg border border-border bg-muted/60 px-3 py-2 sm:px-3.5 sm:py-2.5 text-xs sm:text-sm font-medium text-foreground cursor-not-allowed opacity-90 truncate"
           />
         </div>
 
-        {/* 2. Nationality (Mandatory A-Z Dropdown) */}
-        <div className="flex flex-col gap-2">
+        {/* 2. Nationality (Mandatory A-Z Dropdown using Nationalities) */}
+        <div className="flex flex-col gap-2 min-w-0">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
             <span>Nationality</span>
             <span className="text-red-500 font-bold">*</span>
           </label>
-          <div className="relative">
+          <div className="relative w-full">
             <select
               value={nationality}
               onChange={(e) => setNationality(e.target.value)}
               required
-              className="w-full appearance-none rounded-lg border border-input bg-background px-3.5 py-2.5 pr-10 text-sm font-medium text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-card dark:text-foreground"
+              className="w-full max-w-full truncate appearance-none rounded-lg border border-input bg-background px-3 py-2 sm:px-3.5 sm:py-2.5 pr-8 text-xs sm:text-sm font-medium text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-card dark:text-foreground"
             >
               <option value="" disabled>
-                Select your country...
+                Select nationality...
               </option>
-              {ALL_COUNTRIES.map((c) => (
-                <option key={c.code} value={c.name} className="bg-card text-foreground">
-                  {c.name}
+              {ALL_NATIONALITIES.map((nat: string) => (
+                <option key={nat} value={nat} className="bg-card text-foreground">
+                  {nat}
                 </option>
               ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-3.5 top-3 h-4 w-4 text-muted-foreground" />
+            <ChevronDown className="pointer-events-none absolute right-2.5 top-2.5 sm:top-3 h-4 w-4 text-muted-foreground" />
           </div>
         </div>
 
         {/* 3. Date of Birth (Mandatory Date Picker) */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 min-w-0">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
             <span>Date of Birth</span>
             <span className="text-red-500 font-bold">*</span>
@@ -191,39 +186,39 @@ export default function ProfileFormGrid() {
             value={dateOfBirth}
             onChange={(e) => setDateOfBirth(e.target.value)}
             required
-            className="w-full rounded-lg border border-input bg-background px-3.5 py-2.5 text-sm font-medium text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-card dark:text-foreground"
+            className="w-full rounded-lg border border-input bg-background px-3 py-2 sm:px-3.5 sm:py-2.5 text-xs sm:text-sm font-medium text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-card dark:text-foreground"
           />
         </div>
 
         {/* 4. National Identity (Mandatory Input) */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 min-w-0">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
             <span>National Identity</span>
             <span className="text-red-500 font-bold">*</span>
           </label>
           <input
             type="text"
-            placeholder="e.g. Govt ID / CNIC / SSN / Passport"
+            placeholder="Govt ID / CNIC / SSN / Passport"
             value={nationalIdentity}
             onChange={(e) => setNationalIdentity(e.target.value)}
             required
-            className="w-full rounded-lg border border-input bg-background px-3.5 py-2.5 text-sm font-medium text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-card dark:text-foreground"
+            className="w-full rounded-lg border border-input bg-background px-3 py-2 sm:px-3.5 sm:py-2.5 text-xs sm:text-sm font-medium text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-card dark:text-foreground truncate"
           />
         </div>
 
         {/* 5. Phone Number with Dial Code Dropdown (Mandatory) */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 min-w-0">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
             <span>Phone Number</span>
             <span className="text-red-500 font-bold">*</span>
           </label>
-          <div className="flex gap-2">
+          <div className="flex gap-2 w-full">
             {/* Dial Code Selector */}
-            <div className="relative w-28 shrink-0">
+            <div className="relative w-24 sm:w-28 shrink-0">
               <select
                 value={countryCode}
                 onChange={(e) => setCountryCode(e.target.value)}
-                className="w-full appearance-none rounded-lg border border-input bg-background px-2.5 py-2.5 pr-7 text-sm font-medium text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-card dark:text-foreground"
+                className="w-full appearance-none rounded-lg border border-input bg-background px-2 py-2 sm:px-2.5 sm:py-2.5 pr-6 text-xs sm:text-sm font-medium text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-card dark:text-foreground truncate"
               >
                 {ALL_COUNTRIES.map((c) => (
                   <option key={`${c.code}-${c.dialCode}`} value={c.dialCode} className="bg-card text-foreground">
@@ -231,7 +226,7 @@ export default function ProfileFormGrid() {
                   </option>
                 ))}
               </select>
-              <ChevronDown className="pointer-events-none absolute right-2 top-3 h-4 w-4 text-muted-foreground" />
+              <ChevronDown className="pointer-events-none absolute right-1.5 top-2.5 sm:top-3 h-4 w-4 text-muted-foreground" />
             </div>
 
             {/* Phone Input */}
@@ -241,28 +236,28 @@ export default function ProfileFormGrid() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               required
-              className="flex-1 min-w-0 rounded-lg border border-input bg-background px-3.5 py-2.5 text-sm font-medium text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-card dark:text-foreground"
+              className="flex-1 min-w-0 rounded-lg border border-input bg-background px-3 py-2 sm:px-3.5 sm:py-2.5 text-xs sm:text-sm font-medium text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-card dark:text-foreground"
             />
           </div>
         </div>
 
         {/* 6. Secondary Email (Optional) */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 min-w-0">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
             <span>Secondary Email</span>
             <span className="text-[10px] text-muted-foreground/70 normal-case font-normal">(Optional)</span>
           </label>
           <input
             type="email"
-            placeholder="e.g. secondary@example.com"
+            placeholder="secondary@example.com"
             value={secondaryEmail}
             onChange={(e) => setSecondaryEmail(e.target.value)}
-            className="w-full rounded-lg border border-input bg-background px-3.5 py-2.5 text-sm font-medium text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-card dark:text-foreground"
+            className="w-full rounded-lg border border-input bg-background px-3 py-2 sm:px-3.5 sm:py-2.5 text-xs sm:text-sm font-medium text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-card dark:text-foreground truncate"
           />
         </div>
 
         {/* 7. Email Address (Read-only from DB) */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 min-w-0">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
             <span>Email Address</span>
             <span className="text-[10px] text-muted-foreground/70 normal-case font-normal">(Registered DB Email)</span>
@@ -272,20 +267,20 @@ export default function ProfileFormGrid() {
             value={email}
             readOnly
             disabled
-            className="w-full rounded-lg border border-border bg-muted/60 px-3.5 py-2.5 text-sm font-medium text-foreground cursor-not-allowed opacity-90"
+            className="w-full rounded-lg border border-border bg-muted/60 px-3 py-2 sm:px-3.5 sm:py-2.5 text-xs sm:text-sm font-medium text-foreground cursor-not-allowed opacity-90 truncate"
           />
         </div>
 
         {/* 8. Preferred Currency (Theme Dropdown) */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 min-w-0">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             Preferred Currency
           </label>
-          <div className="relative">
+          <div className="relative w-full">
             <select
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
-              className="w-full appearance-none rounded-lg border border-input bg-background px-3.5 py-2.5 pr-10 text-sm font-medium text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-card dark:text-foreground"
+              className="w-full max-w-full truncate appearance-none rounded-lg border border-input bg-background px-3 py-2 sm:px-3.5 sm:py-2.5 pr-8 text-xs sm:text-sm font-medium text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-card dark:text-foreground"
             >
               {CURRENCY_LIST.map((cur) => (
                 <option key={cur.code} value={cur.code} className="bg-card text-foreground">
@@ -293,7 +288,7 @@ export default function ProfileFormGrid() {
                 </option>
               ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-3.5 top-3 h-4 w-4 text-muted-foreground" />
+            <ChevronDown className="pointer-events-none absolute right-2.5 top-2.5 sm:top-3 h-4 w-4 text-muted-foreground" />
           </div>
         </div>
       </div>

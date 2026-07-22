@@ -206,7 +206,7 @@ export function AccountSidebarChildren({ isExpanded, isMobile, onCloseMobile }: 
         <UserAccountMenu
           profileHref={`${dashboardPrefix}/profile`}
           settingsHref={`${dashboardPrefix}/settings`}
-          displayName={getDisplayName()}
+          displayName={user?.email || "user@example.com"}
           subtitle={accountIdLabel}
           avatarUrl={avatarUrl}
           isExpanded={isExpanded}

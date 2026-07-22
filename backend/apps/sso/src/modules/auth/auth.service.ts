@@ -241,7 +241,15 @@ export class AuthService {
       phoneVerified = !!normalizedPhone || phoneVerified;
     }
 
+    let prefix = 'USR-';
+    if (accountType === AccountType.AGENCY) prefix = 'AFF-';
+    if (accountType === AccountType.BUSINESS) prefix = 'BSN-';
+    const userCount = await this.userRepository.count({ where: { accountType } });
+    const nextNum = userCount + 1;
+    const customUserId = `${prefix}${nextNum < 10 ? `0${nextNum}` : nextNum}`;
+
     const user = this.userRepository.create({
+      userId: customUserId,
       accountType,
       fullName: registerDto.fullName,
       email: normalizedEmail || null,
@@ -713,8 +721,21 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    await this.userRepository.remove(user);
-    return { message: 'User deleted successfully' };
+
+    // Purge associated OTPs / Redis keys
+    if (user.email) {
+      await this.redisClient.del(`otp:${user.email}:registration`).catch(() => undefined);
+      await this.redisClient.del(`otp:${user.email}:forgot-password`).catch(() => undefined);
+    }
+    if (user.phone) {
+      await this.redisClient.del(`otp:${user.phone}:registration`).catch(() => undefined);
+      await this.redisClient.del(`otp:${user.phone}:forgot-password`).catch(() => undefined);
+    }
+
+    // Permanent hard delete of user entity from database
+    await this.userRepository.delete({ id: user.id });
+
+    return { message: 'User account and all associated data permanently deleted successfully' };
   }
 
   async getCurrentUser(userId: string) {

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ChevronUp, LogOut, Settings, User } from "lucide-react"
+import LogoutConfirmModal from "@/src/shared/components/LogoutConfirmModal"
 
 export interface UserAccountMenuProps {
   profileHref: string
@@ -46,6 +47,7 @@ export default function UserAccountMenu({
 }: UserAccountMenuProps) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
+  const [confirmLogoutOpen, setConfirmLogoutOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -119,7 +121,7 @@ export default function UserAccountMenu({
                 disabled={isLoggingOut}
                 onClick={() => {
                   setOpen(false)
-                  onLogout()
+                  setConfirmLogoutOpen(true)
                 }}
                 className={`${itemBase} text-red-600 hover:bg-red-500/10 disabled:opacity-60 dark:text-red-400`}
               >
@@ -130,6 +132,8 @@ export default function UserAccountMenu({
           )}
         </div>
       )}
+
+      <LogoutConfirmModal open={confirmLogoutOpen} onClose={() => setConfirmLogoutOpen(false)} />
 
       <button
         type="button"

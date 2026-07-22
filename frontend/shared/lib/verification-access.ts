@@ -41,20 +41,12 @@ export function resolveDashboardAccess(
     };
   }
 
-  if (isDemoAuthUser(user)) {
-    return { allowed: true };
-  }
-
   const role = String(user.role ?? "").toUpperCase();
   if (role === "ADMIN" || role === "SUPER_ADMIN") {
     return { allowed: true };
   }
 
-  if (!isRegisteredAuthUser(user)) {
-    return { allowed: true };
-  }
-
-  const userId = getUserIdFromAuthUser(user);
+  const userId = getUserIdFromAuthUser(user) || (user && "id" in user ? String(user.id) : undefined);
   if (!userId) {
     return {
       allowed: false,
