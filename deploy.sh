@@ -13,15 +13,11 @@ echo "📥 Pulling latest code from GitHub..."
 git fetch --all
 git reset --hard origin/main
 
-# 2. Clean up dangling images to ensure there is enough disk space
-echo "🧹 Cleaning up old Docker dangling images..."
-docker image prune -f || true
-
-# 3. Start the new containers with plain unbuffered progress for live log streaming
+# 2. Start new containers using Docker BuildKit layer caching (Fast 1-2 min builds)
 echo "✅ Building and starting new containers..."
 docker compose --progress=plain up -d --build --remove-orphans
 
-# 4. Clean up unused Docker images to free up disk space
+# 3. Clean up dangling unused images after build completes to free up disk space
 echo "🧹 Cleaning up old images..."
 docker image prune -f || true
 
